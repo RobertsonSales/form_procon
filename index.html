@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>PROCON-RJ · Salas do Consumidor Carioca</title>
+    <!-- Bootstrap + Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; color: #212529; font-family: 'Segoe UI', system-ui, sans-serif; }
+        .container { max-width: 1400px; }
+        /* Card hero */
+        .hero-card {
+            background: linear-gradient(145deg, #003b7a, #002856);
+            border: none;
+            border-radius: 28px;
+            box-shadow: 0 20px 30px -10px rgba(0,40,80,0.4);
+            color: white;
+            padding: 2rem 2.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .logo-procon {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .logo-icon { font-size: 4.5rem; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.2)); }
+        .logo-text h2 {
+            font-weight: 800;
+            font-size: 2.4rem;
+            letter-spacing: -0.5px;
+            margin: 0;
+            line-height: 1.2;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .logo-text p { font-size: 1.2rem; opacity: 0.9; margin: 5px 0 0; font-weight: 400; }
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(4px);
+            padding: 0.8rem 1.8rem;
+            border-radius: 60px;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.25);
+        }
+        .stat-item i { margin-right: 8px; }
+
+        /* Carrossel */
+        .carousel-inner { border-radius: 24px; overflow: hidden; box-shadow: 0 20px 30px -5px rgba(0,0,0,0.2); }
+        .carousel-item { height: 320px; background-size: cover; background-position: center; }
+        .carousel-caption { background: linear-gradient(0deg, rgba(0,30,60,0.85), transparent); border-radius: 20px; bottom: 0; left: 0; right: 0; padding: 2rem; text-align: left; }
+        .carousel-caption h5 { font-size: 2rem; font-weight: 700; }
+        .carousel-caption p { font-size: 1.2rem; opacity: 0.9; }
+
+        /* Depoimentos */
+        .testimonial-card {
+            background: white;
+            border-radius: 32px;
+            padding: 2rem;
+            box-shadow: 0 15px 30px -12px rgba(0,50,100,0.2);
+            height: 100%;
+            border: 1px solid rgba(0,123,255,0.1);
+            transition: all 0.2s;
+        }
+        .testimonial-card:hover { transform: translateY(-5px); box-shadow: 0 25px 40px -12px #007bff40; }
+        .testimonial-card i { color: #007bff; font-size: 2rem; margin-bottom: 1rem; }
+        .testimonial-card .quote { font-size: 1.1rem; font-style: italic; margin-bottom: 1.5rem; }
+        .testimonial-card .author { font-weight: 700; color: #002856; }
+
+        /* Botão registro */
+        .btn-register {
+            background: linear-gradient(135deg, #007bff, #004a99);
+            border: none;
+            border-radius: 60px;
+            padding: 16px 40px;
+            font-weight: 700;
+            font-size: 1.4rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 20px 30px -8px #007bff80;
+            transition: all 0.2s;
+            margin: 2rem 0;
+        }
+        .btn-register:hover { background: linear-gradient(135deg, #0062cc, #003d7a); transform: scale(1.02); box-shadow: 0 25px 35px -8px #007bff; }
+
+        /* Modal adaptado */
+        .modal-xl { max-width: 1300px; }
+        .modal-content { border: none; border-radius: 28px; }
+        .modal-header { background: linear-gradient(135deg, #007bff, #0056b3); color: white; border-radius: 28px 28px 0 0; padding: 1.5rem 2rem; }
+        .modal-header .btn-close { filter: brightness(0) invert(1); opacity: 0.8; }
+        .modal-body { padding: 2rem; background-color: #f8f9fa; }
+
+        /* Cards internos originais */
+        .card { border: none; box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15); border-radius: 12px; }
+        .card-header { background: linear-gradient(135deg, #007bff, #0056b3); color: white; font-weight: 600; border-radius: 12px 12px 0 0; }
+        .btn-primary { background: linear-gradient(135deg, #007bff, #0056b3); border: none; font-weight: 500; }
+        .btn-primary:hover { background: linear-gradient(135deg, #0056b3, #003d82); transform: translateY(-2px); }
+        .form-label { font-weight: 600; color: #495057; }
+        #pdfPreview { margin-top: 25px; }
+        #pdfIframe { width: 100%; height: 680px; border: none; border-radius: 8px; }
+        .table th { background-color: #007bff; color: white; font-weight: 600; vertical-align: middle; }
+        .table td { vertical-align: middle; }
+
+        /* Filtro de datas */
+        .filter-bar {
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+        .filter-item {
+            flex: 1 1 200px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-card { padding: 1.5rem; }
+            .logo-text h2 { font-size: 1.8rem; }
+            .carousel-item { height: 250px; }
+            .btn-register { font-size: 1.2rem; padding: 12px 24px; }
+            .table { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-4">
+        <!-- CARD HERÓI com logomarca -->
+        <div class="hero-card">
+            <div class="logo-procon">
+                <div class="logo-icon"><i class="fas fa-scale-balanced"></i></div>
+                <div class="logo-text">
+                    <h2>PROCON-RJ</h2>
+                    <p>Salas do Consumidor Carioca • Defesa e Cidadania</p>
+                </div>
+            </div>
+            <div class="hero-stats">
+                <span class="stat-item"><i class="fas fa-check-circle"></i> +12 mil atendimentos</span>
+                <span class="stat-item"><i class="fas fa-star"></i> 94% de satisfação</span>
+                <span class="stat-item"><i class="fas fa-building"></i> 8 salas ativas</span>
+            </div>
+        </div>
+
+        <!-- CARROSSEL temático -->
+        <div id="carouselProcon" class="carousel slide mb-5" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselProcon" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#carouselProcon" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#carouselProcon" data-bs-slide-to="2"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active" style="background-image: linear-gradient(120deg, #00337a, #001f4e), url('https://picsum.photos/id/1043/1400/400'); background-blend-mode: overlay;">
+                    <div class="carousel-caption"><h5>Direitos garantidos</h5><p>Produto com defeito? Troca ou reembolso é seu direito (CDC art. 18).</p></div>
+                </div>
+                <div class="carousel-item" style="background-image: linear-gradient(120deg, #1d5b3e, #0a2f1e), url('https://picsum.photos/id/20/1400/400'); background-blend-mode: overlay;">
+                    <div class="carousel-caption"><h5>Educação financeira</h5><p>Oficinas de consumo consciente e prevenção ao endividamento.</p></div>
+                </div>
+                <div class="carousel-item" style="background-image: linear-gradient(120deg, #a13d2f, #5e1e15), url('https://picsum.photos/id/26/1400/400'); background-blend-mode: overlay;">
+                    <div class="carousel-caption"><h5>Mediação de conflitos</h5><p>Resolução rápida e gratuita com a presença de fornecedores.</p></div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselProcon" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselProcon" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+        </div>
+
+        <!-- DEPOIMENTOS -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">“Graças ao PROCON consegui cancelar um contrato abusivo e ainda fui reembolsado em dobro. Atendimento humano e eficiente.”</div><div class="author">— Marília C., Centro</div></div></div>
+            <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">“A sala do consumidor resolveu meu problema com a operadora em apenas 5 dias. Nunca imaginei que seria tão rápido.”</div><div class="author">— João P., Madureira</div></div></div>
+            <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">“O socioeducador me orientou sobre planejamento financeiro. Hoje sei usar o crédito sem medo. Transformador!”</div><div class="author">— Renata S., Bangu</div></div></div>
+        </div>
+
+        <!-- BOTÃO QUE ABRE O MODAL -->
+        <div class="text-center">
+            <button class="btn btn-primary btn-register" data-bs-toggle="modal" data-bs-target="#formModal">
+                <i class="fas fa-pen-to-square me-2"></i>Registrar Atividade / Reclamação
+            </button>
+        </div>
+
+        <!-- MODAL COM FORMULÁRIO (idêntico ao anterior) -->
+        <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="formModalLabel"><i class="fas fa-clipboard-list me-2"></i>Registro de Atividades, Colaboradores e Reclamações</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="activityForm">
+                            <!-- CAMPO DATA em primeiro lugar -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">Data do registro:</label>
+                                    <input type="date" class="form-control" name="date" id="recordDate" required>
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Coordenador Responsável:</label>
+                                    <select class="form-select" name="coordinator" id="coordinatorSelect" required>
+                                        <option value="">Selecione...</option>
+                                        <option>Coordenador Geral</option>
+                                        <option>Coordenador Operacional</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Colaborador Subordinado:</label>
+                                    <input type="text" class="form-control" name="subordinate" placeholder="Nome completo" required>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mt-2">
+                                <div class="col-md-4">
+                                    <label class="form-label">Categoria do Colaborador:</label>
+                                    <select class="form-select" name="category" required>
+                                        <option value="">Selecione...</option>
+                                        <option>Atendente (ASG)</option>
+                                        <option>Socioeducador</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Etapa da Atividade:</label>
+                                    <select class="form-select" name="stage" required>
+                                        <option value="">Selecione...</option>
+                                        <option>Recepção (Triagem, documentação, senha)</option>
+                                        <option>Primeira Parte (Oitiva, abertura de reclamação)</option>
+                                        <option>Segunda Parte (Análise de resposta)</option>
+                                        <option>Terceira Parte (Administrativo)</option>
+                                        <option>Acompanhamento / Relatórios</option>
+                                        <option>Mapeamento e Educação</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <!-- vazio -->
+                                </div>
+                            </div>
+
+                            <!-- Fornecedor e motivo -->
+                            <div class="row g-3 mt-2">
+                                <div class="col-md-6">
+                                    <label class="form-label">Fornecedor (Nome / CNPJ):</label>
+                                    <input type="text" class="form-control" name="supplier" placeholder="Ex: Magazine Luiza - 47.960.950/0001-21" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Motivo da Queixa (Categorizado):</label>
+                                    <select class="form-select" name="complaintReason" id="complaintReason" required>
+                                        <option value="">Selecione a categoria...</option>
+                                        <option>Não entrega do produto/serviço</option>
+                                        <option>Atraso na entrega</option>
+                                        <option>Produto com defeito / vício</option>
+                                        <option>Serviço não realizado</option>
+                                        <option>Cobrança indevida / duplicidade</option>
+                                        <option>Recusa de garantia ou troca</option>
+                                        <option>Publicidade enganosa</option>
+                                        <option>Cancelamento indevido de contrato</option>
+                                        <option>Problemas com reembolso</option>
+                                        <option>Outros (detalhe na descrição)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Descrição com placeholder dinâmico -->
+                            <div class="mb-3 mt-3">
+                                <label class="form-label">Descrição Detalhada da Atividade (incluindo mediação de conflitos):</label>
+                                <textarea class="form-control" name="description" id="descriptionField" rows="3" placeholder="Descreva o atendimento, mediação, documentação verificada, etc." required></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Etapas Seguintes (destinação das queixas, prazos, etc.):</label>
+                                <input type="text" class="form-control" name="nextSteps" placeholder="Ex: Notificação enviada, prazo de 10 dias, audiência agendada" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Indicadores de Desempenho:</label>
+                                <input type="text" class="form-control" name="indicators" placeholder="Ex: Tempo médio: 18 min | Satisfação: Alta | 7 reclamações hoje" required>
+                            </div>
+
+                            <!-- Seção exclusiva para Coordenadores -->
+                            <div id="reportSection" class="border p-3 rounded bg-light mt-4" style="display: none;">
+                                <h6 class="mb-3 text-primary">Relatório do Coordenador</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Tipo de Relatório:</label>
+                                        <select class="form-select" name="reportType">
+                                            <option value="">Selecione...</option>
+                                            <option>Estatístico (Quantitativo)</option>
+                                            <option>Analítico (Qualitativo)</option>
+                                            <option>Ranking de Fornecedores</option>
+                                            <option>Outros</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Conteúdo do Relatório:</label>
+                                        <textarea class="form-control" name="reportContent" rows="3" placeholder="Resultados, problemas identificados, soluções, metas cumpridas..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 mt-4 py-3">Registrar Atividade Completa</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD DE REGISTROS COM BOTÃO DE RETRAÇÃO E FILTRO DE DATAS -->
+        <div class="card mb-4" id="recordsCard">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Registros Cadastrados</span>
+                <button class="btn btn-sm btn-light" id="toggleCardBtn" title="Recolher/Expandir card">
+                    <i class="fas fa-chevron-up" id="toggleIcon"></i>
+                </button>
+            </div>
+            <div class="card-body" id="recordsCardBody">
+                <!-- FILTRO DE DATAS -->
+                <div class="filter-bar">
+                    <div class="filter-item">
+                        <label class="form-label mb-1">Data inicial</label>
+                        <input type="date" class="form-control" id="filterStartDate">
+                    </div>
+                    <div class="filter-item">
+                        <label class="form-label mb-1">Data final</label>
+                        <input type="date" class="form-control" id="filterEndDate">
+                    </div>
+                    <div class="filter-item d-flex gap-2">
+                        <button class="btn btn-primary" id="applyFilterBtn"><i class="fas fa-filter"></i> Filtrar</button>
+                        <button class="btn btn-outline-secondary" id="clearFilterBtn"><i class="fas fa-times"></i> Limpar</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="recordsTable">
+                        <thead>
+                            <tr>
+                                <th>Coordenador</th><th>Colaborador</th><th>Categoria</th><th>Etapa</th><th>Fornecedor</th>
+                                <th>Motivo da Queixa</th><th>Descrição</th><th>Etapas Seguintes</th><th>Indicadores</th>
+                                <th>Tipo Relatório</th><th>Conteúdo Relatório</th><th>Data</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTÕES DE EXPORTAÇÃO -->
+        <div class="d-grid gap-3 d-md-flex justify-content-md-center mb-5">
+            <button id="previewBtn" class="btn btn-primary px-5" onclick="previewPDF()" disabled>Visualizar Relatório PDF</button>
+            <button id="downloadBtn" class="btn btn-primary px-5" onclick="downloadPDF()" disabled>Baixar Relatório PDF (A4 Paisagem)</button>
+            <button id="excelBtn" class="btn btn-primary px-5" onclick="exportExcel()" disabled>Exportar Planilha Excel</button>
+        </div>
+
+        <!-- PRÉ-VISUALIZAÇÃO PDF -->
+        <div id="pdfPreview" class="card" style="display: none;">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                Pré-visualização do PDF (A4 Horizontal)
+                <button class="btn btn-sm btn-light" onclick="document.getElementById('pdfPreview').style.display='none'">Fechar</button>
+            </div>
+            <div class="card-body p-0">
+                <iframe id="pdfIframe"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        (function() {
+            // ---------- DADOS ----------
+            let records = JSON.parse(localStorage.getItem('records')) || [];
+
+            // Elementos do formulário
+            const dateInput = document.getElementById('recordDate');
+            const coordinatorSelect = document.getElementById('coordinatorSelect');
+            const reportSection = document.getElementById('reportSection');
+            const form = document.getElementById('activityForm');
+            const complaintReason = document.getElementById('complaintReason');
+            const descriptionField = document.getElementById('descriptionField');
+
+            // Elementos do filtro
+            const filterStart = document.getElementById('filterStartDate');
+            const filterEnd = document.getElementById('filterEndDate');
+            const applyFilterBtn = document.getElementById('applyFilterBtn');
+            const clearFilterBtn = document.getElementById('clearFilterBtn');
+            let currentFilter = { start: '', end: '' };
+
+            // Elementos do card collapsible
+            const toggleCardBtn = document.getElementById('toggleCardBtn');
+            const toggleIcon = document.getElementById('toggleIcon');
+            const cardBody = document.getElementById('recordsCardBody');
+
+            // ---------- FUNÇÃO AUXILIAR: FORMATAR DATA PT-BR ----------
+            function formatDateBR(isoDate) {
+                if (!isoDate) return '';
+                const [year, month, day] = isoDate.split('-');
+                return `${day}/${month}/${year}`;
+            }
+
+            // ---------- ATUALIZAR PLACEHOLDER DA DESCRIÇÃO ----------
+            const reasonPlaceholders = {
+                "Não entrega do produto/serviço": "Descreva: produto/serviço não entregue, data prometida, tentativas de contato, protocolos...",
+                "Atraso na entrega": "Informe o prazo estipulado, quantos dias de atraso, comunicação do fornecedor, prejuízos...",
+                "Produto com defeito / vício": "Detalhe o defeito, nota fiscal, se acionou garantia, resposta do fornecedor...",
+                "Serviço não realizado": "Descreva o serviço contratado, data agendada, comprovantes, tentativas de solução...",
+                "Cobrança indevida / duplicidade": "Explique a cobrança, valores, datas, se já contestou, faturas em anexo...",
+                "Recusa de garantia ou troca": "Relate o produto, defeito, argumento da recusa, documentos apresentados...",
+                "Publicidade enganosa": "Descreva a propaganda, onde viu, diferença entre oferta e realidade, prejuízos...",
+                "Cancelamento indevido de contrato": "Informe serviço contratado, data do cancelamento, multas indevidas, comunicações...",
+                "Problemas com reembolso": "Valor devido, prazo não cumprido, forma de pagamento, tentativas de contato...",
+                "Outros (detalhe na descrição)": "Descreva detalhadamente o ocorrido, documentação disponível, conduta do fornecedor..."
+            };
+
+            function updateDescriptionPlaceholder() {
+                const selected = complaintReason.value;
+                if (selected && reasonPlaceholders[selected]) {
+                    descriptionField.placeholder = reasonPlaceholders[selected];
+                } else {
+                    descriptionField.placeholder = "Descreva o atendimento, mediação, documentação verificada, etc.";
+                }
+            }
+            complaintReason.addEventListener('change', updateDescriptionPlaceholder);
+
+            // ---------- CONTROLE DA SEÇÃO DE RELATÓRIO (COORDENADOR) ----------
+            coordinatorSelect.addEventListener('change', () => {
+                reportSection.style.display = coordinatorSelect.value ? 'block' : 'none';
+            });
+
+            // ---------- LÓGICA: DATA DIFERENTE DO ÚLTIMO REGISTRO LIMPA CAMPOS ----------
+            function clearAllFieldsExceptDate() {
+                const elements = form.elements;
+                for (let el of elements) {
+                    if (el.name && el.name !== 'date' && el.type !== 'submit') {
+                        if (el.tagName === 'SELECT') el.selectedIndex = 0;
+                        else if (el.type === 'textarea' || el.type === 'text' || el.type === 'input') el.value = '';
+                    }
+                }
+                reportSection.style.display = 'none';
+                descriptionField.placeholder = "Descreva o atendimento, mediação, documentação verificada, etc.";
+            }
+
+            dateInput.addEventListener('change', function() {
+                if (records.length > 0) {
+                    const lastRecord = records[records.length - 1];
+                    const lastDate = lastRecord.date;
+                    const currentDate = this.value;
+                    if (currentDate && lastDate && currentDate !== lastDate) {
+                        clearAllFieldsExceptDate();
+                    }
+                }
+            });
+
+            // ---------- RENDERIZAR TABELA COM FILTRO ----------
+            function getFilteredRecords() {
+                if (!currentFilter.start && !currentFilter.end) return records;
+                return records.filter(r => {
+                    if (!r.date) return false;
+                    const recordDate = r.date; // ISO
+                    if (currentFilter.start && recordDate < currentFilter.start) return false;
+                    if (currentFilter.end && recordDate > currentFilter.end) return false;
+                    return true;
+                });
+            }
+
+            function renderTable() {
+                const filtered = getFilteredRecords();
+                const tbody = document.querySelector('#recordsTable tbody');
+                tbody.innerHTML = '';
+                filtered.forEach(record => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${record.coordinator || ''}</td>
+                        <td>${record.subordinate || ''}</td>
+                        <td>${record.category || ''}</td>
+                        <td>${record.stage || ''}</td>
+                        <td>${record.supplier || ''}</td>
+                        <td>${record.complaintReason || ''}</td>
+                        <td>${record.description || ''}</td>
+                        <td>${record.nextSteps || ''}</td>
+                        <td>${record.indicators || ''}</td>
+                        <td>${record.reportType || 'N/A'}</td>
+                        <td>${record.reportContent || 'N/A'}</td>
+                        <td>${formatDateBR(record.date) || ''}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                // Botões de exportação permanecem baseados em todos os registros (não filtrados)
+                toggleExportButtons();
+            }
+
+            function toggleExportButtons() {
+                const hasRecords = records.length > 0;
+                document.getElementById('previewBtn').disabled = !hasRecords;
+                document.getElementById('downloadBtn').disabled = !hasRecords;
+                document.getElementById('excelBtn').disabled = !hasRecords;
+            }
+
+            // Filtro
+            applyFilterBtn.addEventListener('click', () => {
+                currentFilter.start = filterStart.value;
+                currentFilter.end = filterEnd.value;
+                renderTable();
+            });
+
+            clearFilterBtn.addEventListener('click', () => {
+                filterStart.value = '';
+                filterEnd.value = '';
+                currentFilter.start = '';
+                currentFilter.end = '';
+                renderTable();
+            });
+
+            // ---------- SUBMIT DO FORM ----------
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const newRecord = {
+                    coordinator: formData.get('coordinator'),
+                    subordinate: formData.get('subordinate'),
+                    category: formData.get('category'),
+                    stage: formData.get('stage'),
+                    supplier: formData.get('supplier'),
+                    complaintReason: formData.get('complaintReason'),
+                    description: formData.get('description'),
+                    nextSteps: formData.get('nextSteps'),
+                    indicators: formData.get('indicators'),
+                    reportType: formData.get('reportType') || null,
+                    reportContent: formData.get('reportContent') || null,
+                    date: formData.get('date')
+                };
+                records.push(newRecord);
+                localStorage.setItem('records', JSON.stringify(records));
+                // Limpar filtro ao adicionar novo registro (opcional)
+                clearFilterBtn.click();
+                renderTable();
+                form.reset();
+                reportSection.style.display = 'none';
+                const modal = bootstrap.Modal.getInstance(document.getElementById('formModal'));
+                if (modal) modal.hide();
+            });
+
+            // ---------- FUNÇÕES PDF (COM QUEBRA DE LINHA E ESTILO) ----------
+            function generatePDF() {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+                doc.setFillColor(0, 123, 255);
+                doc.rect(0, 0, 297, 22, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(18);
+                doc.setFont('helvetica', 'bold');
+                doc.text('SALAS DO CONSUMIDOR CARIOCA', 20, 15);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Procon Carioca • Relatório de Atividades e Reclamações', 180, 15);
+
+                let y = 32;
+                const pageWidth = 297;
+                const marginLeft = 20;
+                const marginRight = 20;
+                const maxWidth = pageWidth - marginLeft - marginRight;
+
+                records.forEach((record, i) => {
+                    if (y > 190) {
+                        doc.addPage();
+                        y = 25;
+                        doc.setFillColor(0, 123, 255);
+                        doc.rect(0, 0, 297, 22, 'F');
+                        doc.setTextColor(255, 255, 255);
+                        doc.setFontSize(18);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text('SALAS DO CONSUMIDOR CARIOCA', 20, 15);
+                        doc.setFontSize(10);
+                        doc.setFont('helvetica', 'normal');
+                        doc.text('Procon Carioca • Relatório de Atividades e Reclamações', 180, 15);
+                        y = 32;
+                    }
+
+                    doc.setDrawColor(200);
+                    doc.setLineWidth(0.2);
+                    doc.line(marginLeft, y-3, marginLeft+maxWidth, y-3);
+
+                    doc.setTextColor(0, 0, 0);
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'bold');
+                    const dataBR = formatDateBR(record.date);
+                    doc.text(`${i+1}. ${dataBR} — ${record.coordinator}`, marginLeft, y);
+                    y += 6;
+
+                    doc.setFont('helvetica', 'normal');
+                    function addField(label, value, indent = 0) {
+                        if (!value) return;
+                        const lines = doc.splitTextToSize(`${label}: ${value}`, maxWidth - indent);
+                        doc.text(lines, marginLeft + indent, y);
+                        y += (lines.length * 5) + 1;
+                    }
+
+                    addField('Colaborador', `${record.subordinate} (${record.category})`);
+                    addField('Etapa', record.stage);
+                    addField('Fornecedor', record.supplier);
+                    addField('Motivo', record.complaintReason);
+                    addField('Descrição', record.description);
+                    addField('Etapas Seguintes', record.nextSteps);
+                    addField('Indicadores', record.indicators);
+                    if (record.reportType) {
+                        addField('Relatório', `${record.reportType} - ${record.reportContent || ''}`);
+                    }
+
+                    y += 4;
+                });
+
+                return doc;
+            }
+
+            window.previewPDF = function() {
+                if (records.length === 0) return;
+                const doc = generatePDF();
+                const pdfBlob = doc.output('blob');
+                const url = URL.createObjectURL(pdfBlob);
+                document.getElementById('pdfIframe').src = url;
+                document.getElementById('pdfPreview').style.display = 'block';
+            };
+
+            window.downloadPDF = function() {
+                if (records.length === 0) return;
+                const doc = generatePDF();
+                doc.save('Relatorio_Salas_Consumidor_Carioca.pdf');
+            };
+
+            // ---------- EXPORTAÇÃO EXCEL COM CABEÇALHO PT-BR E ORDINAL ----------
+            window.exportExcel = function() {
+                if (records.length === 0) return;
+
+                const dataForExcel = records.map((rec, idx) => {
+                    return {
+                        'Nº': idx + 1,
+                        'Data': formatDateBR(rec.date),
+                        'Coordenador': rec.coordinator || '',
+                        'Colaborador': rec.subordinate || '',
+                        'Categoria': rec.category || '',
+                        'Etapa': rec.stage || '',
+                        'Fornecedor': rec.supplier || '',
+                        'Motivo da Queixa': rec.complaintReason || '',
+                        'Descrição': rec.description || '',
+                        'Etapas Seguintes': rec.nextSteps || '',
+                        'Indicadores': rec.indicators || '',
+                        'Tipo Relatório': rec.reportType || 'N/A',
+                        'Conteúdo Relatório': rec.reportContent || 'N/A'
+                    };
+                });
+
+                const ws = XLSX.utils.json_to_sheet(dataForExcel);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Atividades_Reclamacoes');
+                XLSX.writeFile(wb, 'Relatorio_Salas_Consumidor.xlsx');
+            };
+
+            // ---------- CARD COLLAPSIBLE ----------
+            let cardExpanded = true;
+            toggleCardBtn.addEventListener('click', () => {
+                if (cardExpanded) {
+                    cardBody.style.display = 'none';
+                    toggleIcon.className = 'fas fa-chevron-down';
+                } else {
+                    cardBody.style.display = 'block';
+                    toggleIcon.className = 'fas fa-chevron-up';
+                }
+                cardExpanded = !cardExpanded;
+            });
+
+            // Inicializa
+            renderTable();
+
+            document.getElementById('formModal').addEventListener('hidden.bs.modal', function () {
+                if (!coordinatorSelect.value) reportSection.style.display = 'none';
+            });
+        })();
+    </script>
+</body>
+</html>
