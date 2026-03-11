@@ -3,688 +3,885 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>PROCON-RJ · Salas do Consumidor Carioca</title>
-    <!-- Bootstrap + Font Awesome -->
+    <title>PROCON-RJ · Dashboard de Atendimentos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body { background-color: #f8f9fa; color: #212529; font-family: 'Segoe UI', system-ui, sans-serif; }
+        :root {
+            --procon-navy: #002856;
+            --procon-blue: #007bff;
+            --procon-light: #f0f4f8;
+            --dash-geral: #3b82f6;
+            --dash-internet: #8b5cf6;
+            --dash-financeira: #10b981;
+            --dash-telefonia: #f59e0b;
+            --dash-servicos: #06b6d4;
+            --dash-gas: #ef4444;
+        }
+        * { box-sizing: border-box; }
+        body {
+            background-color: var(--procon-light);
+            color: #1e2d3d;
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+            font-size: 15px;
+        }
         .container { max-width: 1400px; }
-        /* Card hero */
+
+        /* ── HERO CARD ── */
         .hero-card {
             background: linear-gradient(145deg, #003b7a, #002856);
-            border: none;
-            border-radius: 28px;
+            border: none; border-radius: 28px;
             box-shadow: 0 20px 30px -10px rgba(0,40,80,0.4);
-            color: white;
-            padding: 2rem 2.5rem;
-            margin-bottom: 2.5rem;
+            color: white; padding: 2rem 2.5rem; margin-bottom: 2.5rem;
         }
-        .logo-procon {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
+        .logo-procon { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
         .logo-icon { font-size: 4.5rem; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.2)); }
         .logo-text h2 {
-            font-weight: 800;
-            font-size: 2.4rem;
-            letter-spacing: -0.5px;
-            margin: 0;
-            line-height: 1.2;
-            text-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            font-weight: 800; font-size: 2.4rem; letter-spacing: -0.5px;
+            margin: 0; line-height: 1.2; text-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         .logo-text p { font-size: 1.2rem; opacity: 0.9; margin: 5px 0 0; font-weight: 400; }
-        .hero-stats {
-            display: flex;
-            gap: 2rem;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
+        .hero-stats { display: flex; gap: 2rem; margin-top: 1.5rem; flex-wrap: wrap; }
         .stat-item {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(4px);
-            padding: 0.8rem 1.8rem;
-            border-radius: 60px;
-            font-weight: 600;
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(4px);
+            padding: 0.8rem 1.8rem; border-radius: 60px; font-weight: 600;
             border: 1px solid rgba(255,255,255,0.25);
         }
         .stat-item i { margin-right: 8px; }
 
-        /* Carrossel */
+        /* ── CAROUSEL ── */
         .carousel-inner { border-radius: 24px; overflow: hidden; box-shadow: 0 20px 30px -5px rgba(0,0,0,0.2); }
         .carousel-item { height: 320px; background-size: cover; background-position: center; }
-        .carousel-caption { background: linear-gradient(0deg, rgba(0,30,60,0.85), transparent); border-radius: 20px; bottom: 0; left: 0; right: 0; padding: 2rem; text-align: left; }
+        .carousel-caption {
+            background: linear-gradient(0deg, rgba(0,30,60,0.85), transparent);
+            border-radius: 20px; bottom: 0; left: 0; right: 0; padding: 2rem; text-align: left;
+        }
         .carousel-caption h5 { font-size: 2rem; font-weight: 700; }
         .carousel-caption p { font-size: 1.2rem; opacity: 0.9; }
 
-        /* Depoimentos */
+        /* ── DEPOIMENTOS ── */
         .testimonial-card {
-            background: white;
-            border-radius: 32px;
-            padding: 2rem;
+            background: white; border-radius: 32px; padding: 2rem;
             box-shadow: 0 15px 30px -12px rgba(0,50,100,0.2);
-            height: 100%;
-            border: 1px solid rgba(0,123,255,0.1);
-            transition: all 0.2s;
+            height: 100%; border: 1px solid rgba(0,123,255,0.1); transition: all 0.2s;
         }
         .testimonial-card:hover { transform: translateY(-5px); box-shadow: 0 25px 40px -12px #007bff40; }
-        .testimonial-card i { color: #007bff; font-size: 2rem; margin-bottom: 1rem; }
+        .testimonial-card i { color: var(--procon-blue); font-size: 2rem; margin-bottom: 1rem; }
         .testimonial-card .quote { font-size: 1.1rem; font-style: italic; margin-bottom: 1.5rem; }
-        .testimonial-card .author { font-weight: 700; color: #002856; }
+        .testimonial-card .author { font-weight: 700; color: var(--procon-navy); }
 
-        /* Botão registro */
-        .btn-register {
-            background: linear-gradient(135deg, #007bff, #004a99);
-            border: none;
-            border-radius: 60px;
-            padding: 16px 40px;
-            font-weight: 700;
-            font-size: 1.4rem;
-            letter-spacing: 0.5px;
-            box-shadow: 0 20px 30px -8px #007bff80;
-            transition: all 0.2s;
-            margin: 2rem 0;
+        /* ── DASHBOARD ── */
+        .dash-section {
+            background: white; border-radius: 24px;
+            box-shadow: 0 8px 30px -8px rgba(0,40,80,0.15);
+            overflow: hidden; margin: 2.5rem 0;
         }
-        .btn-register:hover { background: linear-gradient(135deg, #0062cc, #003d7a); transform: scale(1.02); box-shadow: 0 25px 35px -8px #007bff; }
+        .dash-section-header {
+            background: linear-gradient(135deg, #001f4e 0%, #003b7a 50%, #005bb5 100%);
+            padding: 1.8rem 2rem; display: flex; align-items: center;
+            justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+        }
+        .dash-section-header .dash-title { color: white; }
+        .dash-section-header .dash-title h3 {
+            font-size: 1.5rem; font-weight: 800; margin: 0; letter-spacing: -0.3px;
+        }
+        .dash-section-header .dash-title p {
+            font-size: 0.9rem; opacity: 0.8; margin: 4px 0 0; font-weight: 400;
+        }
+        .btn-dash-import {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.4);
+            color: white; border-radius: 50px; padding: 10px 24px;
+            font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
+            backdrop-filter: blur(8px); white-space: nowrap;
+        }
+        .btn-dash-import:hover { background: rgba(255,255,255,0.28); transform: translateY(-1px); color: white; }
+        #xlsxImport { display: none; }
 
-        /* Modal adaptado */
-        .modal-xl { max-width: 1300px; }
-        .modal-content { border: none; border-radius: 28px; }
-        .modal-header { background: linear-gradient(135deg, #007bff, #0056b3); color: white; border-radius: 28px 28px 0 0; padding: 1.5rem 2rem; }
-        .modal-header .btn-close { filter: brightness(0) invert(1); opacity: 0.8; }
-        .modal-body { padding: 2rem; background-color: #f8f9fa; }
+        #dashImportStatus {
+            padding: 0.8rem 2rem; font-size: 0.9rem; font-weight: 600;
+            display: flex; align-items: center; gap: 8px;
+        }
+        #dashImportStatus.success { background: #ecfdf5; color: #065f46; }
+        #dashImportStatus.error { background: #fef2f2; color: #991b1b; }
+        #dashImportStatus.loading { background: #eff6ff; color: #1e40af; }
 
-        /* Cards internos originais */
-        .card { border: none; box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15); border-radius: 12px; }
-        .card-header { background: linear-gradient(135deg, #007bff, #0056b3); color: white; font-weight: 600; border-radius: 12px 12px 0 0; }
-        .btn-primary { background: linear-gradient(135deg, #007bff, #0056b3); border: none; font-weight: 500; }
-        .btn-primary:hover { background: linear-gradient(135deg, #0056b3, #003d82); transform: translateY(-2px); }
-        .form-label { font-weight: 600; color: #495057; }
+        .dash-filter-bar {
+            background: #f8fafc; border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 2rem; display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: flex-end;
+        }
+        .dash-filter-bar label { font-size: 0.78rem; font-weight: 700; color: #64748b; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px; display: block; }
+        .dash-filter-bar input[type="date"] {
+            border: 2px solid #e2e8f0; border-radius: 10px; padding: 8px 12px;
+            font-family: inherit; font-size: 0.9rem; color: #1e2d3d; background: white;
+        }
+        .btn-dash-filter {
+            background: var(--procon-blue); color: white; border: none; border-radius: 10px;
+            padding: 9px 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-dash-clear {
+            background: white; color: #64748b; border: 2px solid #e2e8f0; border-radius: 10px;
+            padding: 8px 18px; font-weight: 600; font-size: 0.9rem; cursor: pointer;
+        }
+        .btn-dash-preview {
+            background: #10b981; color: white; border: none; border-radius: 10px;
+            padding: 9px 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-dash-pdf {
+            background: linear-gradient(135deg, #1e2d3d, #0f172a); color: white; border: none;
+            border-radius: 10px; padding: 9px 20px; font-weight: 700; font-size: 0.9rem;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+        }
+
+        .dash-import-hint {
+            padding: 3rem 2rem; text-align: center; color: #94a3b8;
+        }
+        .dash-import-hint .hint-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.4; }
+        .dash-import-hint h5 { color: #64748b; font-weight: 700; }
+
+        #dashContent { padding: 1.5rem 2rem 2rem; }
+
+        /* KPIs */
+        .kpi-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem; margin-bottom: 2rem;
+        }
+        .kpi-card {
+            background: white; border-radius: 16px; padding: 1.2rem 1.4rem;
+            border: 1px solid #e2e8f0; position: relative; overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px -8px rgba(0,40,80,0.18); }
+        .kpi-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0;
+            height: 4px; background: var(--kpi-color, #007bff);
+        }
+        .kpi-icon {
+            width: 40px; height: 40px; border-radius: 12px;
+            background: var(--kpi-light, #eff6ff);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; color: var(--kpi-color, #007bff); margin-bottom: 0.8rem;
+        }
+        .kpi-value { font-size: 2rem; font-weight: 800; color: #1e2d3d; font-variant-numeric: tabular-nums; }
+        .kpi-label { font-size: 0.78rem; font-weight: 600; color: #64748b; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+        .kpi-sub { font-size: 0.8rem; color: #94a3b8; margin-top: 6px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .dash-section-title {
+            display: flex; align-items: center; gap: 12px;
+            font-size: 1rem; font-weight: 800; color: #1e2d3d;
+            text-transform: uppercase; letter-spacing: 1px; margin: 1.8rem 0 1rem;
+        }
+        .dash-section-title::after { content: ''; flex: 1; height: 2px; background: #e2e8f0; }
+
+        /* Categorias (perguntas) */
+        .category-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.2rem; margin-bottom: 2rem;
+        }
+        .cat-card {
+            background: white; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden;
+        }
+        .cat-card-header {
+            padding: 0.9rem 1.2rem; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+        .cat-name { font-weight: 700; font-size: 0.9rem; }
+        .cat-badge { font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.3px; }
+        .cat-card-body { padding: 1rem 1.2rem 0.8rem; }
+        .cat-stats { display: flex; gap: 1rem; margin-bottom: 1rem; }
+        .cat-stat { flex: 1; text-align: center; padding: 0.6rem 0.3rem; background: #f8fafc; border-radius: 10px; }
+        .cat-stat .cs-val { font-size: 1.3rem; font-weight: 800; }
+        .cat-stat .cs-lbl { font-size: 0.72rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.3px; }
+        .cat-chart-wrap { position: relative; height: 140px; }
+
+        /* Tabela de métricas */
+        .metrics-table-wrap { border-radius: 14px; overflow: auto; border: 1px solid #e2e8f0; }
+        .metrics-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 1000px; }
+        .metrics-table thead tr { background: #1e2d3d; color: white; }
+        .metrics-table thead th { padding: 10px 14px; font-weight: 700; font-size: 0.78rem; text-transform: uppercase; white-space: nowrap; }
+        .metrics-table tbody tr:nth-child(even) { background: #f8fafc; }
+        .metrics-table tbody td { padding: 9px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        .cat-pill { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
+        .pct-bar-wrap { display: flex; align-items: center; gap: 8px; }
+        .pct-bar-bg { flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; min-width: 80px; }
+        .pct-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+        .pct-text { font-size: 0.85rem; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 40px; text-align: right; }
+
+        /* Card de Localidades */
+        .location-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;
+        }
+        .location-table-wrap {
+            background: #f8fafc; border-radius: 16px; padding: 1rem; max-height: 300px; overflow-y: auto;
+        }
+        .location-table {
+            width: 100%; font-size: 0.9rem;
+        }
+        .location-table th { text-align: left; font-weight: 700; color: #1e2d3d; background: #e2e8f0; position: sticky; top: 0; padding: 8px; }
+        .location-table td { padding: 6px 8px; border-bottom: 1px solid #e2e8f0; }
+        .location-table tr:last-child td { border-bottom: none; }
+        .location-chart-wrap { background: white; border-radius: 16px; padding: 1rem; height: 300px; }
+
+        /* Toast */
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1100; }
+
+        /* PDF Preview */
         #pdfPreview { margin-top: 25px; }
         #pdfIframe { width: 100%; height: 680px; border: none; border-radius: 8px; }
-        .table th { background-color: #007bff; color: white; font-weight: 600; vertical-align: middle; }
-        .table td { vertical-align: middle; }
-
-        /* Filtro de datas */
-        .filter-bar {
-            background: #f1f5f9;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            align-items: flex-end;
-        }
-        .filter-item {
-            flex: 1 1 200px;
-        }
 
         @media (max-width: 768px) {
             .hero-card { padding: 1.5rem; }
             .logo-text h2 { font-size: 1.8rem; }
             .carousel-item { height: 250px; }
-            .btn-register { font-size: 1.2rem; padding: 12px 24px; }
-            .table { font-size: 0.9rem; }
+            .dash-section-header { flex-direction: column; align-items: flex-start; }
+            .btn-dash-pdf { margin-left: 0; }
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .location-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Print */
+        @media print {
+            @page { size: A4 landscape; margin: 10mm; }
+            body { background: white; font-size: 11px; }
+            .no-print, .hero-card, .carousel, .testimonial-card,
+            .dash-section-header, .dash-filter-bar, #pdfPreview, .btn-dash-preview, .btn-dash-pdf, .btn-dash-import,
+            .toast-container { display: none !important; }
+            .dash-section { box-shadow: none; border: none; margin: 0; }
+            #dashContent { padding: 0; }
         }
     </style>
 </head>
 <body>
-    <div class="container my-4">
-        <!-- CARD HERÓI com logomarca -->
-        <div class="hero-card">
-            <div class="logo-procon">
-                <div class="logo-icon"><i class="fas fa-scale-balanced"></i></div>
-                <div class="logo-text">
-                    <h2>PROCON-RJ</h2>
-                    <p>Salas do Consumidor Carioca • Defesa e Cidadania</p>
-                </div>
-            </div>
-            <div class="hero-stats">
-                <span class="stat-item"><i class="fas fa-check-circle"></i> +12 mil atendimentos</span>
-                <span class="stat-item"><i class="fas fa-star"></i> 94% de satisfação</span>
-                <span class="stat-item"><i class="fas fa-building"></i> 8 salas ativas</span>
+<div class="container my-4">
+
+    <!-- HERO CARD -->
+    <div class="hero-card">
+        <div class="logo-procon">
+            <div class="logo-icon"><i class="fas fa-scale-balanced"></i></div>
+            <div class="logo-text">
+                <h2>PROCON-RJ</h2>
+                <p>Salas do Consumidor Carioca • Defesa e Cidadania</p>
             </div>
         </div>
+        <div class="hero-stats">
+            <span class="stat-item"><i class="fas fa-check-circle"></i> +12 mil atendimentos</span>
+            <span class="stat-item"><i class="fas fa-star"></i> 94% de satisfação</span>
+            <span class="stat-item"><i class="fas fa-building"></i> 8 salas ativas</span>
+        </div>
+    </div>
 
-        <!-- CARROSSEL temático -->
-        <div id="carouselProcon" class="carousel slide mb-5" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselProcon" data-bs-slide-to="0" class="active"></button>
-                <button type="button" data-bs-target="#carouselProcon" data-bs-slide-to="1"></button>
-                <button type="button" data-bs-target="#carouselProcon" data-bs-slide-to="2"></button>
+    <!-- CARROSSEL -->
+    <div id="carouselProcon" class="carousel slide mb-5" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselProcon" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#carouselProcon" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#carouselProcon" data-bs-slide-to="2"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active" style="background-image: linear-gradient(120deg, #00337a, #001f4e), url('https://picsum.photos/id/1043/1400/400'); background-blend-mode: overlay;">
+                <div class="carousel-caption"><h5>Direitos garantidos</h5><p>Produto com defeito? Troca ou reembolso é seu direito (CDC art. 18).</p></div>
             </div>
-            <div class="carousel-inner">
-                <div class="carousel-item active" style="background-image: linear-gradient(120deg, #00337a, #001f4e), url('https://picsum.photos/id/1043/1400/400'); background-blend-mode: overlay;">
-                    <div class="carousel-caption"><h5>Direitos garantidos</h5><p>Produto com defeito? Troca ou reembolso é seu direito (CDC art. 18).</p></div>
-                </div>
-                <div class="carousel-item" style="background-image: linear-gradient(120deg, #1d5b3e, #0a2f1e), url('https://picsum.photos/id/20/1400/400'); background-blend-mode: overlay;">
-                    <div class="carousel-caption"><h5>Educação financeira</h5><p>Oficinas de consumo consciente e prevenção ao endividamento.</p></div>
-                </div>
-                <div class="carousel-item" style="background-image: linear-gradient(120deg, #a13d2f, #5e1e15), url('https://picsum.photos/id/26/1400/400'); background-blend-mode: overlay;">
-                    <div class="carousel-caption"><h5>Mediação de conflitos</h5><p>Resolução rápida e gratuita com a presença de fornecedores.</p></div>
-                </div>
+            <div class="carousel-item" style="background-image: linear-gradient(120deg, #1d5b3e, #0a2f1e), url('https://picsum.photos/id/20/1400/400'); background-blend-mode: overlay;">
+                <div class="carousel-caption"><h5>Educação financeira</h5><p>Oficinas de consumo consciente e prevenção ao endividamento.</p></div>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselProcon" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselProcon" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
-        </div>
-
-        <!-- DEPOIMENTOS -->
-        <div class="row g-4 mb-5">
-            <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">“Graças ao PROCON consegui cancelar um contrato abusivo e ainda fui reembolsado em dobro. Atendimento humano e eficiente.”</div><div class="author">— Marília C., Centro</div></div></div>
-            <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">“A sala do consumidor resolveu meu problema com a operadora em apenas 5 dias. Nunca imaginei que seria tão rápido.”</div><div class="author">— João P., Madureira</div></div></div>
-            <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">“O socioeducador me orientou sobre planejamento financeiro. Hoje sei usar o crédito sem medo. Transformador!”</div><div class="author">— Renata S., Bangu</div></div></div>
-        </div>
-
-        <!-- BOTÃO QUE ABRE O MODAL -->
-        <div class="text-center">
-            <button class="btn btn-primary btn-register" data-bs-toggle="modal" data-bs-target="#formModal">
-                <i class="fas fa-pen-to-square me-2"></i>Registrar Atividade / Reclamação
-            </button>
-        </div>
-
-        <!-- MODAL COM FORMULÁRIO (idêntico ao anterior) -->
-        <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="formModalLabel"><i class="fas fa-clipboard-list me-2"></i>Registro de Atividades, Colaboradores e Reclamações</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="activityForm">
-                            <!-- CAMPO DATA em primeiro lugar -->
-                            <div class="row g-3 mb-3">
-                                <div class="col-12">
-                                    <label class="form-label">Data do registro:</label>
-                                    <input type="date" class="form-control" name="date" id="recordDate" required>
-                                </div>
-                            </div>
-
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Coordenador Responsável:</label>
-                                    <select class="form-select" name="coordinator" id="coordinatorSelect" required>
-                                        <option value="">Selecione...</option>
-                                        <option>Coordenador Geral</option>
-                                        <option>Coordenador Operacional</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Colaborador Subordinado:</label>
-                                    <input type="text" class="form-control" name="subordinate" placeholder="Nome completo" required>
-                                </div>
-                            </div>
-
-                            <div class="row g-3 mt-2">
-                                <div class="col-md-4">
-                                    <label class="form-label">Categoria do Colaborador:</label>
-                                    <select class="form-select" name="category" required>
-                                        <option value="">Selecione...</option>
-                                        <option>Atendente (ASG)</option>
-                                        <option>Socioeducador</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Etapa da Atividade:</label>
-                                    <select class="form-select" name="stage" required>
-                                        <option value="">Selecione...</option>
-                                        <option>Recepção (Triagem, documentação, senha)</option>
-                                        <option>Primeira Parte (Oitiva, abertura de reclamação)</option>
-                                        <option>Segunda Parte (Análise de resposta)</option>
-                                        <option>Terceira Parte (Administrativo)</option>
-                                        <option>Acompanhamento / Relatórios</option>
-                                        <option>Mapeamento e Educação</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <!-- vazio -->
-                                </div>
-                            </div>
-
-                            <!-- Fornecedor e motivo -->
-                            <div class="row g-3 mt-2">
-                                <div class="col-md-6">
-                                    <label class="form-label">Fornecedor (Nome / CNPJ):</label>
-                                    <input type="text" class="form-control" name="supplier" placeholder="Ex: Magazine Luiza - 47.960.950/0001-21" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Motivo da Queixa (Categorizado):</label>
-                                    <select class="form-select" name="complaintReason" id="complaintReason" required>
-                                        <option value="">Selecione a categoria...</option>
-                                        <option>Não entrega do produto/serviço</option>
-                                        <option>Atraso na entrega</option>
-                                        <option>Produto com defeito / vício</option>
-                                        <option>Serviço não realizado</option>
-                                        <option>Cobrança indevida / duplicidade</option>
-                                        <option>Recusa de garantia ou troca</option>
-                                        <option>Publicidade enganosa</option>
-                                        <option>Cancelamento indevido de contrato</option>
-                                        <option>Problemas com reembolso</option>
-                                        <option>Outros (detalhe na descrição)</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Descrição com placeholder dinâmico -->
-                            <div class="mb-3 mt-3">
-                                <label class="form-label">Descrição Detalhada da Atividade (incluindo mediação de conflitos):</label>
-                                <textarea class="form-control" name="description" id="descriptionField" rows="3" placeholder="Descreva o atendimento, mediação, documentação verificada, etc." required></textarea>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Etapas Seguintes (destinação das queixas, prazos, etc.):</label>
-                                <input type="text" class="form-control" name="nextSteps" placeholder="Ex: Notificação enviada, prazo de 10 dias, audiência agendada" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Indicadores de Desempenho:</label>
-                                <input type="text" class="form-control" name="indicators" placeholder="Ex: Tempo médio: 18 min | Satisfação: Alta | 7 reclamações hoje" required>
-                            </div>
-
-                            <!-- Seção exclusiva para Coordenadores -->
-                            <div id="reportSection" class="border p-3 rounded bg-light mt-4" style="display: none;">
-                                <h6 class="mb-3 text-primary">Relatório do Coordenador</h6>
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Tipo de Relatório:</label>
-                                        <select class="form-select" name="reportType">
-                                            <option value="">Selecione...</option>
-                                            <option>Estatístico (Quantitativo)</option>
-                                            <option>Analítico (Qualitativo)</option>
-                                            <option>Ranking de Fornecedores</option>
-                                            <option>Outros</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="form-label">Conteúdo do Relatório:</label>
-                                        <textarea class="form-control" name="reportContent" rows="3" placeholder="Resultados, problemas identificados, soluções, metas cumpridas..."></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary w-100 mt-4 py-3">Registrar Atividade Completa</button>
-                        </form>
-                    </div>
-                </div>
+            <div class="carousel-item" style="background-image: linear-gradient(120deg, #a13d2f, #5e1e15), url('https://picsum.photos/id/26/1400/400'); background-blend-mode: overlay;">
+                <div class="carousel-caption"><h5>Mediação de conflitos</h5><p>Resolução rápida e gratuita com a presença de fornecedores.</p></div>
             </div>
         </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselProcon" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselProcon" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+    </div>
 
-        <!-- CARD DE REGISTROS COM BOTÃO DE RETRAÇÃO E FILTRO DE DATAS -->
-        <div class="card mb-4" id="recordsCard">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span>Registros Cadastrados</span>
-                <button class="btn btn-sm btn-light" id="toggleCardBtn" title="Recolher/Expandir card">
-                    <i class="fas fa-chevron-up" id="toggleIcon"></i>
-                </button>
+    <!-- DEPOIMENTOS -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">"Graças ao PROCON consegui cancelar um contrato abusivo e ainda fui reembolsado em dobro. Atendimento humano e eficiente."</div><div class="author">— Marília C., Centro</div></div></div>
+        <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">"A sala do consumidor resolveu meu problema com a operadora em apenas 5 dias. Nunca imaginei que seria tão rápido."</div><div class="author">— João P., Madureira</div></div></div>
+        <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">"O socioeducador me orientou sobre planejamento financeiro. Hoje sei usar o crédito sem medo. Transformador!"</div><div class="author">— Renata S., Bangu</div></div></div>
+    </div>
+
+    <!-- DASHBOARD PRINCIPAL -->
+    <div class="dash-section" id="dashSection">
+        <div class="dash-section-header">
+            <div class="dash-title">
+                <h3><i class="fas fa-chart-column me-2"></i>Painel de Indicadores de Atendimento</h3>
+                <p>Importe a planilha completa (abas: Lançamento Diário e Localidades)</p>
             </div>
-            <div class="card-body" id="recordsCardBody">
-                <!-- FILTRO DE DATAS -->
-                <div class="filter-bar">
-                    <div class="filter-item">
-                        <label class="form-label mb-1">Data inicial</label>
-                        <input type="date" class="form-control" id="filterStartDate">
-                    </div>
-                    <div class="filter-item">
-                        <label class="form-label mb-1">Data final</label>
-                        <input type="date" class="form-control" id="filterEndDate">
-                    </div>
-                    <div class="filter-item d-flex gap-2">
-                        <button class="btn btn-primary" id="applyFilterBtn"><i class="fas fa-filter"></i> Filtrar</button>
-                        <button class="btn btn-outline-secondary" id="clearFilterBtn"><i class="fas fa-times"></i> Limpar</button>
-                    </div>
-                </div>
+            <label for="xlsxImport" class="btn-dash-import no-print">
+                <i class="fas fa-file-excel"></i> Importar Planilha (.xlsx)
+            </label>
+            <input type="file" id="xlsxImport" accept=".xlsx,.xls">
+        </div>
 
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover" id="recordsTable">
-                        <thead>
-                            <tr>
-                                <th>Coordenador</th><th>Colaborador</th><th>Categoria</th><th>Etapa</th><th>Fornecedor</th>
-                                <th>Motivo da Queixa</th><th>Descrição</th><th>Etapas Seguintes</th><th>Indicadores</th>
-                                <th>Tipo Relatório</th><th>Conteúdo Relatório</th><th>Data</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
+        <!-- Status da importação -->
+        <div id="dashImportStatus" style="display:none"></div>
+
+        <!-- Filtros de data e botões PDF -->
+        <div class="dash-filter-bar no-print" id="dashFilterBar" style="display:none">
+            <div><label>Data inicial</label><input type="date" id="dashStart"></div>
+            <div><label>Data final</label><input type="date" id="dashEnd"></div>
+            <button class="btn-dash-filter" id="dashApplyFilter"><i class="fas fa-filter"></i> Filtrar</button>
+            <button class="btn-dash-clear" id="dashClearFilter"><i class="fas fa-times"></i> Limpar</button>
+            <button class="btn-dash-preview" id="previewPDFBtn"><i class="fas fa-eye"></i> Visualizar PDF</button>
+            <button class="btn-dash-pdf" id="exportPDFBtn"><i class="fas fa-file-pdf"></i> Exportar PDF A4</button>
+        </div>
+
+        <!-- Dica de importação -->
+        <div class="dash-import-hint" id="dashImportHint">
+            <div class="hint-icon"><i class="fas fa-table"></i></div>
+            <h5>Nenhum dado carregado</h5>
+            <p>Clique em <strong>"Importar Planilha"</strong> e selecione o arquivo <code>.xlsx</code> contendo as abas <code>Lançamento Diário</code> e <code>Localidades</code>.</p>
+        </div>
+
+        <!-- Conteúdo do dashboard -->
+        <div id="dashContent" style="display:none">
+            <div class="dash-section-title"><i class="fas fa-gauge-high" style="color:#007bff"></i> Indicadores-Chave do Período</div>
+            <div class="kpi-grid" id="kpiGrid"></div>
+
+            <!-- NOVO CARD: Visitas por Localidade -->
+            <div class="dash-section-title"><i class="fas fa-map-marker-alt" style="color:#f97316"></i> Visitas por Localidade</div>
+            <div class="location-grid" id="locationGrid">
+                <div class="location-table-wrap">
+                    <table class="location-table">
+                        <thead><tr><th>Localidade</th><th>Nº de Visitas</th></tr></thead>
+                        <tbody id="locationTableBody"></tbody>
                     </table>
                 </div>
+                <div class="location-chart-wrap">
+                    <canvas id="locationChart" height="280"></canvas>
+                </div>
             </div>
-        </div>
 
-        <!-- BOTÕES DE EXPORTAÇÃO -->
-        <div class="d-grid gap-3 d-md-flex justify-content-md-center mb-5">
-            <button id="previewBtn" class="btn btn-primary px-5" onclick="previewPDF()" disabled>Visualizar Relatório PDF</button>
-            <button id="downloadBtn" class="btn btn-primary px-5" onclick="downloadPDF()" disabled>Baixar Relatório PDF (A4 Paisagem)</button>
-            <button id="excelBtn" class="btn btn-primary px-5" onclick="exportExcel()" disabled>Exportar Planilha Excel</button>
-        </div>
+            <div class="dash-section-title"><i class="fas fa-layer-group" style="color:#8b5cf6"></i> Indicadores por Categoria</div>
+            <div class="category-grid" id="categoryGrid"></div>
 
-        <!-- PRÉ-VISUALIZAÇÃO PDF -->
-        <div id="pdfPreview" class="card" style="display: none;">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                Pré-visualização do PDF (A4 Horizontal)
-                <button class="btn btn-sm btn-light" onclick="document.getElementById('pdfPreview').style.display='none'">Fechar</button>
-            </div>
-            <div class="card-body p-0">
-                <iframe id="pdfIframe"></iframe>
+            <div class="dash-section-title"><i class="fas fa-table-list" style="color:#10b981"></i> Detalhamento por Pergunta</div>
+            <div class="metrics-table-wrap">
+                <table class="metrics-table" id="metricsTable">
+                    <thead><tr><th>ID</th><th>Categoria</th><th>Pergunta</th><th>Total SIM</th><th>Total NÃO</th><th>Total Resp.</th><th>% SIM</th><th>% NÃO</th></tr></thead>
+                    <tbody id="metricsTableBody"></tbody>
+                </table>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPTS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script>
-        (function() {
-            // ---------- DADOS ----------
-            let records = JSON.parse(localStorage.getItem('records')) || [];
+    <!-- PRÉ-VISUALIZAÇÃO DO PDF -->
+    <div id="pdfPreview" class="card no-print" style="display: none;">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            Pré-visualização do PDF (A4 Horizontal)
+            <button class="btn btn-sm btn-light" onclick="document.getElementById('pdfPreview').style.display='none'">Fechar</button>
+        </div>
+        <div class="card-body p-0">
+            <iframe id="pdfIframe" style="width:100%;height:680px;border:none;border-radius:8px;"></iframe>
+        </div>
+    </div>
 
-            // Elementos do formulário
-            const dateInput = document.getElementById('recordDate');
-            const coordinatorSelect = document.getElementById('coordinatorSelect');
-            const reportSection = document.getElementById('reportSection');
-            const form = document.getElementById('activityForm');
-            const complaintReason = document.getElementById('complaintReason');
-            const descriptionField = document.getElementById('descriptionField');
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast-container">
+        <div id="pdfToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="4000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-check-circle me-2"></i> PDF gerado! Role a página para baixo para visualizá-lo.
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
 
-            // Elementos do filtro
-            const filterStart = document.getElementById('filterStartDate');
-            const filterEnd = document.getElementById('filterEndDate');
-            const applyFilterBtn = document.getElementById('applyFilterBtn');
-            const clearFilterBtn = document.getElementById('clearFilterBtn');
-            let currentFilter = { start: '', end: '' };
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-            // Elementos do card collapsible
-            const toggleCardBtn = document.getElementById('toggleCardBtn');
-            const toggleIcon = document.getElementById('toggleIcon');
-            const cardBody = document.getElementById('recordsCardBody');
+<script>
+(function() {
+    // CONFIGURAÇÃO DAS PERGUNTAS (idêntica à planilha)
+    const QUESTIONS = [
+        { id:'G1', sim:4, label:'Dir. consumidor', full:'Conhece seus direitos em defesa do consumidor?', cat:'Geral' },
+        { id:'G2', sim:6, label:'CDC', full:'Conhece o Código de Defesa do Consumidor (CDC)?', cat:'Geral' },
+        { id:'G3', sim:8, label:'Secret. Consumidor', full:'Conhece a Secretaria Municipal de Defesa do Consumidor?', cat:'Geral' },
+        { id:'G4', sim:10, label:'Procon Carioca', full:'Conhece o Procon Municipal (Carioca)?', cat:'Geral' },
+        { id:'G5', sim:12, label:'Ajuda Procon', full:'Sabe como pedir ajuda ao Procon Carioca?', cat:'Geral' },
+        { id:'I1', sim:14, label:'Utiliza internet', full:'Utiliza internet?', cat:'Internet e Compras Online' },
+        { id:'I2', sim:16, label:'Compras online', full:'Faz compras pela internet?', cat:'Internet e Compras Online' },
+        { id:'I3', sim:18, label:'Prob. compras online', full:'Já teve problema com compras online?', cat:'Internet e Compras Online' },
+        { id:'F1', sim:20, label:'Conta bancária', full:'Possui conta bancária?', cat:'Educação Financeira' },
+        { id:'F2', sim:22, label:'Prob. banco', full:'Já teve problema com o banco?', cat:'Educação Financeira' },
+        { id:'F3', sim:24, label:'Consignado', full:'Possui empréstimo consignado?', cat:'Educação Financeira' },
+        { id:'F4', sim:26, label:'Salário cobre desp.', full:'Seu salário cobre suas despesas?', cat:'Educação Financeira' },
+        { id:'F5', sim:28, label:'Dívida mensal', full:'Fica dívida para o mês seguinte?', cat:'Educação Financeira' },
+        { id:'F6', sim:30, label:'Outras dívidas', full:'Possui outras dívidas?', cat:'Educação Financeira' },
+        { id:'F7', sim:32, label:'SCPC/Serasa', full:'Possui nome no SCPC, Serasa ou semelhantes?', cat:'Educação Financeira' },
+        { id:'F8', sim:34, label:'Renegociar dívidas', full:'Possui interesse em renegociar dívidas?', cat:'Educação Financeira' },
+        { id:'T1', sim:36, label:'Prob. telefonia', full:'Já teve problema com telefonia?', cat:'Telefonia e Internet' },
+        { id:'T2', sim:38, label:'Prob. internet', full:'Já teve problema com internet?', cat:'Telefonia e Internet' },
+        { id:'S1', sim:40, label:'Água e luz', full:'Possui fornecimento de água e luz?', cat:'Serviços Essenciais' },
+        { id:'S2', sim:42, label:'Prob. água', full:'Já teve problema com a fornecedora de água?', cat:'Serviços Essenciais' },
+        { id:'S3', sim:44, label:'Prob. luz', full:'Já teve problema com a prestadora de luz?', cat:'Serviços Essenciais' },
+        { id:'GA1', sim:46, label:'Gás encanado', full:'Possui gás encanado?', cat:'Gás' },
+        { id:'GA2', sim:48, label:'Gás botijão', full:'Possui gás botijão?', cat:'Gás' },
+        { id:'GA3', sim:50, label:'Prob. gás', full:'Teve algum problema com gás?', cat:'Gás' },
+    ];
 
-            // ---------- FUNÇÃO AUXILIAR: FORMATAR DATA PT-BR ----------
-            function formatDateBR(isoDate) {
-                if (!isoDate) return '';
-                const [year, month, day] = isoDate.split('-');
-                return `${day}/${month}/${year}`;
-            }
+    const CATEGORIES = ['Geral','Internet e Compras Online','Educação Financeira','Telefonia e Internet','Serviços Essenciais','Gás'];
+    const CAT_CFG = {
+        'Geral': { color:'#3b82f6', light:'#eff6ff', icon:'fas fa-gavel' },
+        'Internet e Compras Online': { color:'#8b5cf6', light:'#f5f3ff', icon:'fas fa-globe' },
+        'Educação Financeira': { color:'#10b981', light:'#ecfdf5', icon:'fas fa-piggy-bank' },
+        'Telefonia e Internet': { color:'#f59e0b', light:'#fffbeb', icon:'fas fa-phone' },
+        'Serviços Essenciais': { color:'#06b6d4', light:'#ecfeff', icon:'fas fa-bolt' },
+        'Gás': { color:'#ef4444', light:'#fef2f2', icon:'fas fa-fire' },
+    };
 
-            // ---------- ATUALIZAR PLACEHOLDER DA DESCRIÇÃO ----------
-            const reasonPlaceholders = {
-                "Não entrega do produto/serviço": "Descreva: produto/serviço não entregue, data prometida, tentativas de contato, protocolos...",
-                "Atraso na entrega": "Informe o prazo estipulado, quantos dias de atraso, comunicação do fornecedor, prejuízos...",
-                "Produto com defeito / vício": "Detalhe o defeito, nota fiscal, se acionou garantia, resposta do fornecedor...",
-                "Serviço não realizado": "Descreva o serviço contratado, data agendada, comprovantes, tentativas de solução...",
-                "Cobrança indevida / duplicidade": "Explique a cobrança, valores, datas, se já contestou, faturas em anexo...",
-                "Recusa de garantia ou troca": "Relate o produto, defeito, argumento da recusa, documentos apresentados...",
-                "Publicidade enganosa": "Descreva a propaganda, onde viu, diferença entre oferta e realidade, prejuízos...",
-                "Cancelamento indevido de contrato": "Informe serviço contratado, data do cancelamento, multas indevidas, comunicações...",
-                "Problemas com reembolso": "Valor devido, prazo não cumprido, forma de pagamento, tentativas de contato...",
-                "Outros (detalhe na descrição)": "Descreva detalhadamente o ocorrido, documentação disponível, conduta do fornecedor..."
-            };
+    let rawData = [];               // dados da aba Lançamento Diário
+    let locations = [];             // lista de localidades da aba Localidades
+    let chartInst = {};             // instâncias Chart.js (para os gráficos de categoria)
+    let locationChart = null;       // instância do gráfico de localidades
+    let dashFilter = { start: '', end: '' };
 
-            function updateDescriptionPlaceholder() {
-                const selected = complaintReason.value;
-                if (selected && reasonPlaceholders[selected]) {
-                    descriptionField.placeholder = reasonPlaceholders[selected];
-                } else {
-                    descriptionField.placeholder = "Descreva o atendimento, mediação, documentação verificada, etc.";
+    // Elementos DOM
+    const importHint = document.getElementById('dashImportHint');
+    const dashContent = document.getElementById('dashContent');
+    const filterBar = document.getElementById('dashFilterBar');
+    const importStatus = document.getElementById('dashImportStatus');
+    const xlsxInput = document.getElementById('xlsxImport');
+    const locationTableBody = document.getElementById('locationTableBody');
+    const locationCanvas = document.getElementById('locationChart');
+
+    // Toast (Bootstrap)
+    const toastEl = document.getElementById('pdfToast');
+    const toast = new bootstrap.Toast(toastEl, { autohide: true, delay: 4000 });
+
+    // ------------------------------------------------------------------
+    // UTILITÁRIOS
+    function rowDateToISO(val) {
+        if (!val) return null;
+        if (val instanceof Date) {
+            const d = new Date(val.getTime() - val.getTimezoneOffset() * 60000);
+            return d.toISOString().split('T')[0];
+        }
+        if (typeof val === 'number') {
+            const d = new Date((val - 25569) * 86400 * 1000);
+            const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+            return local.toISOString().split('T')[0];
+        }
+        if (typeof val === 'string') return val.substring(0, 10);
+        return null;
+    }
+
+    function showStatus(msg, type) {
+        importStatus.style.display = 'flex';
+        importStatus.className = type;
+        importStatus.innerHTML = msg;
+    }
+
+    // ------------------------------------------------------------------
+    // IMPORTAÇÃO DA PLANILHA (agora lê também a aba Localidades)
+    xlsxInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        showStatus('<i class="fas fa-spinner fa-spin"></i>&nbsp; Processando planilha…', 'loading');
+
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            try {
+                const wb = XLSX.read(ev.target.result, { type: 'binary', cellDates: true });
+
+                // 1. Ler aba "Lançamento Diário"
+                const sheetNameLanc = wb.SheetNames.find(n => n.toLowerCase().includes('lan') && n.toLowerCase().includes('rio')) || wb.SheetNames[0];
+                const wsLanc = wb.Sheets[sheetNameLanc];
+                const rowsLanc = XLSX.utils.sheet_to_json(wsLanc, { header: 1, defval: 0 });
+
+                const newData = [];
+                for (let i = 4; i < rowsLanc.length; i++) { // a partir da linha 5 (índice 4)
+                    const row = rowsLanc[i];
+                    if (!row || !row[0]) continue;
+                    const date = rowDateToISO(row[0]);
+                    if (!date) continue;
+                    const local = row[1] || '';
+                    const educator = row[2] || '';
+                    const fichas = Number(row[3]) || 0;
+                    const vals = row.slice(0, 52);
+                    newData.push({ date, local, educator, fichas, vals });
                 }
-            }
-            complaintReason.addEventListener('change', updateDescriptionPlaceholder);
 
-            // ---------- CONTROLE DA SEÇÃO DE RELATÓRIO (COORDENADOR) ----------
-            coordinatorSelect.addEventListener('change', () => {
-                reportSection.style.display = coordinatorSelect.value ? 'block' : 'none';
-            });
+                if (newData.length === 0) {
+                    showStatus('<i class="fas fa-exclamation-circle"></i>&nbsp; Nenhum dado encontrado na aba Lançamento Diário.', 'error');
+                    return;
+                }
 
-            // ---------- LÓGICA: DATA DIFERENTE DO ÚLTIMO REGISTRO LIMPA CAMPOS ----------
-            function clearAllFieldsExceptDate() {
-                const elements = form.elements;
-                for (let el of elements) {
-                    if (el.name && el.name !== 'date' && el.type !== 'submit') {
-                        if (el.tagName === 'SELECT') el.selectedIndex = 0;
-                        else if (el.type === 'textarea' || el.type === 'text' || el.type === 'input') el.value = '';
+                // 2. Ler aba "Localidades"
+                const sheetNameLoc = wb.SheetNames.find(n => n.toLowerCase().includes('localidade'));
+                let locs = [];
+                if (sheetNameLoc) {
+                    const wsLoc = wb.Sheets[sheetNameLoc];
+                    const rowsLoc = XLSX.utils.sheet_to_json(wsLoc, { header: 1, defval: '' });
+                    // A lista começa na linha 3 (índice 2) com os nomes das localidades na coluna A
+                    for (let i = 2; i < rowsLoc.length; i++) {
+                        const nome = rowsLoc[i]?.[0];
+                        if (nome && typeof nome === 'string' && nome.trim() !== '') {
+                            locs.push(nome.trim());
+                        }
                     }
                 }
-                reportSection.style.display = 'none';
-                descriptionField.placeholder = "Descreva o atendimento, mediação, documentação verificada, etc.";
-            }
 
-            dateInput.addEventListener('change', function() {
-                if (records.length > 0) {
-                    const lastRecord = records[records.length - 1];
-                    const lastDate = lastRecord.date;
-                    const currentDate = this.value;
-                    if (currentDate && lastDate && currentDate !== lastDate) {
-                        clearAllFieldsExceptDate();
-                    }
+                // Fallback: se não encontrar localidades, usar valores únicos da coluna 'local' dos dados
+                if (locs.length === 0) {
+                    const uniqueLocs = [...new Set(newData.map(d => d.local).filter(l => l && l.trim() !== ''))];
+                    locs = uniqueLocs.sort();
+                }
+
+                rawData = newData;
+                locations = locs;
+
+                // Define intervalo de datas para os filtros
+                const dates = rawData.map(r => r.date).sort();
+                document.getElementById('dashStart').value = dates[0];
+                document.getElementById('dashEnd').value = dates[dates.length - 1];
+                dashFilter = { start: dates[0], end: dates[dates.length - 1] };
+
+                // Oculta hint, mostra filtros e dashboard
+                importHint.style.display = 'none';
+                filterBar.style.display = 'flex';
+                dashContent.style.display = 'block';
+                showStatus(`<i class="fas fa-check-circle"></i>&nbsp; <strong>${newData.length}</strong> dia(s) importado(s) e <strong>${locs.length}</strong> localidades carregadas.`, 'success');
+
+                renderDashboard();
+            } catch (err) {
+                showStatus('<i class="fas fa-times-circle"></i>&nbsp; Erro ao ler o arquivo: ' + err.message, 'error');
+                console.error(err);
+            }
+        };
+        reader.readAsBinaryString(file);
+        this.value = '';
+    });
+
+    // ------------------------------------------------------------------
+    // FILTROS
+    document.getElementById('dashApplyFilter').addEventListener('click', () => {
+        dashFilter.start = document.getElementById('dashStart').value;
+        dashFilter.end = document.getElementById('dashEnd').value;
+        renderDashboard();
+    });
+    document.getElementById('dashClearFilter').addEventListener('click', () => {
+        if (!rawData.length) return;
+        const dates = rawData.map(r => r.date).sort();
+        document.getElementById('dashStart').value = dates[0];
+        document.getElementById('dashEnd').value = dates[dates.length - 1];
+        dashFilter = { start: dates[0], end: dates[dates.length - 1] };
+        renderDashboard();
+    });
+
+    // ------------------------------------------------------------------
+    // CÁLCULO DAS MÉTRICAS (mesmo do código anterior)
+    function computeMetrics() {
+        const filtered = rawData.filter(r => {
+            if (dashFilter.start && r.date < dashFilter.start) return false;
+            if (dashFilter.end && r.date > dashFilter.end) return false;
+            return true;
+        });
+
+        const totalFichas = filtered.reduce((s, r) => s + (r.fichas || 0), 0);
+        const totalSessoes = filtered.length;
+        const avgFichas = totalSessoes ? totalFichas / totalSessoes : 0;
+
+        const qMetrics = QUESTIONS.map(q => {
+            const simTotal = filtered.reduce((s, r) => s + ((r.vals && r.vals[q.sim]) || 0), 0);
+            const naoTotal = filtered.reduce((s, r) => s + ((r.vals && r.vals[q.sim + 1]) || 0), 0);
+            const total = simTotal + naoTotal;
+            const pctSim = total ? simTotal / total : 0;
+            const pctNao = total ? naoTotal / total : 0;
+            return { ...q, simTotal, naoTotal, total, pctSim, pctNao };
+        });
+
+        const sorted = qMetrics.filter(q => q.total > 0);
+        const maxSim = sorted.reduce((a, b) => b.pctSim > a.pctSim ? b : a, sorted[0] || {});
+        const maxNao = sorted.reduce((a, b) => b.pctNao > a.pctNao ? b : a, sorted[0] || {});
+
+        const catMetrics = {};
+        CATEGORIES.forEach(cat => {
+            const qs = qMetrics.filter(q => q.cat === cat);
+            const catSim = qs.reduce((s, q) => s + q.simTotal, 0);
+            const catNao = qs.reduce((s, q) => s + q.naoTotal, 0);
+            const catTot = catSim + catNao;
+            const avgPctSim = qs.length ? qs.reduce((s, q) => s + q.pctSim, 0) / qs.length : 0;
+            catMetrics[cat] = { simTotal: catSim, naoTotal: catNao, total: catTot, avgPctSim };
+        });
+
+        const totalSimGeral = qMetrics.reduce((s, q) => s + q.simTotal, 0);
+        const totalNaoGeral = qMetrics.reduce((s, q) => s + q.naoTotal, 0);
+
+        return { filtered, totalFichas, totalSessoes, avgFichas, qMetrics, catMetrics, maxSim, maxNao, totalSimGeral, totalNaoGeral };
+    }
+
+    // ------------------------------------------------------------------
+    // NOVA FUNÇÃO: calcular visitas por localidade (considerando filtro de data)
+    function computeVisitsByLocation() {
+        const filtered = rawData.filter(r => {
+            if (dashFilter.start && r.date < dashFilter.start) return false;
+            if (dashFilter.end && r.date > dashFilter.end) return false;
+            return true;
+        });
+
+        // Mapa de contagem
+        const countMap = {};
+        filtered.forEach(r => {
+            const loc = r.local ? r.local.trim() : '';
+            if (loc !== '') {
+                countMap[loc] = (countMap[loc] || 0) + 1;
+            }
+        });
+
+        // Ordenar pelas localidades da lista (se existir)
+        let result = [];
+        if (locations.length > 0) {
+            result = locations.map(loc => ({ local: loc, visits: countMap[loc] || 0 }));
+        } else {
+            // Fallback: ordenar por nome
+            result = Object.keys(countMap).map(loc => ({ local: loc, visits: countMap[loc] })).sort((a,b) => a.local.localeCompare(b.local));
+        }
+
+        return result;
+    }
+
+    // Renderizar o card de localidades
+    function renderLocationCard() {
+        const visits = computeVisitsByLocation();
+
+        // Preencher tabela
+        locationTableBody.innerHTML = visits.map(v => `<tr><td>${v.local}</td><td><strong>${v.visits}</strong></td></tr>`).join('');
+
+        // Atualizar gráfico
+        if (locationChart) locationChart.destroy();
+        const ctx = locationCanvas.getContext('2d');
+        locationChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: visits.map(v => v.local.length > 20 ? v.local.substring(0,18)+'…' : v.local),
+                datasets: [{
+                    label: 'Número de visitas',
+                    data: visits.map(v => v.visits),
+                    backgroundColor: '#f97316',
+                    borderColor: '#ea580c',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: ctx => `${ctx.raw} visita(s)` } }
+                },
+                scales: {
+                    y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                }
+            }
+        });
+    }
+
+    // ------------------------------------------------------------------
+    // RENDERIZAÇÃO DO DASHBOARD (incluindo localidades)
+    function renderDashboard() {
+        if (!rawData.length) {
+            dashContent.style.display = 'none';
+            filterBar.style.display = 'none';
+            importHint.style.display = 'block';
+            return;
+        }
+        const m = computeMetrics();
+        renderKPIs(m);
+        renderCategoryGrid(m);
+        renderMetricsTable(m);
+        renderLocationCard();  // novo card
+    }
+
+    function renderKPIs(m) {
+        const grid = document.getElementById('kpiGrid');
+        const kpis = [
+            { icon: 'fas fa-clipboard-check', color: '#007bff', light: '#eff6ff', value: m.totalFichas.toLocaleString(), label: 'Fichas Preenchidas', sub: 'no período filtrado' },
+            { icon: 'fas fa-calendar-day', color: '#8b5cf6', light: '#f5f3ff', value: m.totalSessoes.toLocaleString(), label: 'Sessões Realizadas', sub: 'dias com lançamentos' },
+            { icon: 'fas fa-chart-line', color: '#10b981', light: '#ecfdf5', value: m.avgFichas.toFixed(1), label: 'Média Fichas/Dia', sub: 'fichas por sessão' },
+            { icon: 'fas fa-thumbs-up', color: '#f59e0b', light: '#fffbeb', value: m.maxSim && m.maxSim.pctSim ? (m.maxSim.pctSim * 100).toFixed(1) + '%' : '—', label: 'Maior % SIM', sub: m.maxSim ? m.maxSim.label : '' },
+            { icon: 'fas fa-thumbs-down', color: '#ef4444', light: '#fef2f2', value: m.maxNao && m.maxNao.pctNao ? (m.maxNao.pctNao * 100).toFixed(1) + '%' : '—', label: 'Maior % NÃO', sub: m.maxNao ? m.maxNao.label : '' },
+        ];
+        grid.innerHTML = kpis.map(k => `
+            <div class="kpi-card" style="--kpi-color:${k.color};--kpi-light:${k.light}">
+                <div class="kpi-icon"><i class="${k.icon}"></i></div>
+                <div class="kpi-value">${k.value}</div>
+                <div class="kpi-label">${k.label}</div>
+                <div class="kpi-sub">${k.sub}</div>
+            </div>`).join('');
+    }
+
+    function renderCategoryGrid(m) {
+        Object.values(chartInst).forEach(c => { try { c.destroy(); } catch(e) { } });
+        chartInst = {};
+        const grid = document.getElementById('categoryGrid');
+        grid.innerHTML = CATEGORIES.map(cat => {
+            const cfg = CAT_CFG[cat];
+            const cm = m.catMetrics[cat];
+            const qs = m.qMetrics.filter(q => q.cat === cat);
+            return `
+            <div class="cat-card">
+                <div class="cat-card-header" style="background:${cfg.light}">
+                    <div class="cat-name" style="color:${cfg.color}"><i class="${cfg.icon} me-2"></i>${cat}</div>
+                    <span class="cat-badge" style="background:${cfg.color}20;color:${cfg.color}">${qs.length} perguntas</span>
+                </div>
+                <div class="cat-card-body">
+                    <div class="cat-stats">
+                        <div class="cat-stat"><div class="cs-val" style="color:${cfg.color}">${cm.simTotal.toLocaleString()}</div><div class="cs-lbl">Total SIM</div></div>
+                        <div class="cat-stat"><div class="cs-val" style="color:#94a3b8">${cm.naoTotal.toLocaleString()}</div><div class="cs-lbl">Total NÃO</div></div>
+                        <div class="cat-stat"><div class="cs-val" style="color:${cfg.color}">${(cm.avgPctSim * 100).toFixed(1)}%</div><div class="cs-lbl">% SIM médio</div></div>
+                    </div>
+                    <div class="cat-chart-wrap">
+                        <canvas id="chart-${cat.replace(/\s+/g, '_')}" height="140"></canvas>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+
+        CATEGORIES.forEach(cat => {
+            const cfg = CAT_CFG[cat];
+            const qs = m.qMetrics.filter(q => q.cat === cat);
+            const canvas = document.getElementById(`chart-${cat.replace(/\s+/g, '_')}`);
+            if (!canvas) return;
+            chartInst[cat] = new Chart(canvas, {
+                type: 'bar',
+                data: {
+                    labels: qs.map(q => q.label),
+                    datasets: [
+                        { label: '% SIM', data: qs.map(q => parseFloat((q.pctSim * 100).toFixed(1))), backgroundColor: cfg.color + 'cc', borderColor: cfg.color, borderWidth: 1, borderRadius: 4 },
+                        { label: '% NÃO', data: qs.map(q => parseFloat((q.pctNao * 100).toFixed(1))), backgroundColor: '#94a3b840', borderColor: '#94a3b8', borderWidth: 1, borderRadius: 4 }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { max: 100, ticks: { callback: v => v + '%' } }, y: { ticks: { font: { size: 10 } } } }
                 }
             });
+        });
+    }
 
-            // ---------- RENDERIZAR TABELA COM FILTRO ----------
-            function getFilteredRecords() {
-                if (!currentFilter.start && !currentFilter.end) return records;
-                return records.filter(r => {
-                    if (!r.date) return false;
-                    const recordDate = r.date; // ISO
-                    if (currentFilter.start && recordDate < currentFilter.start) return false;
-                    if (currentFilter.end && recordDate > currentFilter.end) return false;
-                    return true;
-                });
-            }
+    function renderMetricsTable(m) {
+        const tbody = document.getElementById('metricsTableBody');
+        tbody.innerHTML = '';
+        let prevCat = null;
+        m.qMetrics.forEach(q => {
+            const cfg = CAT_CFG[q.cat];
+            const showCatPill = q.cat !== prevCat;
+            prevCat = q.cat;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong style="color:${cfg.color};font-family:'DM Mono',monospace">${q.id}</strong></td>
+                <td>${showCatPill ? `<span class="cat-pill" style="background:${cfg.color}20;color:${cfg.color}">${q.cat}</span>` : ''}</td>
+                <td title="${q.full}">${q.full}</td>
+                <td style="text-align:right;font-weight:700;color:#10b981">${q.simTotal}</td>
+                <td style="text-align:right;font-weight:700;color:#ef4444">${q.naoTotal}</td>
+                <td style="text-align:right;color:#64748b">${q.total}</td>
+                <td><div class="pct-bar-wrap"><div class="pct-bar-bg"><div class="pct-bar-fill" style="width:${(q.pctSim * 100).toFixed(1)}%;background:${cfg.color}"></div></div><span class="pct-text">${(q.pctSim * 100).toFixed(1)}%</span></div></td>
+                <td><div class="pct-bar-wrap"><div class="pct-bar-bg"><div class="pct-bar-fill" style="width:${(q.pctNao * 100).toFixed(1)}%;background:#94a3b8"></div></div><span class="pct-text">${(q.pctNao * 100).toFixed(1)}%</span></div></td>
+            `;
+            tbody.appendChild(tr);
+        });
 
-            function renderTable() {
-                const filtered = getFilteredRecords();
-                const tbody = document.querySelector('#recordsTable tbody');
-                tbody.innerHTML = '';
-                filtered.forEach(record => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${record.coordinator || ''}</td>
-                        <td>${record.subordinate || ''}</td>
-                        <td>${record.category || ''}</td>
-                        <td>${record.stage || ''}</td>
-                        <td>${record.supplier || ''}</td>
-                        <td>${record.complaintReason || ''}</td>
-                        <td>${record.description || ''}</td>
-                        <td>${record.nextSteps || ''}</td>
-                        <td>${record.indicators || ''}</td>
-                        <td>${record.reportType || 'N/A'}</td>
-                        <td>${record.reportContent || 'N/A'}</td>
-                        <td>${formatDateBR(record.date) || ''}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-                // Botões de exportação permanecem baseados em todos os registros (não filtrados)
-                toggleExportButtons();
-            }
+        const simG = m.totalSimGeral, naoG = m.totalNaoGeral, totG = simG + naoG;
+        const totalRow = document.createElement('tr');
+        totalRow.className = 'total-row';
+        totalRow.innerHTML = `
+            <td colspan="3" style="font-weight:800">TOTAL GERAL</td>
+            <td style="text-align:right">${simG}</td>
+            <td style="text-align:right">${naoG}</td>
+            <td style="text-align:right">${totG}</td>
+            <td colspan="2">SIM: ${totG ? ((simG / totG) * 100).toFixed(1) : 0}% &nbsp;|&nbsp; NÃO: ${totG ? ((naoG / totG) * 100).toFixed(1) : 0}%</td>
+        `;
+        tbody.appendChild(totalRow);
+    }
 
-            function toggleExportButtons() {
-                const hasRecords = records.length > 0;
-                document.getElementById('previewBtn').disabled = !hasRecords;
-                document.getElementById('downloadBtn').disabled = !hasRecords;
-                document.getElementById('excelBtn').disabled = !hasRecords;
-            }
-
-            // Filtro
-            applyFilterBtn.addEventListener('click', () => {
-                currentFilter.start = filterStart.value;
-                currentFilter.end = filterEnd.value;
-                renderTable();
-            });
-
-            clearFilterBtn.addEventListener('click', () => {
-                filterStart.value = '';
-                filterEnd.value = '';
-                currentFilter.start = '';
-                currentFilter.end = '';
-                renderTable();
-            });
-
-            // ---------- SUBMIT DO FORM ----------
-            form.addEventListener('submit', e => {
-                e.preventDefault();
-                const formData = new FormData(form);
-                const newRecord = {
-                    coordinator: formData.get('coordinator'),
-                    subordinate: formData.get('subordinate'),
-                    category: formData.get('category'),
-                    stage: formData.get('stage'),
-                    supplier: formData.get('supplier'),
-                    complaintReason: formData.get('complaintReason'),
-                    description: formData.get('description'),
-                    nextSteps: formData.get('nextSteps'),
-                    indicators: formData.get('indicators'),
-                    reportType: formData.get('reportType') || null,
-                    reportContent: formData.get('reportContent') || null,
-                    date: formData.get('date')
-                };
-                records.push(newRecord);
-                localStorage.setItem('records', JSON.stringify(records));
-                // Limpar filtro ao adicionar novo registro (opcional)
-                clearFilterBtn.click();
-                renderTable();
-                form.reset();
-                reportSection.style.display = 'none';
-                const modal = bootstrap.Modal.getInstance(document.getElementById('formModal'));
-                if (modal) modal.hide();
-            });
-
-            // ---------- FUNÇÕES PDF (COM QUEBRA DE LINHA E ESTILO) ----------
-            function generatePDF() {
+    // ------------------------------------------------------------------
+    // FUNÇÕES DE PDF (pré‑visualização e download) com toast
+    function generatePDF() {
+        return new Promise((resolve, reject) => {
+            const content = document.getElementById('dashContent');
+            html2canvas(content, { scale: 2, backgroundColor: '#ffffff', logging: false }).then(canvas => {
                 const { jsPDF } = window.jspdf;
-                const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+                const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+                const PW = 297, PH = 210, margin = 10;
+                const usableW = PW - margin * 2;
+                const imgW = canvas.width, imgH = canvas.height;
+                const ratio = usableW / imgW;
+                const scaledH = imgH * ratio;
 
-                doc.setFillColor(0, 123, 255);
-                doc.rect(0, 0, 297, 22, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(18);
-                doc.setFont('helvetica', 'bold');
-                doc.text('SALAS DO CONSUMIDOR CARIOCA', 20, 15);
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'normal');
-                doc.text('Procon Carioca • Relatório de Atividades e Reclamações', 180, 15);
+                pdf.setFillColor(0, 40, 86);
+                pdf.rect(0, 0, PW, 12, 'F');
+                pdf.setTextColor(255, 255, 255);
+                pdf.setFontSize(11);
+                pdf.setFont('helvetica', 'bold');
+                pdf.text('PROCON-RJ · Painel de Indicadores de Atendimento', margin, 8.5);
+                pdf.setFont('helvetica', 'normal');
+                pdf.setFontSize(8);
+                const now = new Date().toLocaleDateString('pt-BR');
+                const periodo = (dashFilter.start && dashFilter.end) ? `Período: ${dashFilter.start.split('-').reverse().join('/')} a ${dashFilter.end.split('-').reverse().join('/')}` : '';
+                pdf.text(`${periodo}   |   Gerado em ${now}`, PW - margin, 8.5, { align: 'right' });
 
-                let y = 32;
-                const pageWidth = 297;
-                const marginLeft = 20;
-                const marginRight = 20;
-                const maxWidth = pageWidth - marginLeft - marginRight;
+                let yOffset = 0;
+                let page = 1;
+                const pageContentH = PH - 12 - margin;
+                const pixPerPage = (pageContentH / usableW) * imgW;
 
-                records.forEach((record, i) => {
-                    if (y > 190) {
-                        doc.addPage();
-                        y = 25;
-                        doc.setFillColor(0, 123, 255);
-                        doc.rect(0, 0, 297, 22, 'F');
-                        doc.setTextColor(255, 255, 255);
-                        doc.setFontSize(18);
-                        doc.setFont('helvetica', 'bold');
-                        doc.text('SALAS DO CONSUMIDOR CARIOCA', 20, 15);
-                        doc.setFontSize(10);
-                        doc.setFont('helvetica', 'normal');
-                        doc.text('Procon Carioca • Relatório de Atividades e Reclamações', 180, 15);
-                        y = 32;
-                    }
-
-                    doc.setDrawColor(200);
-                    doc.setLineWidth(0.2);
-                    doc.line(marginLeft, y-3, marginLeft+maxWidth, y-3);
-
-                    doc.setTextColor(0, 0, 0);
-                    doc.setFontSize(11);
-                    doc.setFont('helvetica', 'bold');
-                    const dataBR = formatDateBR(record.date);
-                    doc.text(`${i+1}. ${dataBR} — ${record.coordinator}`, marginLeft, y);
-                    y += 6;
-
-                    doc.setFont('helvetica', 'normal');
-                    function addField(label, value, indent = 0) {
-                        if (!value) return;
-                        const lines = doc.splitTextToSize(`${label}: ${value}`, maxWidth - indent);
-                        doc.text(lines, marginLeft + indent, y);
-                        y += (lines.length * 5) + 1;
-                    }
-
-                    addField('Colaborador', `${record.subordinate} (${record.category})`);
-                    addField('Etapa', record.stage);
-                    addField('Fornecedor', record.supplier);
-                    addField('Motivo', record.complaintReason);
-                    addField('Descrição', record.description);
-                    addField('Etapas Seguintes', record.nextSteps);
-                    addField('Indicadores', record.indicators);
-                    if (record.reportType) {
-                        addField('Relatório', `${record.reportType} - ${record.reportContent || ''}`);
-                    }
-
-                    y += 4;
-                });
-
-                return doc;
-            }
-
-            window.previewPDF = function() {
-                if (records.length === 0) return;
-                const doc = generatePDF();
-                const pdfBlob = doc.output('blob');
-                const url = URL.createObjectURL(pdfBlob);
-                document.getElementById('pdfIframe').src = url;
-                document.getElementById('pdfPreview').style.display = 'block';
-            };
-
-            window.downloadPDF = function() {
-                if (records.length === 0) return;
-                const doc = generatePDF();
-                doc.save('Relatorio_Salas_Consumidor_Carioca.pdf');
-            };
-
-            // ---------- EXPORTAÇÃO EXCEL COM CABEÇALHO PT-BR E ORDINAL ----------
-            window.exportExcel = function() {
-                if (records.length === 0) return;
-
-                const dataForExcel = records.map((rec, idx) => {
-                    return {
-                        'Nº': idx + 1,
-                        'Data': formatDateBR(rec.date),
-                        'Coordenador': rec.coordinator || '',
-                        'Colaborador': rec.subordinate || '',
-                        'Categoria': rec.category || '',
-                        'Etapa': rec.stage || '',
-                        'Fornecedor': rec.supplier || '',
-                        'Motivo da Queixa': rec.complaintReason || '',
-                        'Descrição': rec.description || '',
-                        'Etapas Seguintes': rec.nextSteps || '',
-                        'Indicadores': rec.indicators || '',
-                        'Tipo Relatório': rec.reportType || 'N/A',
-                        'Conteúdo Relatório': rec.reportContent || 'N/A'
-                    };
-                });
-
-                const ws = XLSX.utils.json_to_sheet(dataForExcel);
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, 'Atividades_Reclamacoes');
-                XLSX.writeFile(wb, 'Relatorio_Salas_Consumidor.xlsx');
-            };
-
-            // ---------- CARD COLLAPSIBLE ----------
-            let cardExpanded = true;
-            toggleCardBtn.addEventListener('click', () => {
-                if (cardExpanded) {
-                    cardBody.style.display = 'none';
-                    toggleIcon.className = 'fas fa-chevron-down';
-                } else {
-                    cardBody.style.display = 'block';
-                    toggleIcon.className = 'fas fa-chevron-up';
+                while (yOffset < imgH) {
+                    if (page > 1) pdf.addPage();
+                    const sliceH = Math.min(pixPerPage, imgH - yOffset);
+                    const tmpCanvas = document.createElement('canvas');
+                    tmpCanvas.width = imgW;
+                    tmpCanvas.height = sliceH;
+                    const ctx = tmpCanvas.getContext('2d');
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, imgW, sliceH);
+                    ctx.drawImage(canvas, 0, -yOffset);
+                    const sliceData = tmpCanvas.toDataURL('image/jpeg', 0.95);
+                    pdf.addImage(sliceData, 'JPEG', margin, 13, usableW, sliceH * ratio);
+                    yOffset += pixPerPage;
+                    page++;
                 }
-                cardExpanded = !cardExpanded;
-            });
+                resolve(pdf);
+            }).catch(reject);
+        });
+    }
 
-            // Inicializa
-            renderTable();
+    document.getElementById('previewPDFBtn').addEventListener('click', async () => {
+        if (!rawData.length) return alert('Nenhum dado importado.');
+        try {
+            const pdf = await generatePDF();
+            const blob = pdf.output('blob');
+            const url = URL.createObjectURL(blob);
+            document.getElementById('pdfIframe').src = url;
+            document.getElementById('pdfPreview').style.display = 'block';
+            // Mostrar toast
+            toast.show();
+        } catch (err) {
+            alert('Erro ao gerar PDF: ' + err.message);
+        }
+    });
 
-            document.getElementById('formModal').addEventListener('hidden.bs.modal', function () {
-                if (!coordinatorSelect.value) reportSection.style.display = 'none';
-            });
-        })();
-    </script>
+    document.getElementById('exportPDFBtn').addEventListener('click', async () => {
+        if (!rawData.length) return alert('Nenhum dado importado.');
+        try {
+            const pdf = await generatePDF();
+            pdf.save('Dashboard_PROCON.pdf');
+        } catch (err) {
+            alert('Erro ao exportar PDF: ' + err.message);
+        }
+    });
+})();
+</script>
 </body>
 </html>
