@@ -25,8 +25,13 @@
             color: #1e2d3d;
             font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
             font-size: 15px;
+            overflow-x: hidden;
         }
-        .container { max-width: 1400px; }
+        .container {
+            max-width: 1400px;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
 
         /* ── HERO CARD ── */
         .hero-card {
@@ -115,26 +120,17 @@
         .dash-filter-bar input[type="date"] {
             border: 2px solid #e2e8f0; border-radius: 10px; padding: 8px 12px;
             font-family: inherit; font-size: 0.9rem; color: #1e2d3d; background: white;
+            width: 100%;
         }
-        .btn-dash-filter {
-            background: var(--procon-blue); color: white; border: none; border-radius: 10px;
-            padding: 9px 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer;
-            display: inline-flex; align-items: center; gap: 6px;
-        }
-        .btn-dash-clear {
-            background: white; color: #64748b; border: 2px solid #e2e8f0; border-radius: 10px;
-            padding: 8px 18px; font-weight: 600; font-size: 0.9rem; cursor: pointer;
-        }
-        .btn-dash-preview {
-            background: #10b981; color: white; border: none; border-radius: 10px;
-            padding: 9px 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer;
-            display: inline-flex; align-items: center; gap: 6px;
-        }
-        .btn-dash-pdf {
-            background: linear-gradient(135deg, #1e2d3d, #0f172a); color: white; border: none;
-            border-radius: 10px; padding: 9px 20px; font-weight: 700; font-size: 0.9rem;
+        .btn-dash-filter, .btn-dash-clear, .btn-dash-preview, .btn-dash-pdf {
+            border-radius: 10px; padding: 9px 16px; font-weight: 700; font-size: 0.85rem;
             cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+            white-space: nowrap;
         }
+        .btn-dash-filter { background: var(--procon-blue); color: white; border: none; }
+        .btn-dash-clear { background: white; color: #64748b; border: 2px solid #e2e8f0; }
+        .btn-dash-preview { background: #10b981; color: white; border: none; }
+        .btn-dash-pdf { background: linear-gradient(135deg, #1e2d3d, #0f172a); color: white; border: none; }
 
         .dash-import-hint {
             padding: 3rem 2rem; text-align: center; color: #94a3b8;
@@ -146,11 +142,11 @@
 
         /* KPIs */
         .kpi-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 1rem; margin-bottom: 2rem;
         }
         .kpi-card {
-            background: white; border-radius: 16px; padding: 1.2rem 1.4rem;
+            background: white; border-radius: 16px; padding: 1.2rem 1rem;
             border: 1px solid #e2e8f0; position: relative; overflow: hidden;
             transition: transform 0.2s, box-shadow 0.2s;
         }
@@ -165,9 +161,9 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 1.1rem; color: var(--kpi-color, #007bff); margin-bottom: 0.8rem;
         }
-        .kpi-value { font-size: 2rem; font-weight: 800; color: #1e2d3d; font-variant-numeric: tabular-nums; }
-        .kpi-label { font-size: 0.78rem; font-weight: 600; color: #64748b; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
-        .kpi-sub { font-size: 0.8rem; color: #94a3b8; margin-top: 6px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .kpi-value { font-size: 1.8rem; font-weight: 800; color: #1e2d3d; font-variant-numeric: tabular-nums; line-height: 1.2; }
+        .kpi-label { font-size: 0.7rem; font-weight: 600; color: #64748b; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+        .kpi-sub { font-size: 0.7rem; color: #94a3b8; margin-top: 6px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .dash-section-title {
             display: flex; align-items: center; gap: 12px;
@@ -176,9 +172,9 @@
         }
         .dash-section-title::after { content: ''; flex: 1; height: 2px; background: #e2e8f0; }
 
-        /* Categorias (perguntas) */
+        /* Categorias (perguntas) - responsivo */
         .category-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.2rem; margin-bottom: 2rem;
         }
         .cat-card {
@@ -186,36 +182,48 @@
         }
         .cat-card-header {
             padding: 0.9rem 1.2rem; display: flex; align-items: center; justify-content: space-between;
-            border-bottom: 1px solid rgba(0,0,0,0.06);
+            border-bottom: 1px solid rgba(0,0,0,0.06); flex-wrap: wrap; gap: 0.5rem;
         }
         .cat-name { font-weight: 700; font-size: 0.9rem; }
-        .cat-badge { font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.3px; }
+        .cat-badge { font-size: 0.7rem; font-weight: 700; padding: 3px 8px; border-radius: 20px; letter-spacing: 0.3px; }
         .cat-card-body { padding: 1rem 1.2rem 0.8rem; }
-        .cat-stats { display: flex; gap: 1rem; margin-bottom: 1rem; }
-        .cat-stat { flex: 1; text-align: center; padding: 0.6rem 0.3rem; background: #f8fafc; border-radius: 10px; }
-        .cat-stat .cs-val { font-size: 1.3rem; font-weight: 800; }
-        .cat-stat .cs-lbl { font-size: 0.72rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.3px; }
+        .cat-stats {
+            display: flex; gap: 0.8rem; margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .cat-stat {
+            flex: 1 1 80px; text-align: center; padding: 0.5rem 0.2rem; background: #f8fafc; border-radius: 10px;
+            min-width: 70px;
+        }
+        .cat-stat .cs-val { font-size: 1.2rem; font-weight: 800; word-break: break-word; }
+        .cat-stat .cs-lbl { font-size: 0.65rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.2px; }
         .cat-chart-wrap { position: relative; height: 140px; }
 
-        /* Tabela de métricas */
-        .metrics-table-wrap { border-radius: 14px; overflow: auto; border: 1px solid #e2e8f0; }
-        .metrics-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 1000px; }
+        /* Tabela de métricas - rolagem horizontal em mobile */
+        .metrics-table-wrap {
+            border-radius: 14px; overflow-x: auto; border: 1px solid #e2e8f0;
+            -webkit-overflow-scrolling: touch;
+        }
+        .metrics-table {
+            width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 900px;
+        }
         .metrics-table thead tr { background: #1e2d3d; color: white; }
-        .metrics-table thead th { padding: 10px 14px; font-weight: 700; font-size: 0.78rem; text-transform: uppercase; white-space: nowrap; }
+        .metrics-table thead th { padding: 10px 12px; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; white-space: nowrap; }
         .metrics-table tbody tr:nth-child(even) { background: #f8fafc; }
-        .metrics-table tbody td { padding: 9px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-        .cat-pill { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
-        .pct-bar-wrap { display: flex; align-items: center; gap: 8px; }
-        .pct-bar-bg { flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; min-width: 80px; }
-        .pct-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
-        .pct-text { font-size: 0.85rem; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 40px; text-align: right; }
+        .metrics-table tbody td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        .cat-pill { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; }
+        .pct-bar-wrap { display: flex; align-items: center; gap: 6px; }
+        .pct-bar-bg { flex: 1; height: 6px; background: #e2e8f0; border-radius: 4px; overflow: hidden; min-width: 60px; }
+        .pct-bar-fill { height: 100%; border-radius: 4px; }
+        .pct-text { font-size: 0.8rem; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 40px; text-align: right; }
 
-        /* Card de Localidades */
+        /* Card de Localidades - responsivo */
         .location-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;
         }
         .location-table-wrap {
-            background: #f8fafc; border-radius: 16px; padding: 1rem; max-height: 300px; overflow-y: auto;
+            background: #f8fafc; border-radius: 16px; padding: 1rem; max-height: 320px; overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .location-table {
             width: 100%; font-size: 0.9rem;
@@ -226,20 +234,62 @@
         .location-chart-wrap { background: white; border-radius: 16px; padding: 1rem; height: 300px; }
 
         /* Toast */
-        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1100; }
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1100; max-width: 90%; }
 
         /* PDF Preview */
         #pdfPreview { margin-top: 25px; }
         #pdfIframe { width: 100%; height: 680px; border: none; border-radius: 8px; }
 
+        /* ── MEDIA QUERIES ESPECÍFICAS PARA MOBILE ── */
         @media (max-width: 768px) {
             .hero-card { padding: 1.5rem; }
+            .logo-icon { font-size: 3.5rem; }
             .logo-text h2 { font-size: 1.8rem; }
-            .carousel-item { height: 250px; }
+            .logo-text p { font-size: 1rem; }
+            .hero-stats { gap: 1rem; }
+            .stat-item { padding: 0.5rem 1.2rem; font-size: 0.9rem; }
+
+            .carousel-item { height: 200px; }
+            .carousel-caption { padding: 1rem; }
+            .carousel-caption h5 { font-size: 1.4rem; }
+            .carousel-caption p { font-size: 0.9rem; }
+
             .dash-section-header { flex-direction: column; align-items: flex-start; }
-            .btn-dash-pdf { margin-left: 0; }
-            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .dash-section-header .dash-title h3 { font-size: 1.3rem; }
+            .btn-dash-import { width: 100%; justify-content: center; }
+
+            .dash-filter-bar { flex-direction: column; align-items: stretch; }
+            .dash-filter-bar > div { width: 100%; }
+            .dash-filter-bar .btn-dash-filter,
+            .dash-filter-bar .btn-dash-clear,
+            .dash-filter-bar .btn-dash-preview,
+            .dash-filter-bar .btn-dash-pdf {
+                width: 100%;
+                justify-content: center;
+                margin-left: 0 !important;
+            }
+
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .kpi-card { padding: 1rem 0.8rem; }
+            .kpi-value { font-size: 1.5rem; }
+            .kpi-label { font-size: 0.65rem; }
+            .kpi-sub { font-size: 0.65rem; }
+
+            .category-grid { grid-template-columns: 1fr; }
+            .cat-stats { flex-wrap: wrap; }
+            .cat-stat { flex: 1 1 calc(50% - 0.4rem); min-width: 0; }
+
             .location-grid { grid-template-columns: 1fr; }
+            .location-chart-wrap { height: 250px; }
+
+            #pdfIframe { height: 400px; }
+
+            .toast-container { top: 10px; right: 10px; }
+        }
+
+        @media (max-width: 480px) {
+            .kpi-grid { grid-template-columns: 1fr; }
+            .cat-stat { flex: 1 1 100%; }
         }
 
         /* Print */
@@ -340,7 +390,7 @@
             <div class="dash-section-title"><i class="fas fa-gauge-high" style="color:#007bff"></i> Indicadores-Chave do Período</div>
             <div class="kpi-grid" id="kpiGrid"></div>
 
-            <!-- NOVO CARD: Visitas por Localidade -->
+            <!-- Card: Visitas por Localidade -->
             <div class="dash-section-title"><i class="fas fa-map-marker-alt" style="color:#f97316"></i> Visitas por Localidade</div>
             <div class="location-grid" id="locationGrid">
                 <div class="location-table-wrap">
@@ -578,7 +628,7 @@
     });
 
     // ------------------------------------------------------------------
-    // CÁLCULO DAS MÉTRICAS (mesmo do código anterior)
+    // CÁLCULO DAS MÉTRICAS
     function computeMetrics() {
         const filtered = rawData.filter(r => {
             if (dashFilter.start && r.date < dashFilter.start) return false;
@@ -698,7 +748,7 @@
         renderKPIs(m);
         renderCategoryGrid(m);
         renderMetricsTable(m);
-        renderLocationCard();  // novo card
+        renderLocationCard();
     }
 
     function renderKPIs(m) {
