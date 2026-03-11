@@ -23,7 +23,7 @@
         }
         .container { max-width: 1400px; padding-left: 12px; padding-right: 12px; }
 
-        /* Hero Card */
+        /* ── HERO CARD (original restaurado) ── */
         .hero-card {
             background: linear-gradient(145deg, #003b7a, #002856);
             border: none; border-radius: 28px;
@@ -45,9 +45,28 @@
         }
         .stat-item i { margin-right: 8px; }
 
-        /* Carousel e depoimentos mantidos iguais ... (omitido por brevidade, mas presente no código final) */
+        /* ── CARROSSEL (original restaurado) ── */
+        .carousel-inner { border-radius: 24px; overflow: hidden; box-shadow: 0 20px 30px -5px rgba(0,0,0,0.2); }
+        .carousel-item { height: 320px; background-size: cover; background-position: center; }
+        .carousel-caption {
+            background: linear-gradient(0deg, rgba(0,30,60,0.85), transparent);
+            border-radius: 20px; bottom: 0; left: 0; right: 0; padding: 2rem; text-align: left;
+        }
+        .carousel-caption h5 { font-size: 2rem; font-weight: 700; }
+        .carousel-caption p { font-size: 1.2rem; opacity: 0.9; }
 
-        /* Dashboard */
+        /* ── DEPOIMENTOS (original restaurado) ── */
+        .testimonial-card {
+            background: white; border-radius: 32px; padding: 2rem;
+            box-shadow: 0 15px 30px -12px rgba(0,50,100,0.2);
+            height: 100%; border: 1px solid rgba(0,123,255,0.1); transition: all 0.2s;
+        }
+        .testimonial-card:hover { transform: translateY(-5px); box-shadow: 0 25px 40px -12px #007bff40; }
+        .testimonial-card i { color: var(--procon-blue); font-size: 2rem; margin-bottom: 1rem; }
+        .testimonial-card .quote { font-size: 1.1rem; font-style: italic; margin-bottom: 1.5rem; }
+        .testimonial-card .author { font-weight: 700; color: var(--procon-navy); }
+
+        /* ── DASHBOARD (mantido com as correções) ── */
         .dash-section {
             background: white; border-radius: 24px;
             box-shadow: 0 8px 30px -8px rgba(0,40,80,0.15);
@@ -207,12 +226,16 @@
         #pdfPreview { margin-top: 25px; }
         #pdfIframe { width: 100%; height: 680px; border: none; border-radius: 8px; }
 
-        /* Media Queries */
+        /* Media Queries (ajustadas para preservar carrossel e depoimentos) */
         @media (max-width: 768px) {
             .hero-card { padding: 1.5rem; }
             .logo-icon { font-size: 3.5rem; }
             .logo-text h2 { font-size: 1.8rem; }
             .carousel-item { height: 200px; }
+            .carousel-caption { padding: 1rem; }
+            .carousel-caption h5 { font-size: 1.4rem; }
+            .carousel-caption p { font-size: 0.9rem; }
+
             .dash-section-header { flex-direction: column; align-items: flex-start; }
             .btn-dash-import { width: 100%; justify-content: center; }
             .dash-filter-bar { flex-direction: column; align-items: stretch; }
@@ -239,7 +262,7 @@
 </head>
 <body>
 <div class="container my-4">
-    <!-- HERO CARD (preservado) -->
+    <!-- HERO CARD (original) -->
     <div class="hero-card">
         <div class="logo-procon">
             <div class="logo-icon"><i class="fas fa-scale-balanced"></i></div>
@@ -255,7 +278,7 @@
         </div>
     </div>
 
-    <!-- CARROSSEL (preservado) -->
+    <!-- CARROSSEL (original) -->
     <div id="carouselProcon" class="carousel slide mb-5" data-bs-ride="carousel">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#carouselProcon" data-bs-slide-to="0" class="active"></button>
@@ -277,14 +300,14 @@
         <button class="carousel-control-next" type="button" data-bs-target="#carouselProcon" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
     </div>
 
-    <!-- DEPOIMENTOS (preservado) -->
+    <!-- DEPOIMENTOS (original) -->
     <div class="row g-4 mb-5">
         <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">"Graças ao PROCON consegui cancelar um contrato abusivo e ainda fui reembolsado em dobro. Atendimento humano e eficiente."</div><div class="author">— Marília C., Centro</div></div></div>
         <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">"A sala do consumidor resolveu meu problema com a operadora em apenas 5 dias. Nunca imaginei que seria tão rápido."</div><div class="author">— João P., Madureira</div></div></div>
         <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">"O socioeducador me orientou sobre planejamento financeiro. Hoje sei usar o crédito sem medo. Transformador!"</div><div class="author">— Renata S., Bangu</div></div></div>
     </div>
 
-    <!-- DASHBOARD PRINCIPAL -->
+    <!-- DASHBOARD PRINCIPAL (com as correções de números e centralização) -->
     <div class="dash-section" id="dashSection">
         <div class="dash-section-header">
             <div class="dash-title">
