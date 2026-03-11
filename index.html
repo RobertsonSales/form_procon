@@ -23,7 +23,7 @@
         }
         .container { max-width: 1400px; padding-left: 12px; padding-right: 12px; }
 
-        /* ── HERO CARD (original restaurado) ── */
+        /* ── HERO CARD ── */
         .hero-card {
             background: linear-gradient(145deg, #003b7a, #002856);
             border: none; border-radius: 28px;
@@ -45,7 +45,7 @@
         }
         .stat-item i { margin-right: 8px; }
 
-        /* ── CARROSSEL (original restaurado) ── */
+        /* ── CARROSSEL ── */
         .carousel-inner { border-radius: 24px; overflow: hidden; box-shadow: 0 20px 30px -5px rgba(0,0,0,0.2); }
         .carousel-item { height: 320px; background-size: cover; background-position: center; }
         .carousel-caption {
@@ -55,7 +55,7 @@
         .carousel-caption h5 { font-size: 2rem; font-weight: 700; }
         .carousel-caption p { font-size: 1.2rem; opacity: 0.9; }
 
-        /* ── DEPOIMENTOS (original restaurado) ── */
+        /* ── DEPOIMENTOS ── */
         .testimonial-card {
             background: white; border-radius: 32px; padding: 2rem;
             box-shadow: 0 15px 30px -12px rgba(0,50,100,0.2);
@@ -66,7 +66,7 @@
         .testimonial-card .quote { font-size: 1.1rem; font-style: italic; margin-bottom: 1.5rem; }
         .testimonial-card .author { font-weight: 700; color: var(--procon-navy); }
 
-        /* ── DASHBOARD (mantido com as correções) ── */
+        /* ── DASHBOARD ── */
         .dash-section {
             background: white; border-radius: 24px;
             box-shadow: 0 8px 30px -8px rgba(0,40,80,0.15);
@@ -207,7 +207,7 @@
         .pct-bar-fill { height: 100%; border-radius: 4px; }
         .pct-text { font-size: 0.8rem; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 40px; text-align: right; }
 
-        /* Localidades */
+        /* Localidades (com coluna extra de fichas) */
         .location-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;
         }
@@ -217,8 +217,13 @@
         .location-table {
             width: 100%; font-size: 0.9rem;
         }
-        .location-table th { text-align: left; font-weight: 700; color: #1e2d3d; background: #e2e8f0; position: sticky; top: 0; padding: 8px; }
+        .location-table th {
+            text-align: left; font-weight: 700; color: #1e2d3d; background: #e2e8f0;
+            position: sticky; top: 0; padding: 8px;
+        }
         .location-table td { padding: 6px 8px; border-bottom: 1px solid #e2e8f0; }
+        .location-table td:last-child { font-weight: 700; color: #0f172a; }
+        .location-table tr:last-child td { border-bottom: none; }
         .location-chart-wrap { background: white; border-radius: 16px; padding: 1rem; height: 300px; }
 
         /* Toast e PDF */
@@ -226,7 +231,7 @@
         #pdfPreview { margin-top: 25px; }
         #pdfIframe { width: 100%; height: 680px; border: none; border-radius: 8px; }
 
-        /* Media Queries (ajustadas para preservar carrossel e depoimentos) */
+        /* Media Queries */
         @media (max-width: 768px) {
             .hero-card { padding: 1.5rem; }
             .logo-icon { font-size: 3.5rem; }
@@ -262,7 +267,7 @@
 </head>
 <body>
 <div class="container my-4">
-    <!-- HERO CARD (original) -->
+    <!-- HERO CARD -->
     <div class="hero-card">
         <div class="logo-procon">
             <div class="logo-icon"><i class="fas fa-scale-balanced"></i></div>
@@ -278,7 +283,7 @@
         </div>
     </div>
 
-    <!-- CARROSSEL (original) -->
+    <!-- CARROSSEL -->
     <div id="carouselProcon" class="carousel slide mb-5" data-bs-ride="carousel">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#carouselProcon" data-bs-slide-to="0" class="active"></button>
@@ -300,14 +305,14 @@
         <button class="carousel-control-next" type="button" data-bs-target="#carouselProcon" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
     </div>
 
-    <!-- DEPOIMENTOS (original) -->
+    <!-- DEPOIMENTOS -->
     <div class="row g-4 mb-5">
         <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">"Graças ao PROCON consegui cancelar um contrato abusivo e ainda fui reembolsado em dobro. Atendimento humano e eficiente."</div><div class="author">— Marília C., Centro</div></div></div>
         <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">"A sala do consumidor resolveu meu problema com a operadora em apenas 5 dias. Nunca imaginei que seria tão rápido."</div><div class="author">— João P., Madureira</div></div></div>
         <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">"O socioeducador me orientou sobre planejamento financeiro. Hoje sei usar o crédito sem medo. Transformador!"</div><div class="author">— Renata S., Bangu</div></div></div>
     </div>
 
-    <!-- DASHBOARD PRINCIPAL (com as correções de números e centralização) -->
+    <!-- DASHBOARD PRINCIPAL -->
     <div class="dash-section" id="dashSection">
         <div class="dash-section-header">
             <div class="dash-title">
@@ -345,12 +350,12 @@
             <div class="dash-section-title"><i class="fas fa-gauge-high" style="color:#007bff"></i> Indicadores-Chave do Período</div>
             <div class="kpi-grid" id="kpiGrid"></div>
 
-            <!-- Card: Visitas por Localidade -->
-            <div class="dash-section-title"><i class="fas fa-map-marker-alt" style="color:#f97316"></i> Visitas por Localidade</div>
+            <!-- Card: Visitas por Localidade (agora com total de fichas) -->
+            <div class="dash-section-title"><i class="fas fa-map-marker-alt" style="color:#f97316"></i> Visitas e Fichas por Localidade</div>
             <div class="location-grid" id="locationGrid">
                 <div class="location-table-wrap">
                     <table class="location-table">
-                        <thead><tr><th>Localidade</th><th>Nº de Visitas</th></tr></thead>
+                        <thead><tr><th>Localidade</th><th>Nº de Visitas</th><th>Total de Fichas</th></tr></thead>
                         <tbody id="locationTableBody"></tbody>
                     </table>
                 </div>
@@ -638,22 +643,31 @@
         return { filtered, totalFichas, totalSessoes, avgFichas, qMetrics, catMetrics, maxSim, maxNao, totalSimGeral, totalNaoGeral };
     }
 
-    // Visitas por localidade
-    function computeVisitsByLocation() {
+    // Visitas por localidade + total de fichas
+    function computeVisitsAndFichasByLocation() {
         const filtered = rawData.filter(r => {
             if (dashFilter.start && r.date < dashFilter.start) return false;
             if (dashFilter.end && r.date > dashFilter.end) return false;
             return true;
         });
-        const countMap = {};
+        const map = {}; // { local: { visits:0, fichas:0 } }
         filtered.forEach(r => {
             const loc = r.local;
-            if (loc) countMap[loc] = (countMap[loc] || 0) + 1;
+            if (loc) {
+                if (!map[loc]) map[loc] = { visits: 0, fichas: 0 };
+                map[loc].visits += 1;
+                map[loc].fichas += r.fichas || 0;
+            }
         });
         if (locations.length) {
-            return locations.map(loc => ({ local: loc, visits: countMap[loc] || 0 }));
+            return locations.map(loc => ({
+                local: loc,
+                visits: map[loc]?.visits || 0,
+                fichas: map[loc]?.fichas || 0
+            }));
         } else {
-            return Object.keys(countMap).map(loc => ({ local: loc, visits: countMap[loc] })).sort((a,b) => a.local.localeCompare(b.local));
+            return Object.keys(map).map(loc => ({ local: loc, visits: map[loc].visits, fichas: map[loc].fichas }))
+                .sort((a,b) => a.local.localeCompare(b.local));
         }
     }
 
@@ -778,17 +792,17 @@
     }
 
     function renderLocationCard() {
-        const visits = computeVisitsByLocation();
-        locationTableBody.innerHTML = visits.map(v => `<tr><td>${v.local}</td><td><strong>${v.visits}</strong></td></tr>`).join('');
+        const data = computeVisitsAndFichasByLocation();
+        locationTableBody.innerHTML = data.map(v => `<tr><td>${v.local}</td><td>${v.visits}</td><td>${v.fichas.toLocaleString('pt-BR')}</td></tr>`).join('');
         if (locationChart) locationChart.destroy();
         const ctx = locationCanvas.getContext('2d');
         locationChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: visits.map(v => v.local.length > 20 ? v.local.substring(0,18)+'…' : v.local),
+                labels: data.map(v => v.local.length > 20 ? v.local.substring(0,18)+'…' : v.local),
                 datasets: [{
                     label: 'Número de visitas',
-                    data: visits.map(v => v.visits),
+                    data: data.map(v => v.visits),
                     backgroundColor: '#f97316',
                     borderColor: '#ea580c',
                     borderWidth: 1
