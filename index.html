@@ -112,7 +112,7 @@
             font-family: inherit; font-size: 0.9rem; color: #1e2d3d; background: white;
             width: 100%;
         }
-        .btn-dash-filter, .btn-dash-clear, .btn-dash-preview, .btn-dash-pdf {
+        .btn-dash-filter, .btn-dash-clear, .btn-dash-preview, .btn-dash-pdf, .btn-dash-perf {
             border-radius: 10px; padding: 9px 16px; font-weight: 700; font-size: 0.85rem;
             cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
             white-space: nowrap;
@@ -121,6 +121,13 @@
         .btn-dash-clear { background: white; color: #64748b; border: 2px solid #e2e8f0; }
         .btn-dash-preview { background: #10b981; color: white; border: none; }
         .btn-dash-pdf { background: linear-gradient(135deg, #1e2d3d, #0f172a); color: white; border: none; }
+        .btn-dash-perf {
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+            color: white; border: none;
+            box-shadow: 0 4px 12px -2px rgba(124,58,237,0.45);
+            transition: all 0.2s;
+        }
+        .btn-dash-perf:hover { transform: translateY(-1px); box-shadow: 0 6px 18px -2px rgba(124,58,237,0.55); }
 
         .dash-import-hint {
             padding: 3rem 2rem; text-align: center; color: #94a3b8;
@@ -130,7 +137,7 @@
 
         #dashContent { padding: 1.5rem 2rem 2rem; }
 
-        /* KPIs - centralizados */
+        /* KPIs */
         .kpi-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 1rem; margin-bottom: 2rem;
@@ -187,7 +194,7 @@
         }
         .cat-stat .cs-val { font-size: 1.2rem; font-weight: 800; word-break: break-word; }
         .cat-stat .cs-lbl { font-size: 0.65rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.2px; }
-        .cat-chart-wrap { position: relative; height: 140px; }
+        .cat-chart-wrap { position: relative; height: 200px; }
 
         /* Tabela de métricas */
         .metrics-table-wrap {
@@ -207,7 +214,7 @@
         .pct-bar-fill { height: 100%; border-radius: 4px; }
         .pct-text { font-size: 0.8rem; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 40px; text-align: right; }
 
-        /* Localidades (com coluna extra de fichas) */
+        /* Localidades */
         .location-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;
         }
@@ -217,21 +224,222 @@
         .location-table {
             width: 100%; font-size: 0.9rem;
         }
-        .location-table th {
-            text-align: left; font-weight: 700; color: #1e2d3d; background: #e2e8f0;
-            position: sticky; top: 0; padding: 8px;
-        }
+        .location-table th { text-align: left; font-weight: 700; color: #1e2d3d; background: #e2e8f0; position: sticky; top: 0; padding: 8px; }
         .location-table td { padding: 6px 8px; border-bottom: 1px solid #e2e8f0; }
-        .location-table td:last-child { font-weight: 700; color: #0f172a; }
-        .location-table tr:last-child td { border-bottom: none; }
-        .location-chart-wrap { background: white; border-radius: 16px; padding: 1rem; height: 300px; }
+        .location-chart-wrap { background: white; border-radius: 16px; padding: 1rem; height: 340px; }
 
         /* Toast e PDF */
         .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1100; max-width: 90%; }
         #pdfPreview { margin-top: 25px; }
         #pdfIframe { width: 100%; height: 680px; border: none; border-radius: 8px; }
 
-        /* Media Queries */
+        /* ══════════════════════════════════════════════════════════════
+           MODAL DE PERFORMANCE DOS AGENTES SOCIOEDUCADORES
+        ══════════════════════════════════════════════════════════════ */
+        #perfModal .modal-dialog {
+            max-width: 1100px;
+        }
+        #perfModal .modal-content {
+            border-radius: 20px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 30px 60px -10px rgba(0,0,0,0.35);
+        }
+        #perfModal .modal-header {
+            background: linear-gradient(135deg, #3b0e8c, #5b21b6, #7c3aed);
+            color: white;
+            padding: 1.5rem 2rem;
+            border: none;
+        }
+        #perfModal .modal-header .modal-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+        #perfModal .modal-header .btn-close {
+            filter: invert(1) brightness(2);
+            opacity: 0.85;
+        }
+        #perfModal .modal-body {
+            padding: 1.5rem 2rem;
+            background: #f8fafc;
+            max-height: 72vh;
+            overflow-y: auto;
+        }
+        #perfModal .modal-footer {
+            background: #f1f5f9;
+            border-top: 1px solid #e2e8f0;
+            padding: 1rem 2rem;
+            gap: 0.75rem;
+        }
+
+        /* Cabeçalho de resumo do modal */
+        .perf-summary-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            background: white;
+            border-radius: 16px;
+            padding: 1rem 1.5rem;
+            border: 1px solid #e2e8f0;
+            align-items: center;
+        }
+        .perf-summary-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 100px;
+        }
+        .perf-summary-item .psv { font-size: 1.6rem; font-weight: 800; color: #5b21b6; }
+        .perf-summary-item .psl { font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.3px; }
+
+        /* Cartão de agente */
+        .agent-card {
+            background: white;
+            border-radius: 18px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            transition: box-shadow 0.2s;
+        }
+        .agent-card:hover { box-shadow: 0 8px 24px -6px rgba(91,33,182,0.2); }
+        .agent-card-header {
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #3b0e8c18, #7c3aed10);
+            border-bottom: 1px solid #ede9fe;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .agent-avatar {
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.3rem; font-weight: 800;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px -2px rgba(124,58,237,0.4);
+        }
+        .agent-info { flex: 1; min-width: 0; }
+        .agent-name { font-size: 1.1rem; font-weight: 800; color: #1e2d3d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .agent-subtitle { font-size: 0.78rem; color: #64748b; margin-top: 2px; }
+        .agent-kpi-row {
+            display: flex; gap: 0.8rem; flex-wrap: wrap;
+        }
+        .agent-kpi {
+            background: white; border-radius: 12px; padding: 0.6rem 1rem;
+            border: 1px solid #ede9fe; text-align: center; min-width: 90px;
+        }
+        .agent-kpi .ak-val { font-size: 1.25rem; font-weight: 800; color: #5b21b6; }
+        .agent-kpi .ak-lbl { font-size: 0.65rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.2px; }
+
+        .agent-card-body { padding: 1.25rem 1.5rem; }
+
+        /* Layout 2 colunas dentro do card */
+        .agent-body-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+        @media (max-width: 700px) { .agent-body-grid { grid-template-columns: 1fr; } }
+
+        /* Seção de localidades do agente */
+        .agent-section-title {
+            font-size: 0.75rem; font-weight: 800; color: #64748b;
+            text-transform: uppercase; letter-spacing: 0.8px;
+            margin-bottom: 0.6rem;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .agent-loc-table {
+            width: 100%; font-size: 0.82rem; border-collapse: collapse;
+        }
+        .agent-loc-table th {
+            background: #f1f5f9; font-weight: 700; padding: 5px 8px;
+            font-size: 0.72rem; color: #475569; text-transform: uppercase;
+        }
+        .agent-loc-table td { padding: 5px 8px; border-bottom: 1px solid #f1f5f9; }
+        .agent-loc-table tr:last-child td { border-bottom: none; }
+        .loc-visits-bar {
+            display: flex; align-items: center; gap: 6px;
+        }
+        .loc-vbar-bg { flex: 1; height: 5px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+        .loc-vbar-fill { height: 100%; border-radius: 4px; background: #7c3aed; }
+
+        /* Seção de métricas do agente */
+        .agent-metrics-wrap { }
+        .agent-cat-row {
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 0.55rem;
+        }
+        .agent-cat-name { font-size: 0.78rem; font-weight: 700; min-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .agent-cat-bar-bg { flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+        .agent-cat-bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+        .agent-cat-pct { font-size: 0.78rem; font-weight: 800; min-width: 44px; text-align: right; font-variant-numeric: tabular-nums; }
+
+        /* Legenda de categorias dentro dos cards de agente */
+        .agent-cat-legend {
+            display: flex; flex-wrap: wrap; gap: 6px 14px;
+            margin-bottom: 0.8rem;
+            padding: 0.5rem 0.6rem;
+            background: #f8fafc; border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+        .agent-cat-legend-item {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 0.68rem; font-weight: 700;
+            white-space: nowrap;
+        }
+        .agent-cat-legend-dot {
+            width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0;
+        }
+
+        /* Container de captura PDF (fora da tela) */
+        #pdfCaptureProxy {
+            position: fixed; top: 0; left: -9999px;
+            width: 1122px; /* ≈ A4 landscape a 96dpi */
+            background: #f8fafc;
+            z-index: -1; pointer-events: none;
+            padding: 20px;
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+            font-size: 15px;
+        }
+
+        /* Badge de ranking */
+
+        .rank-badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 26px; height: 26px; border-radius: 8px;
+            font-size: 0.75rem; font-weight: 800; flex-shrink: 0;
+        }
+        .rank-1 { background: #fef08a; color: #854d0e; }
+        .rank-2 { background: #e2e8f0; color: #334155; }
+        .rank-3 { background: #fed7aa; color: #9a3412; }
+        .rank-other { background: #f1f5f9; color: #64748b; }
+
+        /* Botões do modal */
+        .btn-perf-close {
+            border-radius: 10px; padding: 9px 22px; font-weight: 700;
+            font-size: 0.9rem; cursor: pointer; border: 2px solid #e2e8f0;
+            background: white; color: #64748b; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-perf-pdf {
+            border-radius: 10px; padding: 9px 22px; font-weight: 700;
+            font-size: 0.9rem; cursor: pointer; border: none;
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+            color: white; display: inline-flex; align-items: center; gap: 6px;
+            box-shadow: 0 4px 12px -2px rgba(124,58,237,0.45);
+            transition: all 0.2s;
+        }
+        .btn-perf-pdf:hover { transform: translateY(-1px); box-shadow: 0 6px 18px -2px rgba(124,58,237,0.55); }
+        .btn-perf-pdf:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* Spinner dentro do botão */
+        .btn-spinner { display: none; }
+        .btn-spinner.active { display: inline-block; }
+
+        /* ── Media Queries ── */
         @media (max-width: 768px) {
             .hero-card { padding: 1.5rem; }
             .logo-icon { font-size: 3.5rem; }
@@ -240,20 +448,25 @@
             .carousel-caption { padding: 1rem; }
             .carousel-caption h5 { font-size: 1.4rem; }
             .carousel-caption p { font-size: 0.9rem; }
-
             .dash-section-header { flex-direction: column; align-items: flex-start; }
             .btn-dash-import { width: 100%; justify-content: center; }
             .dash-filter-bar { flex-direction: column; align-items: stretch; }
             .dash-filter-bar .btn-dash-filter,
             .dash-filter-bar .btn-dash-clear,
             .dash-filter-bar .btn-dash-preview,
-            .dash-filter-bar .btn-dash-pdf { width: 100%; justify-content: center; margin-left: 0 !important; }
+            .dash-filter-bar .btn-dash-pdf,
+            .dash-filter-bar .btn-dash-perf { width: 100%; justify-content: center; margin-left: 0 !important; }
             .kpi-grid { grid-template-columns: repeat(2, 1fr); }
             .location-grid { grid-template-columns: 1fr; }
+            #perfModal .modal-dialog { margin: 0.5rem; }
+            #perfModal .modal-body { padding: 1rem; }
+            .agent-card-header { flex-direction: column; align-items: flex-start; }
         }
         @media (max-width: 480px) {
             .kpi-grid { grid-template-columns: 1fr; }
+            .agent-kpi-row { flex-direction: column; }
         }
+
         /* Print */
         @media print {
             @page { size: A4 landscape; margin: 10mm; }
@@ -267,6 +480,7 @@
 </head>
 <body>
 <div class="container my-4">
+
     <!-- HERO CARD -->
     <div class="hero-card">
         <div class="logo-procon">
@@ -336,6 +550,9 @@
             <button class="btn-dash-clear" id="dashClearFilter"><i class="fas fa-times"></i> Limpar</button>
             <button class="btn-dash-preview" id="previewPDFBtn"><i class="fas fa-eye"></i> Visualizar PDF</button>
             <button class="btn-dash-pdf" id="exportPDFBtn"><i class="fas fa-file-pdf"></i> Exportar PDF A4</button>
+            <button class="btn-dash-perf" id="openPerfModalBtn" data-bs-toggle="modal" data-bs-target="#perfModal">
+                <i class="fas fa-user-chart"></i> Análise de Performances
+            </button>
         </div>
 
         <!-- Dica de importação -->
@@ -350,12 +567,12 @@
             <div class="dash-section-title"><i class="fas fa-gauge-high" style="color:#007bff"></i> Indicadores-Chave do Período</div>
             <div class="kpi-grid" id="kpiGrid"></div>
 
-            <!-- Card: Visitas por Localidade (agora com total de fichas) -->
-            <div class="dash-section-title"><i class="fas fa-map-marker-alt" style="color:#f97316"></i> Visitas e Fichas por Localidade</div>
+            <!-- Card: Visitas por Localidade -->
+            <div class="dash-section-title"><i class="fas fa-map-marker-alt" style="color:#f97316"></i> Visitas por Localidade</div>
             <div class="location-grid" id="locationGrid">
                 <div class="location-table-wrap">
                     <table class="location-table">
-                        <thead><tr><th>Localidade</th><th>Nº de Visitas</th><th>Total de Fichas</th></tr></thead>
+                        <thead><tr><th>Localidade</th><th>Nº de Visitas</th><th style="text-align:right">Fichas Coletadas</th></tr></thead>
                         <tbody id="locationTableBody"></tbody>
                     </table>
                 </div>
@@ -401,6 +618,47 @@
     </div>
 </div>
 
+<!-- ══════════════════════════════════════════════════════════════════
+     MODAL: ANÁLISE DE PERFORMANCE DOS AGENTES SOCIOEDUCADORES
+══════════════════════════════════════════════════════════════════ -->
+<div class="modal fade" id="perfModal" tabindex="-1" aria-labelledby="perfModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <!-- Header -->
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title" id="perfModalLabel">
+                        <i class="fas fa-user-chart me-2"></i>Análise de Performance — Agentes Socioeducadores
+                    </div>
+                    <div style="font-size:0.82rem;opacity:0.8;margin-top:4px;" id="perfModalPeriodo"></div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Body -->
+            <div class="modal-body" id="perfModalBody">
+                <div class="text-center py-5 text-muted">
+                    <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                    <p>Calculando métricas…</p>
+                </div>
+            </div>
+            <!-- Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn-perf-close" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Fechar
+                </button>
+                <button type="button" class="btn-perf-pdf" id="perfPDFBtn">
+                    <i class="fas fa-file-pdf"></i>
+                    <span class="btn-label">Gerar Relatório PDF (A4 Horizontal)</span>
+                    <span class="btn-spinner"><i class="fas fa-spinner fa-spin"></i></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Container auxiliar para captura de PDF fora de tela -->
+<div id="pdfCaptureProxy" aria-hidden="true"></div>
+
 <!-- SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -409,64 +667,75 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-(function() {
-    // CONFIGURAÇÃO DAS PERGUNTAS (índices das colunas SIM)
+(function () {
+    'use strict';
+
+    /* ─────────────────────────────────────────────────────────────────
+       CONFIGURAÇÃO DAS PERGUNTAS
+    ───────────────────────────────────────────────────────────────── */
     const QUESTIONS = [
-        { id:'G1', sim:4, label:'Dir. consumidor', full:'Conhece seus direitos em defesa do consumidor?', cat:'Geral' },
-        { id:'G2', sim:6, label:'CDC', full:'Conhece o Código de Defesa do Consumidor (CDC)?', cat:'Geral' },
-        { id:'G3', sim:8, label:'Secret. Consumidor', full:'Conhece a Secretaria Municipal de Defesa do Consumidor?', cat:'Geral' },
-        { id:'G4', sim:10, label:'Procon Carioca', full:'Conhece o Procon Municipal (Carioca)?', cat:'Geral' },
-        { id:'G5', sim:12, label:'Ajuda Procon', full:'Sabe como pedir ajuda ao Procon Carioca?', cat:'Geral' },
-        { id:'I1', sim:14, label:'Utiliza internet', full:'Utiliza internet?', cat:'Internet e Compras Online' },
-        { id:'I2', sim:16, label:'Compras online', full:'Faz compras pela internet?', cat:'Internet e Compras Online' },
-        { id:'I3', sim:18, label:'Prob. compras online', full:'Já teve problema com compras online?', cat:'Internet e Compras Online' },
-        { id:'F1', sim:20, label:'Conta bancária', full:'Possui conta bancária?', cat:'Educação Financeira' },
-        { id:'F2', sim:22, label:'Prob. banco', full:'Já teve problema com o banco?', cat:'Educação Financeira' },
-        { id:'F3', sim:24, label:'Consignado', full:'Possui empréstimo consignado?', cat:'Educação Financeira' },
-        { id:'F4', sim:26, label:'Salário cobre desp.', full:'Seu salário cobre suas despesas?', cat:'Educação Financeira' },
-        { id:'F5', sim:28, label:'Dívida mensal', full:'Fica dívida para o mês seguinte?', cat:'Educação Financeira' },
-        { id:'F6', sim:30, label:'Outras dívidas', full:'Possui outras dívidas?', cat:'Educação Financeira' },
-        { id:'F7', sim:32, label:'SCPC/Serasa', full:'Possui nome no SCPC, Serasa ou semelhantes?', cat:'Educação Financeira' },
-        { id:'F8', sim:34, label:'Renegociar dívidas', full:'Possui interesse em renegociar dívidas?', cat:'Educação Financeira' },
-        { id:'T1', sim:36, label:'Prob. telefonia', full:'Já teve problema com telefonia?', cat:'Telefonia e Internet' },
-        { id:'T2', sim:38, label:'Prob. internet', full:'Já teve problema com internet?', cat:'Telefonia e Internet' },
-        { id:'S1', sim:40, label:'Água e luz', full:'Possui fornecimento de água e luz?', cat:'Serviços Essenciais' },
-        { id:'S2', sim:42, label:'Prob. água', full:'Já teve problema com a fornecedora de água?', cat:'Serviços Essenciais' },
-        { id:'S3', sim:44, label:'Prob. luz', full:'Já teve problema com a prestadora de luz?', cat:'Serviços Essenciais' },
-        { id:'GA1', sim:46, label:'Gás encanado', full:'Possui gás encanado?', cat:'Gás' },
-        { id:'GA2', sim:48, label:'Gás botijão', full:'Possui gás botijão?', cat:'Gás' },
-        { id:'GA3', sim:50, label:'Prob. gás', full:'Teve algum problema com gás?', cat:'Gás' },
+        { id: 'G1',  sim: 4,  label: 'Dir. consumidor',   full: 'Conhece seus direitos em defesa do consumidor?',           cat: 'Geral' },
+        { id: 'G2',  sim: 6,  label: 'CDC',               full: 'Conhece o Código de Defesa do Consumidor (CDC)?',          cat: 'Geral' },
+        { id: 'G3',  sim: 8,  label: 'Secret. Consumidor',full: 'Conhece a Secretaria Municipal de Defesa do Consumidor?',  cat: 'Geral' },
+        { id: 'G4',  sim: 10, label: 'Procon Carioca',    full: 'Conhece o Procon Municipal (Carioca)?',                    cat: 'Geral' },
+        { id: 'G5',  sim: 12, label: 'Ajuda Procon',      full: 'Sabe como pedir ajuda ao Procon Carioca?',                 cat: 'Geral' },
+        { id: 'I1',  sim: 14, label: 'Utiliza internet',  full: 'Utiliza internet?',                                        cat: 'Internet e Compras Online' },
+        { id: 'I2',  sim: 16, label: 'Compras online',    full: 'Faz compras pela internet?',                               cat: 'Internet e Compras Online' },
+        { id: 'I3',  sim: 18, label: 'Prob. compras online', full: 'Já teve problema com compras online?',                  cat: 'Internet e Compras Online' },
+        { id: 'F1',  sim: 20, label: 'Conta bancária',    full: 'Possui conta bancária?',                                   cat: 'Educação Financeira' },
+        { id: 'F2',  sim: 22, label: 'Prob. banco',       full: 'Já teve problema com o banco?',                            cat: 'Educação Financeira' },
+        { id: 'F3',  sim: 24, label: 'Consignado',        full: 'Possui empréstimo consignado?',                            cat: 'Educação Financeira' },
+        { id: 'F4',  sim: 26, label: 'Salário cobre desp.',full: 'Seu salário cobre suas despesas?',                        cat: 'Educação Financeira' },
+        { id: 'F5',  sim: 28, label: 'Dívida mensal',     full: 'Fica dívida para o mês seguinte?',                         cat: 'Educação Financeira' },
+        { id: 'F6',  sim: 30, label: 'Outras dívidas',    full: 'Possui outras dívidas?',                                   cat: 'Educação Financeira' },
+        { id: 'F7',  sim: 32, label: 'SCPC/Serasa',       full: 'Possui nome no SCPC, Serasa ou semelhantes?',              cat: 'Educação Financeira' },
+        { id: 'F8',  sim: 34, label: 'Renegociar dívidas',full: 'Possui interesse em renegociar dívidas?',                  cat: 'Educação Financeira' },
+        { id: 'T1',  sim: 36, label: 'Prob. telefonia',   full: 'Já teve problema com telefonia?',                          cat: 'Telefonia e Internet' },
+        { id: 'T2',  sim: 38, label: 'Prob. internet',    full: 'Já teve problema com internet?',                           cat: 'Telefonia e Internet' },
+        { id: 'S1',  sim: 40, label: 'Água e luz',        full: 'Possui fornecimento de água e luz?',                       cat: 'Serviços Essenciais' },
+        { id: 'S2',  sim: 42, label: 'Prob. água',        full: 'Já teve problema com a fornecedora de água?',              cat: 'Serviços Essenciais' },
+        { id: 'S3',  sim: 44, label: 'Prob. luz',         full: 'Já teve problema com a prestadora de luz?',                cat: 'Serviços Essenciais' },
+        { id: 'GA1', sim: 46, label: 'Gás encanado',      full: 'Possui gás encanado?',                                     cat: 'Gás' },
+        { id: 'GA2', sim: 48, label: 'Gás botijão',       full: 'Possui gás botijão?',                                      cat: 'Gás' },
+        { id: 'GA3', sim: 50, label: 'Prob. gás',         full: 'Teve algum problema com gás?',                             cat: 'Gás' },
     ];
 
-    const CATEGORIES = ['Geral','Internet e Compras Online','Educação Financeira','Telefonia e Internet','Serviços Essenciais','Gás'];
+    const CATEGORIES = ['Geral', 'Internet e Compras Online', 'Educação Financeira', 'Telefonia e Internet', 'Serviços Essenciais', 'Gás'];
+
     const CAT_CFG = {
-        'Geral': { color:'#3b82f6', light:'#eff6ff', icon:'fas fa-gavel' },
-        'Internet e Compras Online': { color:'#8b5cf6', light:'#f5f3ff', icon:'fas fa-globe' },
-        'Educação Financeira': { color:'#10b981', light:'#ecfdf5', icon:'fas fa-piggy-bank' },
-        'Telefonia e Internet': { color:'#f59e0b', light:'#fffbeb', icon:'fas fa-phone' },
-        'Serviços Essenciais': { color:'#06b6d4', light:'#ecfeff', icon:'fas fa-bolt' },
-        'Gás': { color:'#ef4444', light:'#fef2f2', icon:'fas fa-fire' },
+        'Geral':                    { color: '#3b82f6', light: '#eff6ff',  icon: 'fas fa-gavel' },
+        'Internet e Compras Online':{ color: '#8b5cf6', light: '#f5f3ff',  icon: 'fas fa-globe' },
+        'Educação Financeira':      { color: '#10b981', light: '#ecfdf5',  icon: 'fas fa-piggy-bank' },
+        'Telefonia e Internet':     { color: '#f59e0b', light: '#fffbeb',  icon: 'fas fa-phone' },
+        'Serviços Essenciais':      { color: '#06b6d4', light: '#ecfeff',  icon: 'fas fa-bolt' },
+        'Gás':                      { color: '#ef4444', light: '#fef2f2',  icon: 'fas fa-fire' },
     };
 
-    let rawData = [];               // dados da aba Lançamento Diário
-    let locations = [];             // lista de localidades
-    let chartInst = {};             // gráficos de categoria
-    let locationChart = null;       // gráfico de localidades
-    let dashFilter = { start: '', end: '' };
+    /* ─────────────────────────────────────────────────────────────────
+       ESTADO GLOBAL
+    ───────────────────────────────────────────────────────────────── */
+    let rawData      = [];
+    let locations    = [];
+    let chartInst    = {};
+    let locationChart = null;
+    let dashFilter   = { start: '', end: '' };
 
-    // Elementos DOM
-    const importHint = document.getElementById('dashImportHint');
-    const dashContent = document.getElementById('dashContent');
-    const filterBar = document.getElementById('dashFilterBar');
-    const importStatus = document.getElementById('dashImportStatus');
-    const xlsxInput = document.getElementById('xlsxImport');
+    /* ─────────────────────────────────────────────────────────────────
+       ELEMENTOS DOM
+    ───────────────────────────────────────────────────────────────── */
+    const importHint      = document.getElementById('dashImportHint');
+    const dashContent     = document.getElementById('dashContent');
+    const filterBar       = document.getElementById('dashFilterBar');
+    const importStatus    = document.getElementById('dashImportStatus');
+    const xlsxInput       = document.getElementById('xlsxImport');
     const locationTableBody = document.getElementById('locationTableBody');
-    const locationCanvas = document.getElementById('locationChart');
-    const toastEl = document.getElementById('pdfToast');
-    const toast = new bootstrap.Toast(toastEl, { autohide: true, delay: 4000 });
+    const locationCanvas  = document.getElementById('locationChart');
+    const toastEl         = document.getElementById('pdfToast');
+    const toast           = new bootstrap.Toast(toastEl, { autohide: true, delay: 4000 });
 
-    // ------------------------------------------------------------------
-    // UTILITÁRIOS
+    /* ─────────────────────────────────────────────────────────────────
+       UTILITÁRIOS
+    ───────────────────────────────────────────────────────────────── */
     function toNumber(val) {
         if (val === undefined || val === null) return 0;
         if (typeof val === 'number') return val;
@@ -498,37 +767,46 @@
         importStatus.innerHTML = msg;
     }
 
-    // ------------------------------------------------------------------
-    // IMPORTAÇÃO DA PLANILHA
-    xlsxInput.addEventListener('change', function(e) {
+    function fmt(n) { return n.toLocaleString('pt-BR'); }
+    function fmtPct(v) { return (v * 100).toFixed(1).replace('.', ',') + '%'; }
+
+    function isoToBR(iso) {
+        if (!iso) return '';
+        const [y, m, d] = iso.split('-');
+        return `${d}/${m}/${y}`;
+    }
+
+    /* ─────────────────────────────────────────────────────────────────
+       IMPORTAÇÃO DA PLANILHA
+    ───────────────────────────────────────────────────────────────── */
+    xlsxInput.addEventListener('change', function (e) {
         const file = e.target.files[0];
         if (!file) return;
         showStatus('<i class="fas fa-spinner fa-spin"></i>&nbsp; Processando planilha…', 'loading');
 
         const reader = new FileReader();
-        reader.onload = function(ev) {
+        reader.onload = function (ev) {
             try {
                 const wb = XLSX.read(ev.target.result, { type: 'binary', cellDates: true });
 
-                // 1. Aba "Lançamento Diário"
-                const sheetNameLanc = wb.SheetNames.find(n => n.toLowerCase().includes('lan') && n.toLowerCase().includes('rio')) || wb.SheetNames[0];
-                const wsLanc = wb.Sheets[sheetNameLanc];
+                /* 1. Aba "Lançamento Diário" */
+                const sheetNameLanc =
+                    wb.SheetNames.find(n => n.toLowerCase().includes('lan') && n.toLowerCase().includes('rio')) ||
+                    wb.SheetNames[0];
+                const wsLanc  = wb.Sheets[sheetNameLanc];
                 const rowsLanc = XLSX.utils.sheet_to_json(wsLanc, { header: 1, defval: '' });
 
                 const newData = [];
-                for (let i = 4; i < rowsLanc.length; i++) { // a partir da linha 5 (índice 4)
+                for (let i = 4; i < rowsLanc.length; i++) {
                     const row = rowsLanc[i];
                     if (!row || !row[0]) continue;
                     const date = rowDateToISO(row[0]);
                     if (!date) continue;
-                    const local = row[1] ? row[1].toString().trim() : '';
+                    const local    = row[1] ? row[1].toString().trim() : '';
                     const educator = row[2] ? row[2].toString().trim() : '';
-                    const fichas = toNumber(row[3]);
-                    // Extrai valores das colunas até índice 51 (AZ)
-                    const vals = [];
-                    for (let col = 0; col <= 51; col++) {
-                        vals[col] = toNumber(row[col]);
-                    }
+                    const fichas   = toNumber(row[3]);
+                    const vals     = [];
+                    for (let col = 0; col <= 51; col++) vals[col] = toNumber(row[col]);
                     newData.push({ date, local, educator, fichas, vals });
                 }
 
@@ -537,39 +815,46 @@
                     return;
                 }
 
-                // 2. Aba "Localidades"
+                /* 2. Aba "Localidades"
+                   Os nomes ficam na coluna B (índice 1); a coluna A pode estar vazia.
+                   Tentamos o primeiro índice não-vazio entre 0 e 1. */
                 const sheetNameLoc = wb.SheetNames.find(n => n.toLowerCase().includes('localidade'));
                 let locs = [];
                 if (sheetNameLoc) {
-                    const wsLoc = wb.Sheets[sheetNameLoc];
+                    const wsLoc   = wb.Sheets[sheetNameLoc];
                     const rowsLoc = XLSX.utils.sheet_to_json(wsLoc, { header: 1, defval: '' });
-                    for (let i = 2; i < rowsLoc.length; i++) {
-                        const nome = rowsLoc[i]?.[0];
-                        if (nome && typeof nome === 'string' && nome.trim() !== '') {
-                            locs.push(nome.trim());
-                        }
+                    for (let i = 0; i < rowsLoc.length; i++) {
+                        const row = rowsLoc[i];
+                        if (!row) continue;
+                        /* Procura o primeiro valor string não-vazio nas colunas A (0) e B (1) */
+                        const nome = [row[0], row[1]]
+                            .map(v => (v !== null && v !== undefined ? String(v).trim() : ''))
+                            .find(v => v !== '');
+                        if (nome && nome.length > 1 && !/localidade/i.test(nome)) locs.push(nome);
                     }
+                    /* Remove duplicatas */
+                    locs = [...new Set(locs)];
                 }
-                // Fallback: usar valores únicos da coluna 'local' dos dados
                 if (locs.length === 0) {
                     const uniqueLocs = [...new Set(newData.map(d => d.local).filter(l => l !== ''))];
                     locs = uniqueLocs.sort();
                 }
 
-                rawData = newData;
+                rawData   = newData;
                 locations = locs;
 
-                // Define intervalo de datas para os filtros
                 const dates = rawData.map(r => r.date).sort();
                 document.getElementById('dashStart').value = dates[0];
-                document.getElementById('dashEnd').value = dates[dates.length - 1];
+                document.getElementById('dashEnd').value   = dates[dates.length - 1];
                 dashFilter = { start: dates[0], end: dates[dates.length - 1] };
 
-                importHint.style.display = 'none';
-                filterBar.style.display = 'flex';
-                dashContent.style.display = 'block';
-                showStatus(`<i class="fas fa-check-circle"></i>&nbsp; <strong>${newData.length}</strong> dia(s) importado(s) e <strong>${locs.length}</strong> localidades carregadas.`, 'success');
-
+                importHint.style.display    = 'none';
+                filterBar.style.display     = 'flex';
+                dashContent.style.display   = 'block';
+                showStatus(
+                    `<i class="fas fa-check-circle"></i>&nbsp; <strong>${newData.length}</strong> dia(s) importado(s) e <strong>${locs.length}</strong> localidades carregadas.`,
+                    'success'
+                );
                 renderDashboard();
             } catch (err) {
                 showStatus('<i class="fas fa-times-circle"></i>&nbsp; Erro: ' + err.message, 'error');
@@ -580,44 +865,52 @@
         this.value = '';
     });
 
-    // FILTROS
+    /* ─────────────────────────────────────────────────────────────────
+       FILTROS
+    ───────────────────────────────────────────────────────────────── */
     document.getElementById('dashApplyFilter').addEventListener('click', () => {
         dashFilter.start = document.getElementById('dashStart').value;
-        dashFilter.end = document.getElementById('dashEnd').value;
+        dashFilter.end   = document.getElementById('dashEnd').value;
         renderDashboard();
     });
+
     document.getElementById('dashClearFilter').addEventListener('click', () => {
         if (!rawData.length) return;
         const dates = rawData.map(r => r.date).sort();
         document.getElementById('dashStart').value = dates[0];
-        document.getElementById('dashEnd').value = dates[dates.length - 1];
+        document.getElementById('dashEnd').value   = dates[dates.length - 1];
         dashFilter = { start: dates[0], end: dates[dates.length - 1] };
         renderDashboard();
     });
 
-    // ------------------------------------------------------------------
-    // CÁLCULO DAS MÉTRICAS (com NÃO recalculado = fichas - SIM)
-    function computeMetrics() {
-        const filtered = rawData.filter(r => {
+    /* ─────────────────────────────────────────────────────────────────
+       CÁLCULO DAS MÉTRICAS DO DASHBOARD
+    ───────────────────────────────────────────────────────────────── */
+    function getFiltered() {
+        return rawData.filter(r => {
             if (dashFilter.start && r.date < dashFilter.start) return false;
-            if (dashFilter.end && r.date > dashFilter.end) return false;
+            if (dashFilter.end   && r.date > dashFilter.end)   return false;
             return true;
         });
+    }
 
-        const totalFichas = filtered.reduce((s, r) => s + r.fichas, 0);
+    function computeMetrics() {
+        const filtered = getFiltered();
+
+        const totalFichas  = filtered.reduce((s, r) => s + r.fichas, 0);
         const totalSessoes = filtered.length;
-        const avgFichas = totalSessoes ? totalFichas / totalSessoes : 0;
+        const avgFichas    = totalSessoes ? totalFichas / totalSessoes : 0;
 
         const qMetrics = QUESTIONS.map(q => {
             let simTotal = 0, naoTotal = 0;
             filtered.forEach(r => {
-                const sim = r.vals[q.sim] || 0;
+                const sim   = r.vals[q.sim] || 0;
                 const fichas = r.fichas || 0;
-                const nao = Math.max(0, fichas - sim); // recalcula NÃO
+                const nao   = Math.max(0, fichas - sim);
                 simTotal += sim;
                 naoTotal += nao;
             });
-            const total = simTotal + naoTotal;
+            const total  = simTotal + naoTotal;
             const pctSim = total ? simTotal / total : 0;
             const pctNao = total ? naoTotal / total : 0;
             return { ...q, simTotal, naoTotal, total, pctSim, pctNao };
@@ -629,10 +922,10 @@
 
         const catMetrics = {};
         CATEGORIES.forEach(cat => {
-            const qs = qMetrics.filter(q => q.cat === cat);
-            const catSim = qs.reduce((s, q) => s + q.simTotal, 0);
-            const catNao = qs.reduce((s, q) => s + q.naoTotal, 0);
-            const catTot = catSim + catNao;
+            const qs       = qMetrics.filter(q => q.cat === cat);
+            const catSim   = qs.reduce((s, q) => s + q.simTotal, 0);
+            const catNao   = qs.reduce((s, q) => s + q.naoTotal, 0);
+            const catTot   = catSim + catNao;
             const avgPctSim = qs.length ? qs.reduce((s, q) => s + q.pctSim, 0) / qs.length : 0;
             catMetrics[cat] = { simTotal: catSim, naoTotal: catNao, total: catTot, avgPctSim };
         });
@@ -643,40 +936,41 @@
         return { filtered, totalFichas, totalSessoes, avgFichas, qMetrics, catMetrics, maxSim, maxNao, totalSimGeral, totalNaoGeral };
     }
 
-    // Visitas por localidade + total de fichas
-    function computeVisitsAndFichasByLocation() {
-        const filtered = rawData.filter(r => {
-            if (dashFilter.start && r.date < dashFilter.start) return false;
-            if (dashFilter.end && r.date > dashFilter.end) return false;
-            return true;
-        });
-        const map = {}; // { local: { visits:0, fichas:0 } }
+    function computeVisitsByLocation() {
+        const filtered = getFiltered();
+        const norm = s => s.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const countMap  = {};
+        const fichasMap = {};
         filtered.forEach(r => {
-            const loc = r.local;
-            if (loc) {
-                if (!map[loc]) map[loc] = { visits: 0, fichas: 0 };
-                map[loc].visits += 1;
-                map[loc].fichas += r.fichas || 0;
-            }
+            if (!r.local) return;
+            const key = norm(r.local);
+            countMap[key]  = (countMap[key]  || 0) + 1;
+            fichasMap[key] = (fichasMap[key] || 0) + r.fichas;
         });
-        if (locations.length) {
-            return locations.map(loc => ({
-                local: loc,
-                visits: map[loc]?.visits || 0,
-                fichas: map[loc]?.fichas || 0
-            }));
-        } else {
-            return Object.keys(map).map(loc => ({ local: loc, visits: map[loc].visits, fichas: map[loc].fichas }))
-                .sort((a,b) => a.local.localeCompare(b.local));
-        }
+        const result = locations.length
+            ? locations.map(loc => ({
+                local:  loc,
+                visits: countMap[norm(loc)]  || 0,
+                fichas: fichasMap[norm(loc)] || 0,
+              }))
+            : Object.keys(countMap)
+                .map(key => {
+                    /* recupera o nome original da primeira linha correspondente */
+                    const origRow = filtered.find(r => r.local && norm(r.local) === key);
+                    return { local: origRow ? origRow.local : key, visits: countMap[key], fichas: fichasMap[key] };
+                })
+                .sort((a, b) => a.local.localeCompare(b.local, 'pt-BR'));
+        return result;
     }
 
-    // Renderização
+    /* ─────────────────────────────────────────────────────────────────
+       RENDERIZAÇÃO DO DASHBOARD
+    ───────────────────────────────────────────────────────────────── */
     function renderDashboard() {
         if (!rawData.length) {
             dashContent.style.display = 'none';
-            filterBar.style.display = 'none';
-            importHint.style.display = 'block';
+            filterBar.style.display   = 'none';
+            importHint.style.display  = 'block';
             return;
         }
         const m = computeMetrics();
@@ -689,11 +983,11 @@
     function renderKPIs(m) {
         const grid = document.getElementById('kpiGrid');
         const kpis = [
-            { icon: 'fas fa-clipboard-check', color: '#007bff', light: '#eff6ff', value: m.totalFichas.toLocaleString('pt-BR'), label: 'Fichas Preenchidas', sub: 'no período' },
-            { icon: 'fas fa-calendar-day', color: '#8b5cf6', light: '#f5f3ff', value: m.totalSessoes.toLocaleString('pt-BR'), label: 'Sessões Realizadas', sub: 'dias' },
-            { icon: 'fas fa-chart-line', color: '#10b981', light: '#ecfdf5', value: m.avgFichas.toFixed(1).replace('.',','), label: 'Média Fichas/Dia', sub: 'por sessão' },
-            { icon: 'fas fa-thumbs-up', color: '#f59e0b', light: '#fffbeb', value: m.maxSim && m.maxSim.pctSim ? (m.maxSim.pctSim * 100).toFixed(1).replace('.',',') + '%' : '—', label: 'Maior % SIM', sub: m.maxSim ? m.maxSim.label : '' },
-            { icon: 'fas fa-thumbs-down', color: '#ef4444', light: '#fef2f2', value: m.maxNao && m.maxNao.pctNao ? (m.maxNao.pctNao * 100).toFixed(1).replace('.',',') + '%' : '—', label: 'Maior % NÃO', sub: m.maxNao ? m.maxNao.label : '' },
+            { icon: 'fas fa-clipboard-check', color: '#007bff', light: '#eff6ff', value: fmt(m.totalFichas),                                               label: 'Fichas Preenchidas',  sub: 'no período' },
+            { icon: 'fas fa-calendar-day',    color: '#8b5cf6', light: '#f5f3ff', value: fmt(m.totalSessoes),                                              label: 'Sessões Realizadas',  sub: 'dias' },
+            { icon: 'fas fa-chart-line',      color: '#10b981', light: '#ecfdf5', value: m.avgFichas.toFixed(1).replace('.', ','),                          label: 'Média Fichas/Dia',    sub: 'por sessão' },
+            { icon: 'fas fa-thumbs-up',       color: '#f59e0b', light: '#fffbeb', value: m.maxSim?.pctSim ? fmtPct(m.maxSim.pctSim) : '—',                 label: 'Maior % SIM',         sub: m.maxSim?.label || '' },
+            { icon: 'fas fa-thumbs-down',     color: '#ef4444', light: '#fef2f2', value: m.maxNao?.pctNao ? fmtPct(m.maxNao.pctNao) : '—',                 label: 'Maior % NÃO',         sub: m.maxNao?.label || '' },
         ];
         grid.innerHTML = kpis.map(k => `
             <div class="kpi-card" style="--kpi-color:${k.color};--kpi-light:${k.light}">
@@ -705,13 +999,13 @@
     }
 
     function renderCategoryGrid(m) {
-        Object.values(chartInst).forEach(c => { try { c.destroy(); } catch(e) { } });
+        Object.values(chartInst).forEach(c => { try { c.destroy(); } catch (e) { } });
         chartInst = {};
         const grid = document.getElementById('categoryGrid');
         grid.innerHTML = CATEGORIES.map(cat => {
             const cfg = CAT_CFG[cat];
-            const cm = m.catMetrics[cat];
-            const qs = m.qMetrics.filter(q => q.cat === cat);
+            const cm  = m.catMetrics[cat];
+            const qs  = m.qMetrics.filter(q => q.cat === cat);
             return `
             <div class="cat-card">
                 <div class="cat-card-header" style="background:${cfg.light}">
@@ -720,9 +1014,9 @@
                 </div>
                 <div class="cat-card-body">
                     <div class="cat-stats">
-                        <div class="cat-stat"><div class="cs-val" style="color:${cfg.color}">${cm.simTotal.toLocaleString('pt-BR')}</div><div class="cs-lbl">Total SIM</div></div>
-                        <div class="cat-stat"><div class="cs-val" style="color:#94a3b8">${cm.naoTotal.toLocaleString('pt-BR')}</div><div class="cs-lbl">Total NÃO</div></div>
-                        <div class="cat-stat"><div class="cs-val" style="color:${cfg.color}">${(cm.avgPctSim * 100).toFixed(1).replace('.',',')}%</div><div class="cs-lbl">% SIM médio</div></div>
+                        <div class="cat-stat"><div class="cs-val" style="color:${cfg.color}">${fmt(cm.simTotal)}</div><div class="cs-lbl">Total SIM</div></div>
+                        <div class="cat-stat"><div class="cs-val" style="color:#94a3b8">${fmt(cm.naoTotal)}</div><div class="cs-lbl">Total NÃO</div></div>
+                        <div class="cat-stat"><div class="cs-val" style="color:${cfg.color}">${fmtPct(cm.avgPctSim)}</div><div class="cs-lbl">% SIM médio</div></div>
                     </div>
                     <div class="cat-chart-wrap">
                         <canvas id="chart-${cat.replace(/\s+/g, '_')}" height="140"></canvas>
@@ -732,8 +1026,8 @@
         }).join('');
 
         CATEGORIES.forEach(cat => {
-            const cfg = CAT_CFG[cat];
-            const qs = m.qMetrics.filter(q => q.cat === cat);
+            const cfg    = CAT_CFG[cat];
+            const qs     = m.qMetrics.filter(q => q.cat === cat);
             const canvas = document.getElementById(`chart-${cat.replace(/\s+/g, '_')}`);
             if (!canvas) return;
             chartInst[cat] = new Chart(canvas, {
@@ -749,19 +1043,29 @@
                     indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { x: { max: 100, ticks: { callback: v => v + '%' } }, y: { ticks: { font: { size: 10 } } } }
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: { font: { size: 10 }, boxWidth: 14, padding: 8 }
+                        },
+                        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.raw.toFixed(1).replace('.', ',')}%` } }
+                    },
+                    scales: {
+                        x: { max: 100, ticks: { callback: v => v + '%', font: { size: 9 } } },
+                        y: { ticks: { font: { size: 10 } } }
+                    }
                 }
             });
         });
     }
 
     function renderMetricsTable(m) {
-        const tbody = document.getElementById('metricsTableBody');
+        const tbody   = document.getElementById('metricsTableBody');
         tbody.innerHTML = '';
-        let prevCat = null;
+        let prevCat   = null;
         m.qMetrics.forEach(q => {
-            const cfg = CAT_CFG[q.cat];
+            const cfg        = CAT_CFG[q.cat];
             const showCatPill = q.cat !== prevCat;
             prevCat = q.cat;
             const tr = document.createElement('tr');
@@ -769,11 +1073,11 @@
                 <td><strong style="color:${cfg.color};font-family:'DM Mono',monospace">${q.id}</strong></td>
                 <td>${showCatPill ? `<span class="cat-pill" style="background:${cfg.color}20;color:${cfg.color}">${q.cat}</span>` : ''}</td>
                 <td title="${q.full}">${q.full}</td>
-                <td style="text-align:right;font-weight:700;color:#10b981">${q.simTotal.toLocaleString('pt-BR')}</td>
-                <td style="text-align:right;font-weight:700;color:#ef4444">${q.naoTotal.toLocaleString('pt-BR')}</td>
-                <td style="text-align:right;color:#64748b">${q.total.toLocaleString('pt-BR')}</td>
-                <td><div class="pct-bar-wrap"><div class="pct-bar-bg"><div class="pct-bar-fill" style="width:${(q.pctSim * 100).toFixed(1)}%;background:${cfg.color}"></div></div><span class="pct-text">${(q.pctSim * 100).toFixed(1).replace('.',',')}%</span></div></td>
-                <td><div class="pct-bar-wrap"><div class="pct-bar-bg"><div class="pct-bar-fill" style="width:${(q.pctNao * 100).toFixed(1)}%;background:#94a3b8"></div></div><span class="pct-text">${(q.pctNao * 100).toFixed(1).replace('.',',')}%</span></div></td>
+                <td style="text-align:right;font-weight:700;color:#10b981">${fmt(q.simTotal)}</td>
+                <td style="text-align:right;font-weight:700;color:#ef4444">${fmt(q.naoTotal)}</td>
+                <td style="text-align:right;color:#64748b">${fmt(q.total)}</td>
+                <td><div class="pct-bar-wrap"><div class="pct-bar-bg"><div class="pct-bar-fill" style="width:${(q.pctSim * 100).toFixed(1)}%;background:${cfg.color}"></div></div><span class="pct-text">${fmtPct(q.pctSim)}</span></div></td>
+                <td><div class="pct-bar-wrap"><div class="pct-bar-bg"><div class="pct-bar-fill" style="width:${(q.pctNao * 100).toFixed(1)}%;background:#94a3b8"></div></div><span class="pct-text">${fmtPct(q.pctNao)}</span></div></td>
             `;
             tbody.appendChild(tr);
         });
@@ -783,111 +1087,670 @@
         totalRow.className = 'total-row';
         totalRow.innerHTML = `
             <td colspan="3" style="font-weight:800">TOTAL GERAL</td>
-            <td style="text-align:right">${simG.toLocaleString('pt-BR')}</td>
-            <td style="text-align:right">${naoG.toLocaleString('pt-BR')}</td>
-            <td style="text-align:right">${totG.toLocaleString('pt-BR')}</td>
-            <td colspan="2">SIM: ${totG ? ((simG / totG) * 100).toFixed(1).replace('.',',') : 0}% &nbsp;|&nbsp; NÃO: ${totG ? ((naoG / totG) * 100).toFixed(1).replace('.',',') : 0}%</td>
+            <td style="text-align:right">${fmt(simG)}</td>
+            <td style="text-align:right">${fmt(naoG)}</td>
+            <td style="text-align:right">${fmt(totG)}</td>
+            <td colspan="2">SIM: ${totG ? ((simG / totG) * 100).toFixed(1).replace('.', ',') : 0}% &nbsp;|&nbsp; NÃO: ${totG ? ((naoG / totG) * 100).toFixed(1).replace('.', ',') : 0}%</td>
         `;
         tbody.appendChild(totalRow);
     }
 
     function renderLocationCard() {
-        const data = computeVisitsAndFichasByLocation();
-        locationTableBody.innerHTML = data.map(v => `<tr><td>${v.local}</td><td>${v.visits}</td><td>${v.fichas.toLocaleString('pt-BR')}</td></tr>`).join('');
+        const visits = computeVisitsByLocation();
+        const totalVisits = visits.reduce((s, v) => s + v.visits, 0);
+        const totalFichasLoc = visits.reduce((s, v) => s + v.fichas, 0);
+        locationTableBody.innerHTML = visits.map(v => `
+            <tr>
+                <td>${v.local}</td>
+                <td style="text-align:right"><strong>${v.visits}</strong></td>
+                <td style="text-align:right;font-weight:700;color:#007bff">${fmt(v.fichas)}</td>
+            </tr>`).join('') + `
+            <tr style="background:#e8f0fe;font-weight:800;border-top:2px solid #bfdbfe">
+                <td style="color:#1e2d3d">TOTAL</td>
+                <td style="text-align:right;color:#1e2d3d">${totalVisits}</td>
+                <td style="text-align:right;color:#007bff">${fmt(totalFichasLoc)}</td>
+            </tr>`;
         if (locationChart) locationChart.destroy();
         const ctx = locationCanvas.getContext('2d');
         locationChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: data.map(v => v.local.length > 20 ? v.local.substring(0,18)+'…' : v.local),
+                labels: visits.map(v => v.local.length > 20 ? v.local.substring(0, 18) + '…' : v.local),
                 datasets: [{
                     label: 'Número de visitas',
-                    data: data.map(v => v.visits),
+                    data: visits.map(v => v.visits),
                     backgroundColor: '#f97316',
                     borderColor: '#ea580c',
                     borderWidth: 1
                 }]
             },
             options: {
-                responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `${ctx.raw} visita(s)` } } },
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: 'top', labels: { font: { size: 11 }, boxWidth: 14 } },
+                    tooltip: { callbacks: { label: ctx => `${ctx.raw} visita(s)` } }
+                },
                 scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
             }
         });
     }
 
-    // PDF
-    function generatePDF() {
-        return new Promise((resolve, reject) => {
-            const content = document.getElementById('dashContent');
-            html2canvas(content, { scale: 2, backgroundColor: '#ffffff', logging: false }).then(canvas => {
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-                const PW = 297, PH = 210, margin = 10;
-                const usableW = PW - margin * 2;
-                const imgW = canvas.width, imgH = canvas.height;
-                const ratio = usableW / imgW;
+    /* ─────────────────────────────────────────────────────────────────
+       PDF DO DASHBOARD PRINCIPAL — quebra de página inteligente
+    ───────────────────────────────────────────────────────────────── */
+    async function generateDashboardPDF() {
+        const { jsPDF } = window.jspdf;
+        const PW = 297, PH = 210, margin = 10;
+        const HEADER_H = 13, FOOTER_H = 6;
+        const USABLE_W = PW - margin * 2;
+        const PAGE_CONTENT_H = PH - HEADER_H - FOOTER_H - margin; /* mm de conteúdo por página */
+        const SCALE = 2;
 
-                pdf.setFillColor(0, 40, 86);
-                pdf.rect(0, 0, PW, 12, 'F');
-                pdf.setTextColor(255, 255, 255);
-                pdf.setFontSize(11);
-                pdf.setFont('helvetica', 'bold');
-                pdf.text('PROCON-RJ · Painel de Indicadores de Atendimento', margin, 8.5);
-                pdf.setFont('helvetica', 'normal');
-                pdf.setFontSize(8);
-                const now = new Date().toLocaleDateString('pt-BR');
-                const periodo = (dashFilter.start && dashFilter.end) ? `Período: ${dashFilter.start.split('-').reverse().join('/')} a ${dashFilter.end.split('-').reverse().join('/')}` : '';
-                pdf.text(`${periodo}   |   Gerado em ${now}`, PW - margin, 8.5, { align: 'right' });
+        const now    = new Date().toLocaleDateString('pt-BR');
+        const periodo = (dashFilter.start && dashFilter.end)
+            ? `Período: ${isoToBR(dashFilter.start)} a ${isoToBR(dashFilter.end)}`
+            : '';
 
-                let yOffset = 0;
-                let page = 1;
-                const pageContentH = PH - 12 - margin;
-                const pixPerPage = (pageContentH / usableW) * imgW;
-
-                while (yOffset < imgH) {
-                    if (page > 1) pdf.addPage();
-                    const sliceH = Math.min(pixPerPage, imgH - yOffset);
-                    const tmpCanvas = document.createElement('canvas');
-                    tmpCanvas.width = imgW;
-                    tmpCanvas.height = sliceH;
-                    const ctx = tmpCanvas.getContext('2d');
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(0, 0, imgW, sliceH);
-                    ctx.drawImage(canvas, 0, -yOffset);
-                    const sliceData = tmpCanvas.toDataURL('image/jpeg', 0.95);
-                    pdf.addImage(sliceData, 'JPEG', margin, 13, usableW, sliceH * ratio);
-                    yOffset += pixPerPage;
-                    page++;
-                }
-                resolve(pdf);
-            }).catch(reject);
+        /* ── 1. Captura o conteúdo completo do dashboard ── */
+        const content = document.getElementById('dashContent');
+        const fullCanvas = await html2canvas(content, {
+            scale: SCALE,
+            backgroundColor: '#ffffff',
+            logging: false,
+            useCORS: true,
         });
+
+        const mmPerPx       = USABLE_W / fullCanvas.width;
+        const pageContentPx = PAGE_CONTENT_H / mmPerPx; /* altura de uma página em px do canvas */
+
+        /* ── 2. Coleta posições dos blocos que não devem ser cortados ──
+           Seletores em ordem de prioridade de quebra (do mais granular ao mais amplo):
+           – cada card de categoria (.cat-card)
+           – cada linha da tabela de métricas (tr em #metricsTableBody)
+           – blocos de seção (.dash-section-title, .kpi-grid, .location-grid, .metrics-table-wrap) */
+        const contentRect = content.getBoundingClientRect();
+
+        const breakPts = new Set([0]);
+
+        /* Helper: registra o topo de um elemento em px do canvas */
+        const addEl = el => {
+            const relTop = (el.getBoundingClientRect().top - contentRect.top) * SCALE;
+            if (relTop > 1) breakPts.add(Math.round(relTop));
+        };
+
+        /* 1. Blocos auto-contidos: KPIs, grid de localidades, cards de categoria.
+              Cada um desses elementos pode começar numa nova página sem problema. */
+        ['.kpi-grid', '.location-grid', '.cat-card'].forEach(sel =>
+            content.querySelectorAll(sel).forEach(addEl)
+        );
+
+        /* 2. Títulos de seção: o ponto de quebra válido é o topo do TÍTULO,
+              não o topo do bloco seguinte — assim título e conteúdo ficam juntos.
+              Para isso adicionamos o topo de cada .dash-section-title diretamente. */
+        content.querySelectorAll('.dash-section-title').forEach(addEl);
+
+        /* 3. Tabela de métricas: o cabeçalho (thead) deve SEMPRE ficar junto com
+              a primeira linha de dados. Por isso:
+              – o ponto de quebra ANTES da tabela é o topo do <thead> (= topo da .metrics-table-wrap)
+              – pontos de quebra ENTRE linhas: adicionamos a partir da 2ª linha do tbody
+                (índice 1 em diante), nunca antes da 1ª linha. */
+        const thead = content.querySelector('#metricsTable thead');
+        if (thead) addEl(thead);
+
+        const tbodyRows = Array.from(content.querySelectorAll('#metricsTableBody tr'));
+        tbodyRows.slice(1).forEach(addEl); /* pula a 1ª linha — ela fica colada ao thead */
+
+        breakPts.add(fullCanvas.height); /* sentinela final */
+        const sortedBreaks = [...breakPts].sort((a, b) => a - b);
+
+        /* ── 3. Funções auxiliares de cabeçalho e rodapé ── */
+        const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+        let pageNum = 0;
+
+        function drawHeader() {
+            pageNum++;
+            pdf.setFillColor(0, 40, 86);
+            pdf.rect(0, 0, PW, HEADER_H, 'F');
+            pdf.setTextColor(255, 255, 255);
+            pdf.setFontSize(11);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('PROCON-RJ · Painel de Indicadores de Atendimento', margin, 9);
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(8);
+            pdf.text(`${periodo}${periodo ? '   |   ' : ''}Gerado em ${now}   |   Pág. ${pageNum}`,
+                PW - margin, 9, { align: 'right' });
+        }
+
+        function drawFooter() {
+            pdf.setFontSize(7);
+            pdf.setFont('helvetica', 'normal');
+            pdf.setTextColor(148, 163, 184);
+            pdf.text(
+                `PROCON-RJ · Relatório gerado em ${now}${periodo ? ' · ' + periodo : ''}`,
+                PW / 2, PH - 2, { align: 'center' }
+            );
+        }
+
+        /* ── 4. Fatia o canvas respeitando os pontos de quebra ── */
+        drawHeader();
+        drawFooter();
+
+        let yCanvas = 0;
+
+        while (yCanvas < fullCanvas.height) {
+            const maxYEnd = yCanvas + pageContentPx;
+
+            /* Encontra o maior ponto de quebra que caiba na página atual */
+            let breakY = maxYEnd;
+            for (let i = sortedBreaks.length - 1; i >= 0; i--) {
+                const bp = sortedBreaks[i];
+                if (bp <= maxYEnd && bp > yCanvas) { breakY = bp; break; }
+            }
+            /* Segurança: garante progresso mínimo de uma linha (~6px) */
+            if (breakY <= yCanvas) breakY = Math.min(yCanvas + pageContentPx, fullCanvas.height);
+
+            const sliceHPx = Math.min(breakY, fullCanvas.height) - yCanvas;
+            if (sliceHPx <= 0) break;
+
+            /* Gera a fatia */
+            const slice = document.createElement('canvas');
+            slice.width  = fullCanvas.width;
+            slice.height = sliceHPx;
+            const sCtx   = slice.getContext('2d');
+            sCtx.fillStyle = '#ffffff';
+            sCtx.fillRect(0, 0, fullCanvas.width, sliceHPx);
+            sCtx.drawImage(fullCanvas, 0, -yCanvas);
+
+            const sliceHMM = sliceHPx * mmPerPx;
+            pdf.addImage(slice.toDataURL('image/jpeg', 0.94), 'JPEG',
+                margin, HEADER_H + 1, USABLE_W, sliceHMM);
+
+            yCanvas = breakY;
+
+            if (yCanvas < fullCanvas.height) {
+                pdf.addPage();
+                drawHeader();
+                drawFooter();
+            }
+        }
+
+        return pdf;
     }
 
     document.getElementById('previewPDFBtn').addEventListener('click', async () => {
         if (!rawData.length) return alert('Nenhum dado importado.');
         try {
-            const pdf = await generatePDF();
+            const pdf  = await generateDashboardPDF();
             const blob = pdf.output('blob');
-            const url = URL.createObjectURL(blob);
+            const url  = URL.createObjectURL(blob);
             document.getElementById('pdfIframe').src = url;
             document.getElementById('pdfPreview').style.display = 'block';
             toast.show();
-        } catch (err) {
-            alert('Erro ao gerar PDF: ' + err.message);
-        }
+        } catch (err) { alert('Erro ao gerar PDF: ' + err.message); }
     });
 
     document.getElementById('exportPDFBtn').addEventListener('click', async () => {
         if (!rawData.length) return alert('Nenhum dado importado.');
         try {
-            const pdf = await generatePDF();
+            const pdf = await generateDashboardPDF();
             pdf.save('Dashboard_PROCON.pdf');
+        } catch (err) { alert('Erro ao exportar PDF: ' + err.message); }
+    });
+
+    /* ═══════════════════════════════════════════════════════════════════
+       ANÁLISE DE PERFORMANCE DOS AGENTES SOCIOEDUCADORES
+    ═══════════════════════════════════════════════════════════════════ */
+
+    /* ── Cálculo das métricas por agente ── */
+    function computeAgentMetrics() {
+        const filtered = getFiltered();
+
+        /* Agrupa por agente */
+        const agentMap = {};
+        filtered.forEach(row => {
+            const name = row.educator || '(sem nome)';
+            if (!agentMap[name]) {
+                agentMap[name] = { name, rows: [], fichasTotal: 0, sessoes: 0, locMap: {} };
+            }
+            const ag = agentMap[name];
+            ag.rows.push(row);
+            ag.fichasTotal += row.fichas;
+            ag.sessoes     += 1;
+            if (row.local) ag.locMap[row.local] = (ag.locMap[row.local] || 0) + 1;
+        });
+
+        /* Para cada agente, calcula métricas de perguntas e categorias */
+        const agents = Object.values(agentMap).map(ag => {
+            /* Métricas por pergunta */
+            const qMetrics = QUESTIONS.map(q => {
+                let simTotal = 0, naoTotal = 0;
+                ag.rows.forEach(r => {
+                    const sim   = r.vals[q.sim] || 0;
+                    const nao   = Math.max(0, r.fichas - sim);
+                    simTotal   += sim;
+                    naoTotal   += nao;
+                });
+                const total  = simTotal + naoTotal;
+                const pctSim = total ? simTotal / total : 0;
+                const pctNao = total ? naoTotal / total : 0;
+                return { ...q, simTotal, naoTotal, total, pctSim, pctNao };
+            });
+
+            /* Métricas por categoria */
+            const catMetrics = {};
+            CATEGORIES.forEach(cat => {
+                const qs       = qMetrics.filter(q => q.cat === cat);
+                const catSim   = qs.reduce((s, q) => s + q.simTotal, 0);
+                const catNao   = qs.reduce((s, q) => s + q.naoTotal, 0);
+                const catTot   = catSim + catNao;
+                const avgPctSim = qs.length ? qs.reduce((s, q) => s + q.pctSim, 0) / qs.length : 0;
+                catMetrics[cat] = { simTotal: catSim, naoTotal: catNao, total: catTot, avgPctSim };
+            });
+
+            /* Total SIM / NÃO geral */
+            const totalSim = qMetrics.reduce((s, q) => s + q.simTotal, 0);
+            const totalNao = qMetrics.reduce((s, q) => s + q.naoTotal, 0);
+            const totalResp = totalSim + totalNao;
+            const globalPctSim = totalResp ? totalSim / totalResp : 0;
+
+            /* Localidades ordenadas */
+            const locsArr = Object.entries(ag.locMap)
+                .map(([loc, visits]) => ({ loc, visits }))
+                .sort((a, b) => b.visits - a.visits);
+
+            return {
+                name: ag.name,
+                fichasTotal: ag.fichasTotal,
+                sessoes: ag.sessoes,
+                avgFichas: ag.sessoes ? ag.fichasTotal / ag.sessoes : 0,
+                locsArr,
+                totalLocs: locsArr.length,
+                qMetrics,
+                catMetrics,
+                totalSim,
+                totalNao,
+                totalResp,
+                globalPctSim,
+            };
+        });
+
+        /* Ordenar por fichasTotal desc */
+        agents.sort((a, b) => b.fichasTotal - a.fichasTotal);
+        return agents;
+    }
+
+    /* ── Abertura do modal ── */
+    const perfModal    = document.getElementById('perfModal');
+    const perfModalBody = document.getElementById('perfModalBody');
+    const perfModalPer  = document.getElementById('perfModalPeriodo');
+
+    perfModal.addEventListener('show.bs.modal', () => {
+        if (!rawData.length) {
+            perfModalBody.innerHTML = `
+                <div class="text-center py-5 text-muted">
+                    <i class="fas fa-table fa-2x mb-3 opacity-50"></i>
+                    <p class="mb-0 fw-semibold">Nenhum dado importado. Importe a planilha antes de acessar a análise.</p>
+                </div>`;
+            return;
+        }
+        const periodo = (dashFilter.start && dashFilter.end)
+            ? `Período: ${isoToBR(dashFilter.start)} a ${isoToBR(dashFilter.end)}`
+            : 'Todos os períodos';
+        perfModalPer.textContent = periodo;
+        renderPerfModal();
+    });
+
+    function renderPerfModal() {
+        const agents = computeAgentMetrics();
+        if (!agents.length) {
+            perfModalBody.innerHTML = `<p class="text-center text-muted py-4">Nenhum agente encontrado no período selecionado.</p>`;
+            return;
+        }
+
+        /* Totais globais para referência */
+        const totalFichasAll = agents.reduce((s, a) => s + a.fichasTotal, 0);
+        const totalSessoesAll = agents.reduce((s, a) => s + a.sessoes, 0);
+        const maxVisitas = agents[0]?.fichasTotal || 1;
+
+        /* ── Barra de resumo ── */
+        let html = `
+        <div class="perf-summary-bar">
+            <div class="perf-summary-item">
+                <span class="psv">${agents.length}</span>
+                <span class="psl">Agente(s)</span>
+            </div>
+            <div class="perf-summary-item">
+                <span class="psv">${fmt(totalSessoesAll)}</span>
+                <span class="psl">Sessões Totais</span>
+            </div>
+            <div class="perf-summary-item">
+                <span class="psv">${fmt(totalFichasAll)}</span>
+                <span class="psl">Fichas Coletadas</span>
+            </div>
+            <div class="perf-summary-item">
+                <span class="psv">${agents.reduce((s, a) => s + a.totalLocs, 0)}</span>
+                <span class="psl">Visitas c/ localidade</span>
+            </div>
+            <div class="perf-summary-item">
+                <span class="psv" style="font-size:1.2rem">${(dashFilter.start && dashFilter.end) ? isoToBR(dashFilter.start) + ' – ' + isoToBR(dashFilter.end) : '—'}</span>
+                <span class="psl">Período Filtrado</span>
+            </div>
+        </div>`;
+
+        /* ── Cartões por agente ── */
+        agents.forEach((ag, idx) => {
+            const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : 'rank-other';
+            const initials  = ag.name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+            const maxLocV   = ag.locsArr.length ? ag.locsArr[0].visits : 1;
+
+            /* Performance por categoria (barras) */
+            const catLegendHtml = `
+            <div class="agent-cat-legend">
+                ${CATEGORIES.map(cat => {
+                    const cfg = CAT_CFG[cat];
+                    return `<span class="agent-cat-legend-item">
+                        <span class="agent-cat-legend-dot" style="background:${cfg.color}"></span>${cat}
+                    </span>`;
+                }).join('')}
+            </div>`;
+
+            const catBarsHtml = CATEGORIES.map(cat => {
+                const cfg = CAT_CFG[cat];
+                const cm  = ag.catMetrics[cat];
+                const pct = (cm.avgPctSim * 100).toFixed(1);
+                return `
+                <div class="agent-cat-row">
+                    <span class="agent-cat-name" style="color:${cfg.color}" title="${cat}">
+                        <i class="${cfg.icon} me-1" style="font-size:0.7rem"></i>${cat}
+                    </span>
+                    <div class="agent-cat-bar-bg">
+                        <div class="agent-cat-bar-fill" style="width:${pct}%;background:${cfg.color}"></div>
+                    </div>
+                    <span class="agent-cat-pct" style="color:${cfg.color}">${pct.replace('.', ',')}%</span>
+                </div>`;
+            }).join('');
+
+            /* Tabela de localidades */
+            const locRowsHtml = ag.locsArr.length
+                ? ag.locsArr.map(l => `
+                    <tr>
+                        <td>${l.loc}</td>
+                        <td>
+                            <div class="loc-visits-bar">
+                                <div class="loc-vbar-bg"><div class="loc-vbar-fill" style="width:${Math.round(l.visits / maxLocV * 100)}%"></div></div>
+                                <span style="font-weight:700;min-width:24px;text-align:right">${l.visits}</span>
+                            </div>
+                        </td>
+                    </tr>`).join('')
+                : `<tr><td colspan="2" style="color:#94a3b8;font-style:italic">Sem localidade registrada</td></tr>`;
+
+            html += `
+            <div class="agent-card">
+                <div class="agent-card-header">
+                    <div class="agent-avatar">${initials || '?'}</div>
+                    <div class="agent-info">
+                        <div class="agent-name">
+                            <span class="rank-badge ${rankClass} me-2">${idx + 1}º</span>
+                            ${ag.name}
+                        </div>
+                        <div class="agent-subtitle">
+                            <span class="me-3"><i class="fas fa-calendar-day me-1 opacity-60"></i>${ag.sessoes} sessão(ões)</span>
+                            <span class="me-3"><i class="fas fa-map-marker-alt me-1 opacity-60"></i>${ag.totalLocs} localidade(s)</span>
+                            <span><i class="fas fa-percentage me-1 opacity-60"></i>% SIM global: <strong style="color:#5b21b6">${fmtPct(ag.globalPctSim)}</strong></span>
+                        </div>
+                    </div>
+                    <div class="agent-kpi-row ms-auto">
+                        <div class="agent-kpi">
+                            <div class="ak-val">${fmt(ag.fichasTotal)}</div>
+                            <div class="ak-lbl">Fichas</div>
+                        </div>
+                        <div class="agent-kpi">
+                            <div class="ak-val">${ag.avgFichas.toFixed(1).replace('.', ',')}</div>
+                            <div class="ak-lbl">Média/dia</div>
+                        </div>
+                        <div class="agent-kpi">
+                            <div class="ak-val" style="color:#10b981">${fmt(ag.totalSim)}</div>
+                            <div class="ak-lbl">Total SIM</div>
+                        </div>
+                        <div class="agent-kpi">
+                            <div class="ak-val" style="color:#ef4444">${fmt(ag.totalNao)}</div>
+                            <div class="ak-lbl">Total NÃO</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="agent-card-body">
+                    <div class="agent-body-grid">
+                        <!-- Localidades visitadas -->
+                        <div>
+                            <div class="agent-section-title">
+                                <i class="fas fa-map-marker-alt" style="color:#f97316"></i>
+                                Localidades Visitadas
+                            </div>
+                            <div style="max-height:200px;overflow-y:auto;border-radius:10px;border:1px solid #e2e8f0;">
+                                <table class="agent-loc-table">
+                                    <thead><tr><th>Localidade</th><th>Nº Visitas</th></tr></thead>
+                                    <tbody>${locRowsHtml}</tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- Performance por categoria -->
+                        <div>
+                            <div class="agent-section-title">
+                                <i class="fas fa-chart-bar" style="color:#5b21b6"></i>
+                                % SIM Médio por Categoria
+                            </div>
+                            <div class="agent-metrics-wrap">
+                                ${catLegendHtml}
+                                ${catBarsHtml}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        });
+
+        perfModalBody.innerHTML = html;
+    }
+
+    /* ─────────────────────────────────────────────────────────────────
+       PDF DE PERFORMANCE (A4 HORIZONTAL)
+    ───────────────────────────────────────────────────────────────── */
+    document.getElementById('perfPDFBtn').addEventListener('click', async () => {
+        if (!rawData.length) return alert('Nenhum dado importado.');
+
+        const btn   = document.getElementById('perfPDFBtn');
+        const label = btn.querySelector('.btn-label');
+        const spin  = btn.querySelector('.btn-spinner');
+        btn.disabled = true;
+        label.textContent = 'Gerando PDF…';
+        spin.classList.add('active');
+
+        try {
+            await generatePerformancePDF();
         } catch (err) {
-            alert('Erro ao exportar PDF: ' + err.message);
+            alert('Erro ao gerar PDF de performance: ' + err.message);
+            console.error(err);
+        } finally {
+            btn.disabled = false;
+            label.textContent = 'Gerar Relatório PDF (A4 Horizontal)';
+            spin.classList.remove('active');
         }
     });
+
+    async function generatePerformancePDF() {
+        const { jsPDF } = window.jspdf;
+        const agents = computeAgentMetrics();
+        if (!agents.length) return alert('Nenhum agente para exportar.');
+
+        /* Constantes de página A4 landscape em mm */
+        const PW = 297, PH = 210, margin = 10;
+        const HEADER_H = 14, FOOTER_H = 7;
+        const PAGE_CONTENT_H = PH - HEADER_H - FOOTER_H - margin; /* mm disponíveis por página */
+        const USABLE_W = PW - margin * 2;
+        const CAPTURE_SCALE = 2;
+
+        const PURPLE = [91, 33, 182];
+        const WHITE  = [255, 255, 255];
+        const DARK   = [30, 45, 61];
+        const LIGHT  = [248, 250, 252];
+
+        const now    = new Date().toLocaleDateString('pt-BR');
+        const periodo = (dashFilter.start && dashFilter.end)
+            ? `Período: ${isoToBR(dashFilter.start)} a ${isoToBR(dashFilter.end)}`
+            : 'Todos os períodos';
+
+        /* ── 1. Clona o conteúdo do modal para o proxy fora de tela ── */
+        const proxy = document.getElementById('pdfCaptureProxy');
+        const modalBody = document.getElementById('perfModalBody');
+
+        /* Copia o HTML renderizado do modal */
+        proxy.innerHTML = modalBody.innerHTML;
+        proxy.style.display = 'block';
+
+        /* Aguarda repintura (ícones de fonte, layout) */
+        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+        /* ── 2. Captura todo o proxy de uma vez com html2canvas ── */
+        const fullCanvas = await html2canvas(proxy, {
+            scale: CAPTURE_SCALE,
+            backgroundColor: '#f8fafc',
+            useCORS: true,
+            allowTaint: true,
+            logging: false,
+        });
+
+        proxy.style.display = 'none';
+        proxy.innerHTML = '';
+
+        /* ── 3. Mede as posições dos cards de agente no proxy ── */
+        /* (as medições são feitas ANTES de esconder o proxy) */
+        /* Já que proxy foi escondido acima, precisamos usar os dados do canvas.
+           Estratégia: dividimos por alturas conhecidas.
+           Como os cards têm alturas fixas similares, vamos usar a heurística
+           de slicing em múltiplos da altura da página. */
+
+        const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+        /* mm por pixel no canvas capturado */
+        const mmPerPx = USABLE_W / fullCanvas.width;
+        /* altura em pixels do espaço útil de conteúdo por página */
+        const pageContentPx = PAGE_CONTENT_H / mmPerPx;
+
+        let pageNum = 1;
+
+        /* Função auxiliar: desenha cabeçalho */
+        function drawHeader(pg) {
+            pdf.setFillColor(...PURPLE);
+            pdf.rect(0, 0, PW, HEADER_H, 'F');
+            pdf.setTextColor(...WHITE);
+            pdf.setFontSize(11);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('PROCON-RJ · Análise de Performance dos Agentes Socioeducadores', margin, 9.5);
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(8);
+            pdf.text(`${periodo}   |   Gerado em ${now}   |   Pág. ${pg}`, PW - margin, 9.5, { align: 'right' });
+        }
+
+        /* Função auxiliar: desenha rodapé */
+        function drawFooter() {
+            pdf.setFontSize(7);
+            pdf.setFont('helvetica', 'normal');
+            pdf.setTextColor(148, 163, 184);
+            pdf.text(
+                `PROCON-RJ · Relatório gerado em ${now} · ${periodo}`,
+                PW / 2, PH - 2, { align: 'center' }
+            );
+        }
+
+        /* ── 4. Re-mede os cards capturando posições ANTES de destruir o proxy ──
+           Para isso, vamos re-executar a captura de posições no próximo ciclo,
+           mas como o proxy já foi limpo, usamos uma segunda abordagem:
+           recriamos brevemente o proxy só para medir, sem capturar canvas. */
+
+        /* Rebuilda proxy apenas para medir posições */
+        proxy.innerHTML = modalBody.innerHTML;
+        proxy.style.display = 'block';
+        await new Promise(r => requestAnimationFrame(r));
+
+        const proxyCards = Array.from(proxy.querySelectorAll('.agent-card, .perf-summary-bar'));
+        const proxyRect  = proxy.getBoundingClientRect();
+
+        /* Pontos de quebra em pixels do canvas (CAPTURE_SCALE × posição relativa no proxy) */
+        const breakPts = [0]; /* sempre começa na posição 0 */
+        proxyCards.forEach(el => {
+            const r = el.getBoundingClientRect();
+            const relTop = (r.top - proxyRect.top) * CAPTURE_SCALE;
+            if (relTop > 0) breakPts.push(Math.round(relTop));
+        });
+        breakPts.push(fullCanvas.height); /* sentinela final */
+
+        proxy.style.display = 'none';
+        proxy.innerHTML = '';
+
+        /* Remove duplicatas e ordena */
+        const sortedBreaks = [...new Set(breakPts)].sort((a, b) => a - b);
+
+        /* ── 5. Fatia o canvas em páginas respeitando os pontos de quebra ── */
+        drawHeader(pageNum);
+        drawFooter();
+
+        let yCanvas = 0; /* posição atual no canvas em pixels */
+
+        while (yCanvas < fullCanvas.height) {
+            const maxYEnd = yCanvas + pageContentPx;
+
+            /* Encontra o maior ponto de quebra ≤ maxYEnd e > yCanvas */
+            let breakY = maxYEnd;
+            for (let i = sortedBreaks.length - 1; i >= 0; i--) {
+                const bp = sortedBreaks[i];
+                if (bp <= maxYEnd && bp > yCanvas) {
+                    breakY = bp;
+                    break;
+                }
+            }
+            /* Garante que avança pelo menos um pouco */
+            if (breakY <= yCanvas) breakY = Math.min(yCanvas + pageContentPx, fullCanvas.height);
+
+            const sliceHPx = Math.min(breakY, fullCanvas.height) - yCanvas;
+            if (sliceHPx <= 0) break;
+
+            /* Cria fatia do canvas */
+            const slice = document.createElement('canvas');
+            slice.width  = fullCanvas.width;
+            slice.height = sliceHPx;
+            const sCtx = slice.getContext('2d');
+            sCtx.fillStyle = '#f8fafc';
+            sCtx.fillRect(0, 0, slice.width, sliceHPx);
+            sCtx.drawImage(fullCanvas, 0, -yCanvas);
+
+            const imgData  = slice.toDataURL('image/jpeg', 0.93);
+            const sliceHMM = sliceHPx * mmPerPx;
+
+            pdf.addImage(imgData, 'JPEG', margin, HEADER_H + 1, USABLE_W, sliceHMM);
+
+            yCanvas = breakY;
+
+            if (yCanvas < fullCanvas.height) {
+                pdf.addPage();
+                pageNum++;
+                drawHeader(pageNum);
+                drawFooter();
+            }
+        }
+
+        pdf.save('Relatorio_Performance_Agentes_PROCON.pdf');
+    }
+
+    /* ── Botão "Análise de Performances" — só abre se houver dados ── */
+    document.getElementById('openPerfModalBtn').addEventListener('click', (e) => {
+        if (!rawData.length) {
+            e.preventDefault();
+            e.stopPropagation();
+            alert('Importe uma planilha primeiro para visualizar a análise de performances.');
+        }
+    });
+
 })();
 </script>
 </body>
