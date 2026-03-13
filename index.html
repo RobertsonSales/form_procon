@@ -214,6 +214,61 @@
         .pct-bar-fill { height: 100%; border-radius: 4px; }
         .pct-text { font-size: 0.8rem; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 40px; text-align: right; }
 
+        /* Fornecedores Mais Reclamados */
+        .supplier-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem; margin-bottom: 2rem;
+        }
+        .supplier-card {
+            background: white; border-radius: 16px; border: 1px solid #e2e8f0;
+            overflow: hidden; transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .supplier-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px -8px rgba(0,40,80,0.18); }
+        .supplier-card-header {
+            padding: 0.75rem 1.1rem; display: flex; align-items: center; gap: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+        .supplier-cat-icon {
+            width: 34px; height: 34px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; flex-shrink: 0;
+        }
+        .supplier-cat-label { font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; }
+        .supplier-card-body { padding: 0.9rem 1.1rem; }
+        .supplier-top-name {
+            font-size: 1.05rem; font-weight: 800; color: #1e2d3d;
+            margin-bottom: 4px; word-break: break-word;
+        }
+        .supplier-top-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 0.7rem; font-weight: 700; padding: 2px 8px;
+            border-radius: 20px; margin-bottom: 10px;
+        }
+        .supplier-ranking { list-style: none; padding: 0; margin: 0; }
+        .supplier-ranking li {
+            display: flex; align-items: center; gap: 8px;
+            padding: 4px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.82rem;
+        }
+        .supplier-ranking li:last-child { border-bottom: none; }
+        .supplier-rank-num {
+            width: 20px; height: 20px; border-radius: 6px; background: #f1f5f9;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.65rem; font-weight: 800; color: #64748b; flex-shrink: 0;
+        }
+        .supplier-rank-bar-wrap { flex: 1; display: flex; align-items: center; gap: 5px; }
+        .supplier-rank-bar-bg { flex: 1; height: 5px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+        .supplier-rank-bar-fill { height: 100%; border-radius: 4px; }
+        .supplier-rank-fichas { font-size: 0.72rem; font-weight: 700; min-width: 38px; text-align: right; font-variant-numeric: tabular-nums; }
+        .supplier-empty { color: #94a3b8; font-style: italic; font-size: 0.85rem; padding: 0.5rem 0; }
+        .supplier-card-global {
+            border-color: #002856 !important;
+            box-shadow: 0 4px 16px -4px rgba(0,40,86,0.18);
+        }
+        .supplier-card-global .supplier-card-header {
+            background: linear-gradient(135deg, #001f4e08, #003b7a12) !important;
+            border-bottom-color: #002856 !important;
+        }
+
         /* Localidades */
         .location-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;
@@ -531,7 +586,7 @@
         <div class="dash-section-header">
             <div class="dash-title">
                 <h3><i class="fas fa-chart-column me-2"></i>Painel de Indicadores de Atendimento</h3>
-                <p>Importe a planilha completa (abas: Lançamento Diário e Localidades)</p>
+                <p>Importe a planilha completa (abas: Lançamento Diário e Localidades) — inclui ranking de fornecedores por reclamações</p>
             </div>
             <label for="xlsxImport" class="btn-dash-import no-print">
                 <i class="fas fa-file-excel"></i> Importar Planilha (.xlsx)
@@ -559,8 +614,7 @@
         <div class="dash-import-hint" id="dashImportHint">
             <div class="hint-icon"><i class="fas fa-table"></i></div>
             <h5>Nenhum dado carregado</h5>
-            <p>Clique em <strong>"Importar Planilha"</strong> e selecione o arquivo <code>.xlsx</code> contendo as abas <code>Lançamento Diário</code> e <code>Localidades</code>.</p>
-        </div>
+            <p>Clique em <strong>"Importar Planilha"</strong> e selecione o arquivo <code>.xlsx</code> contendo as abas <code>Lançamento Diário</code> e <code>Localidades</code>.</p>        </div>
 
         <!-- Conteúdo do dashboard -->
         <div id="dashContent" style="display:none">
@@ -572,7 +626,7 @@
             <div class="location-grid" id="locationGrid">
                 <div class="location-table-wrap">
                     <table class="location-table">
-                        <thead><tr><th>Localidade</th><th>Nº de Visitas</th><th style="text-align:right">Fichas Coletadas</th></tr></thead>
+                        <thead><tr><th>Localidade</th><th style="text-align:center">Nº de Visitas</th><th style="text-align:center">Fichas Coletadas</th></tr></thead>
                         <tbody id="locationTableBody"></tbody>
                     </table>
                 </div>
@@ -581,8 +635,10 @@
                 </div>
             </div>
 
-            <div class="dash-section-title"><i class="fas fa-layer-group" style="color:#8b5cf6"></i> Indicadores por Categoria</div>
-            <div class="category-grid" id="categoryGrid"></div>
+            <div class="dash-section-title"><i class="fas fa-building-circle-exclamation" style="color:#dc2626"></i> Fornecedores Mais Reclamados</div>
+            <div class="supplier-grid" id="supplierGrid"></div>
+
+            <div class="dash-section-title"><i class="fas fa-layer-group" style="color:#8b5cf6"></i> Indicadores por Categoria</div>            <div class="category-grid" id="categoryGrid"></div>
 
             <div class="dash-section-title"><i class="fas fa-table-list" style="color:#10b981"></i> Detalhamento por Pergunta</div>
             <div class="metrics-table-wrap">
@@ -674,30 +730,30 @@
        CONFIGURAÇÃO DAS PERGUNTAS
     ───────────────────────────────────────────────────────────────── */
     const QUESTIONS = [
-        { id: 'G1',  sim: 4,  label: 'Dir. consumidor',   full: 'Conhece seus direitos em defesa do consumidor?',           cat: 'Geral' },
-        { id: 'G2',  sim: 6,  label: 'CDC',               full: 'Conhece o Código de Defesa do Consumidor (CDC)?',          cat: 'Geral' },
-        { id: 'G3',  sim: 8,  label: 'Secret. Consumidor',full: 'Conhece a Secretaria Municipal de Defesa do Consumidor?',  cat: 'Geral' },
-        { id: 'G4',  sim: 10, label: 'Procon Carioca',    full: 'Conhece o Procon Municipal (Carioca)?',                    cat: 'Geral' },
-        { id: 'G5',  sim: 12, label: 'Ajuda Procon',      full: 'Sabe como pedir ajuda ao Procon Carioca?',                 cat: 'Geral' },
-        { id: 'I1',  sim: 14, label: 'Utiliza internet',  full: 'Utiliza internet?',                                        cat: 'Internet e Compras Online' },
-        { id: 'I2',  sim: 16, label: 'Compras online',    full: 'Faz compras pela internet?',                               cat: 'Internet e Compras Online' },
-        { id: 'I3',  sim: 18, label: 'Prob. compras online', full: 'Já teve problema com compras online?',                  cat: 'Internet e Compras Online' },
-        { id: 'F1',  sim: 20, label: 'Conta bancária',    full: 'Possui conta bancária?',                                   cat: 'Educação Financeira' },
-        { id: 'F2',  sim: 22, label: 'Prob. banco',       full: 'Já teve problema com o banco?',                            cat: 'Educação Financeira' },
-        { id: 'F3',  sim: 24, label: 'Consignado',        full: 'Possui empréstimo consignado?',                            cat: 'Educação Financeira' },
-        { id: 'F4',  sim: 26, label: 'Salário cobre desp.',full: 'Seu salário cobre suas despesas?',                        cat: 'Educação Financeira' },
-        { id: 'F5',  sim: 28, label: 'Dívida mensal',     full: 'Fica dívida para o mês seguinte?',                         cat: 'Educação Financeira' },
-        { id: 'F6',  sim: 30, label: 'Outras dívidas',    full: 'Possui outras dívidas?',                                   cat: 'Educação Financeira' },
-        { id: 'F7',  sim: 32, label: 'SCPC/Serasa',       full: 'Possui nome no SCPC, Serasa ou semelhantes?',              cat: 'Educação Financeira' },
-        { id: 'F8',  sim: 34, label: 'Renegociar dívidas',full: 'Possui interesse em renegociar dívidas?',                  cat: 'Educação Financeira' },
-        { id: 'T1',  sim: 36, label: 'Prob. telefonia',   full: 'Já teve problema com telefonia?',                          cat: 'Telefonia e Internet' },
-        { id: 'T2',  sim: 38, label: 'Prob. internet',    full: 'Já teve problema com internet?',                           cat: 'Telefonia e Internet' },
-        { id: 'S1',  sim: 40, label: 'Água e luz',        full: 'Possui fornecimento de água e luz?',                       cat: 'Serviços Essenciais' },
-        { id: 'S2',  sim: 42, label: 'Prob. água',        full: 'Já teve problema com a fornecedora de água?',              cat: 'Serviços Essenciais' },
-        { id: 'S3',  sim: 44, label: 'Prob. luz',         full: 'Já teve problema com a prestadora de luz?',                cat: 'Serviços Essenciais' },
-        { id: 'GA1', sim: 46, label: 'Gás encanado',      full: 'Possui gás encanado?',                                     cat: 'Gás' },
-        { id: 'GA2', sim: 48, label: 'Gás botijão',       full: 'Possui gás botijão?',                                      cat: 'Gás' },
-        { id: 'GA3', sim: 50, label: 'Prob. gás',         full: 'Teve algum problema com gás?',                             cat: 'Gás' },
+        { id: 'G1',  sim: 8,  label: 'Dir. consumidor',   full: 'Conhece seus direitos em defesa do consumidor?',           cat: 'Geral' },
+        { id: 'G2',  sim: 10, label: 'CDC',               full: 'Conhece o Código de Defesa do Consumidor (CDC)?',          cat: 'Geral' },
+        { id: 'G3',  sim: 12, label: 'Secret. Consumidor',full: 'Conhece a Secretaria Municipal de Defesa do Consumidor?',  cat: 'Geral' },
+        { id: 'G4',  sim: 14, label: 'Procon Carioca',    full: 'Conhece o Procon Municipal (Carioca)?',                    cat: 'Geral' },
+        { id: 'G5',  sim: 16, label: 'Ajuda Procon',      full: 'Sabe como pedir ajuda ao Procon Carioca?',                 cat: 'Geral' },
+        { id: 'I1',  sim: 18, label: 'Utiliza internet',  full: 'Utiliza internet?',                                        cat: 'Internet e Compras Online' },
+        { id: 'I2',  sim: 20, label: 'Compras online',    full: 'Faz compras pela internet?',                               cat: 'Internet e Compras Online' },
+        { id: 'I3',  sim: 22, label: 'Prob. compras online', full: 'Já teve problema com compras online?',                  cat: 'Internet e Compras Online' },
+        { id: 'F1',  sim: 24, label: 'Conta bancária',    full: 'Possui conta bancária?',                                   cat: 'Educação Financeira' },
+        { id: 'F2',  sim: 26, label: 'Prob. banco',       full: 'Já teve problema com o banco?',                            cat: 'Educação Financeira' },
+        { id: 'F3',  sim: 28, label: 'Consignado',        full: 'Possui empréstimo consignado?',                            cat: 'Educação Financeira' },
+        { id: 'F4',  sim: 30, label: 'Salário cobre desp.',full: 'Seu salário cobre suas despesas?',                        cat: 'Educação Financeira' },
+        { id: 'F5',  sim: 32, label: 'Dívida mensal',     full: 'Fica dívida para o mês seguinte?',                         cat: 'Educação Financeira' },
+        { id: 'F6',  sim: 34, label: 'Outras dívidas',    full: 'Possui outras dívidas?',                                   cat: 'Educação Financeira' },
+        { id: 'F7',  sim: 36, label: 'SCPC/Serasa',       full: 'Possui nome no SCPC, Serasa ou semelhantes?',              cat: 'Educação Financeira' },
+        { id: 'F8',  sim: 38, label: 'Renegociar dívidas',full: 'Possui interesse em renegociar dívidas?',                  cat: 'Educação Financeira' },
+        { id: 'T1',  sim: 40, label: 'Prob. telefonia',   full: 'Já teve problema com telefonia?',                          cat: 'Telefonia e Internet' },
+        { id: 'T2',  sim: 42, label: 'Prob. internet',    full: 'Já teve problema com internet?',                           cat: 'Telefonia e Internet' },
+        { id: 'S1',  sim: 44, label: 'Água e luz',        full: 'Possui fornecimento de água e luz?',                       cat: 'Serviços Essenciais' },
+        { id: 'S2',  sim: 46, label: 'Prob. água',        full: 'Já teve problema com a fornecedora de água?',              cat: 'Serviços Essenciais' },
+        { id: 'S3',  sim: 48, label: 'Prob. luz',         full: 'Já teve problema com a prestadora de luz?',                cat: 'Serviços Essenciais' },
+        { id: 'GA1', sim: 50, label: 'Gás encanado',      full: 'Possui gás encanado?',                                     cat: 'Gás' },
+        { id: 'GA2', sim: 52, label: 'Gás botijão',       full: 'Possui gás botijão?',                                      cat: 'Gás' },
+        { id: 'GA3', sim: 54, label: 'Prob. gás',         full: 'Teve algum problema com gás?',                             cat: 'Gás' },
     ];
 
     const CATEGORIES = ['Geral', 'Internet e Compras Online', 'Educação Financeira', 'Telefonia e Internet', 'Serviços Essenciais', 'Gás'];
@@ -801,13 +857,19 @@
                     const row = rowsLanc[i];
                     if (!row || !row[0]) continue;
                     const date = rowDateToISO(row[0]);
-                    if (!date) continue;
+                    /* Rejeita linhas de cabeçalho ou inválidas — exige formato AAAA-MM-DD */
+                    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
                     const local    = row[1] ? row[1].toString().trim() : '';
                     const educator = row[2] ? row[2].toString().trim() : '';
                     const fichas   = toNumber(row[3]);
+                    /* ── Novas colunas de fornecedores (cols 4-7) ── */
+                    const energia   = row[4] ? row[4].toString().trim() : '';
+                    const agua      = row[5] ? row[5].toString().trim() : '';
+                    const telefonia = row[6] ? row[6].toString().trim() : '';
+                    const comercial = row[7] ? row[7].toString().trim() : '';
                     const vals     = [];
-                    for (let col = 0; col <= 51; col++) vals[col] = toNumber(row[col]);
-                    newData.push({ date, local, educator, fichas, vals });
+                    for (let col = 0; col <= 55; col++) vals[col] = toNumber(row[col]);
+                    newData.push({ date, local, educator, fichas, energia, agua, telefonia, comercial, vals });
                 }
 
                 if (newData.length === 0) {
@@ -939,14 +1001,20 @@
     function computeVisitsByLocation() {
         const filtered = getFiltered();
         const norm = s => s.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-        const countMap  = {};
+        /* Datas distintas por localidade (uma incursão = uma data, independente do nº de agentes) */
+        const datesMap  = {};
         const fichasMap = {};
         filtered.forEach(r => {
             if (!r.local) return;
             const key = norm(r.local);
-            countMap[key]  = (countMap[key]  || 0) + 1;
+            if (!datesMap[key]) datesMap[key] = new Set();
+            datesMap[key].add(r.date);                    /* contabiliza a data da incursão */
             fichasMap[key] = (fichasMap[key] || 0) + r.fichas;
         });
+        /* Converte o conjunto de datas no número de incursões distintas */
+        const countMap = {};
+        Object.keys(datesMap).forEach(key => { countMap[key] = datesMap[key].size; });
+
         const result = locations.length
             ? locations.map(loc => ({
                 local:  loc,
@@ -955,12 +1023,143 @@
               }))
             : Object.keys(countMap)
                 .map(key => {
-                    /* recupera o nome original da primeira linha correspondente */
                     const origRow = filtered.find(r => r.local && norm(r.local) === key);
                     return { local: origRow ? origRow.local : key, visits: countMap[key], fichas: fichasMap[key] };
                 })
                 .sort((a, b) => a.local.localeCompare(b.local, 'pt-BR'));
         return result;
+    }
+
+    /* ─────────────────────────────────────────────────────────────────
+       FORNECEDORES MAIS MENCIONADOS
+    ───────────────────────────────────────────────────────────────── */
+    const SUPPLIER_CATS = [
+        { key: 'energia',   label: 'Energia Elétrica',     icon: 'fas fa-bolt',          color: '#f59e0b', light: '#fffbeb' },
+        { key: 'agua',      label: 'Abastecimento de Água', icon: 'fas fa-droplet',       color: '#06b6d4', light: '#ecfeff' },
+        { key: 'telefonia', label: 'Telefonia e Internet',  icon: 'fas fa-wifi',          color: '#8b5cf6', light: '#f5f3ff' },
+        { key: 'comercial', label: 'Empresas Comerciais',   icon: 'fas fa-store',         color: '#10b981', light: '#ecfdf5' },
+    ];
+
+    function computeSupplierRankings() {
+        const filtered = getFiltered();
+        const result = {};
+        SUPPLIER_CATS.forEach(cat => {
+            const tally = {};
+            filtered.forEach(r => {
+                const val = r[cat.key];
+                if (!val) return;
+                tally[val] = (tally[val] || 0) + r.fichas;
+            });
+            const sorted = Object.entries(tally)
+                .map(([name, fichas]) => ({ name, fichas }))
+                .sort((a, b) => b.fichas - a.fichas);
+            result[cat.key] = sorted;
+        });
+
+        /* Ranking geral — agrega todas as categorias num único placar */
+        const globalTally = {};
+        SUPPLIER_CATS.forEach(cat => {
+            filtered.forEach(r => {
+                const val = r[cat.key];
+                if (!val) return;
+                globalTally[val] = (globalTally[val] || 0) + r.fichas;
+            });
+        });
+        result['geral'] = Object.entries(globalTally)
+            .map(([name, fichas]) => ({ name, fichas }))
+            .sort((a, b) => b.fichas - a.fichas);
+
+        return result;
+    }
+
+    function renderSupplierGrid() {
+        const rankings = computeSupplierRankings();
+        const grid = document.getElementById('supplierGrid');
+
+        /* ── Cards por categoria ── */
+        const catCards = SUPPLIER_CATS.map(cat => {
+            const list = rankings[cat.key] || [];
+            const top  = list[0];
+            const maxF = top ? top.fichas : 1;
+
+            const rankingHtml = list.length === 0
+                ? `<p class="supplier-empty">Nenhum fornecedor registrado no período.</p>`
+                : `<ul class="supplier-ranking">
+                    ${list.slice(0, 5).map((item, i) => `
+                        <li>
+                            <span class="supplier-rank-num">${i + 1}</span>
+                            <span style="flex:1;font-weight:${i === 0 ? 700 : 500};overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${item.name}">${item.name}</span>
+                            <div class="supplier-rank-bar-wrap">
+                                <div class="supplier-rank-bar-bg">
+                                    <div class="supplier-rank-bar-fill" style="width:${Math.round(item.fichas / maxF * 100)}%;background:${cat.color}"></div>
+                                </div>
+                                <span class="supplier-rank-fichas" style="color:${cat.color}">${fmt(item.fichas)}</span>
+                            </div>
+                        </li>`).join('')}
+                   </ul>`;
+
+            return `
+            <div class="supplier-card">
+                <div class="supplier-card-header" style="background:${cat.light}">
+                    <div class="supplier-cat-icon" style="background:${cat.color}20;color:${cat.color}">
+                        <i class="${cat.icon}"></i>
+                    </div>
+                    <div>
+                        <div class="supplier-cat-label" style="color:${cat.color}">${cat.label}</div>
+                        ${top ? `<div style="font-size:0.7rem;color:#64748b;margin-top:1px">${list.length} fornecedor(es) registrado(s)</div>` : ''}
+                    </div>
+                </div>
+                <div class="supplier-card-body">
+                    ${top ? `
+                    <div class="supplier-top-name">${top.name}</div>
+                    <span class="supplier-top-badge" style="background:${cat.color}18;color:${cat.color}">
+                        <i class="fas fa-trophy" style="font-size:0.65rem"></i> Mais mencionado · ${fmt(top.fichas)} ficha(s)
+                    </span>` : ''}
+                    ${rankingHtml}
+                </div>
+            </div>`;
+        }).join('');
+
+        /* ── Card de ranking geral consolidado ── */
+        const gList = rankings['geral'] || [];
+        const gTop  = gList[0];
+        const gMax  = gTop ? gTop.fichas : 1;
+        const RANK_COLORS = ['#f59e0b','#94a3b8','#ef8c3a','#64748b','#a3b8cc'];
+
+        const globalCardHtml = gList.length === 0 ? '' : `
+        <div class="supplier-card supplier-card-global">
+            <div class="supplier-card-header" style="background:linear-gradient(135deg,#1e2d3d10,#002856 08)">
+                <div class="supplier-cat-icon" style="background:#002856;color:#fff">
+                    <i class="fas fa-ranking-star"></i>
+                </div>
+                <div>
+                    <div class="supplier-cat-label" style="color:#002856">Ranking Geral de Reclamações</div>
+                    <div style="font-size:0.7rem;color:#64748b;margin-top:1px">${gList.length} empresa(s) · todas as categorias</div>
+                </div>
+            </div>
+            <div class="supplier-card-body">
+                ${gTop ? `
+                <div class="supplier-top-name">${gTop.name}</div>
+                <span class="supplier-top-badge" style="background:#00285618;color:#002856">
+                    <i class="fas fa-trophy" style="font-size:0.65rem"></i> Empresa mais reclamada · ${fmt(gTop.fichas)} ficha(s)
+                </span>` : ''}
+                <ul class="supplier-ranking">
+                    ${gList.slice(0, 8).map((item, i) => `
+                        <li>
+                            <span class="supplier-rank-num" style="background:${RANK_COLORS[Math.min(i,4)]}28;color:${RANK_COLORS[Math.min(i,4)]}">${i + 1}</span>
+                            <span style="flex:1;font-weight:${i < 3 ? 700 : 500};overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${item.name}">${item.name}</span>
+                            <div class="supplier-rank-bar-wrap">
+                                <div class="supplier-rank-bar-bg">
+                                    <div class="supplier-rank-bar-fill" style="width:${Math.round(item.fichas / gMax * 100)}%;background:#002856"></div>
+                                </div>
+                                <span class="supplier-rank-fichas" style="color:#002856">${fmt(item.fichas)}</span>
+                            </div>
+                        </li>`).join('')}
+                </ul>
+            </div>
+        </div>`;
+
+        grid.innerHTML = catCards + globalCardHtml;
     }
 
     /* ─────────────────────────────────────────────────────────────────
@@ -978,6 +1177,7 @@
         renderCategoryGrid(m);
         renderMetricsTable(m);
         renderLocationCard();
+        renderSupplierGrid();
     }
 
     function renderKPIs(m) {
@@ -1102,13 +1302,13 @@
         locationTableBody.innerHTML = visits.map(v => `
             <tr>
                 <td>${v.local}</td>
-                <td style="text-align:right"><strong>${v.visits}</strong></td>
-                <td style="text-align:right;font-weight:700;color:#007bff">${fmt(v.fichas)}</td>
+                <td style="text-align:center"><strong>${v.visits}</strong></td>
+                <td style="text-align:center;font-weight:700;color:#007bff">${fmt(v.fichas)}</td>
             </tr>`).join('') + `
             <tr style="background:#e8f0fe;font-weight:800;border-top:2px solid #bfdbfe">
                 <td style="color:#1e2d3d">TOTAL</td>
-                <td style="text-align:right;color:#1e2d3d">${totalVisits}</td>
-                <td style="text-align:right;color:#007bff">${fmt(totalFichasLoc)}</td>
+                <td style="text-align:center;color:#1e2d3d">${totalVisits}</td>
+                <td style="text-align:center;color:#007bff">${fmt(totalFichasLoc)}</td>
             </tr>`;
         if (locationChart) locationChart.destroy();
         const ctx = locationCanvas.getContext('2d');
