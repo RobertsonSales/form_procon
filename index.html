@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Todos os estilos originais foram mantidos na íntegra */
+        /* Todos os estilos originais foram mantidos na íntegra, com acréscimos para o novo comportamento retrátil */
         :root {
             --procon-navy: #002856;
             --procon-blue: #007bff;
@@ -340,6 +340,18 @@
         }
         .dash-section-title::after { content: ''; flex: 1; height: 2px; background: #e2e8f0; }
 
+        /* Título da tabela de métricas com ícone retrátil */
+        .dash-section-title.collapsible {
+            cursor: pointer;
+            user-select: none;
+        }
+        .dash-section-title.collapsible i {
+            transition: transform 0.2s;
+        }
+        .dash-section-title.collapsible.collapsed i {
+            transform: rotate(-90deg);
+        }
+
         .category-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.2rem; margin-bottom: 2rem;
@@ -368,6 +380,15 @@
         .metrics-table-wrap {
             border-radius: 14px; overflow-x: auto; border: 1px solid #e2e8f0;
             -webkit-overflow-scrolling: touch;
+            transition: max-height 0.3s ease, opacity 0.2s;
+        }
+        .metrics-table-wrap.collapsed {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            border: none;
+            margin: 0;
+            padding: 0;
         }
         .metrics-table {
             width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 900px;
@@ -454,7 +475,7 @@
         #pdfIframe { width: 100%; height: 680px; border: none; border-radius: 8px; }
 
         /* ══════════════════════════════════════════════════════════════
-           MODAL DE PERFORMANCE DOS AGENTES SOCIOEDUCADORES
+           MODAL DE PERFORMANCE DOS AGENTES SOCIOEDUCADORES (com alterações)
         ══════════════════════════════════════════════════════════════ */
         #perfModal .modal-dialog { max-width: 1100px; }
         #perfModal .modal-content {
@@ -505,10 +526,11 @@
             border-radius: 14px;
             background: linear-gradient(135deg, #7c3aed, #5b21b6);
             display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.3rem; font-weight: 800;
+            color: white; font-size: 1.3rem;
             flex-shrink: 0;
             box-shadow: 0 4px 10px -2px rgba(124,58,237,0.4);
         }
+        .agent-avatar i { font-size: 1.5rem; } /* ícone no lugar da sigla */
         .agent-info { flex: 1; min-width: 0; }
         .agent-name { font-size: 1.1rem; font-weight: 800; color: #1e2d3d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .agent-subtitle { font-size: 0.78rem; color: #64748b; margin-top: 2px; }
@@ -850,7 +872,7 @@
         <!-- Status da importação -->
         <div id="dashImportStatus" style="display:none"></div>
 
-        <!-- Filtros de data e botões PDF (exceto botão de apostas, que foi movido) -->
+        <!-- Filtros de data e botões PDF -->
         <div class="dash-filter-bar no-print" id="dashFilterBar" style="display:none">
             <div><label>Data inicial</label><input type="date" id="dashStart"></div>
             <div><label>Data final</label><input type="date" id="dashEnd"></div>
@@ -905,8 +927,11 @@
             <div class="dash-section-title"><i class="fas fa-layer-group" style="color:#8b5cf6"></i> Indicadores por Categoria</div>
             <div class="category-grid" id="categoryGrid"></div>
 
-            <div class="dash-section-title"><i class="fas fa-table-list" style="color:#10b981"></i> Detalhamento por Pergunta</div>
-            <div class="metrics-table-wrap">
+            <!-- Título da tabela de métricas com ícone retrátil (inicialmente recolhido) -->
+            <div class="dash-section-title collapsible collapsed" id="toggleMetricsTable">
+                <i class="fas fa-chevron-down" style="font-size:0.9rem"></i> Detalhamento por Pergunta
+            </div>
+            <div class="metrics-table-wrap collapsed" id="metricsTableWrap">
                 <table class="metrics-table" id="metricsTable">
                     <thead><tr><th>ID</th><th>Categoria</th><th>Pergunta</th><th>Total SIM</th><th>Total NÃO</th><th>Total Resp.</th><th>% SIM</th><th>% NÃO</th></tr></thead>
                     <tbody id="metricsTableBody"></tbody>
@@ -940,7 +965,7 @@
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════
-     MODAL: ANÁLISE DE PERFORMANCE DOS AGENTES SOCIOEDUCADORES
+     MODAL: ANÁLISE DE PERFORMANCE DOS AGENTES SOCIOEDUCADORES (com alterações)
 ══════════════════════════════════════════════════════════════════ -->
 <div class="modal fade" id="perfModal" tabindex="-1" aria-labelledby="perfModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
@@ -982,7 +1007,7 @@
 <div id="escalaPdfProxy" aria-hidden="true"></div>
 
 <!-- ══════════════════════════════════════════════════════════════════
-     MODAL: ESCALA DE SERVIÇO (com grade e coluna de nomes ampliada)
+     MODAL: ESCALA DE SERVIÇO (com período e coluna de serviço)
 ══════════════════════════════════════════════════════════════════ -->
 <div class="modal fade" id="escalaModal" tabindex="-1" aria-labelledby="escalaModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
@@ -997,6 +1022,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="escalaModalBody">
+                <!-- O conteúdo será preenchido dinamicamente pelo JS, incluindo os campos de período -->
                 <div class="text-center py-5 text-muted">
                     <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
                     <p>Carregando escala…</p>
@@ -1085,7 +1111,7 @@
     };
 
     /* ─────────────────────────────────────────────────────────────────
-       NOVO: CONFIGURAÇÃO DAS PERGUNTAS DA ABA BET's (apenas SIM)
+       CONFIGURAÇÃO DAS PERGUNTAS DA ABA BET's (apenas SIM)
     ───────────────────────────────────────────────────────────────── */
     const BET_QUESTIONS = [
         { id: 'B1', pergunta: 'Conhece atividades de jogos on-line?', simIdx: 4 },
@@ -1115,7 +1141,7 @@
     let betData      = [];
     let chartInst    = {};
     let locationChart = null;
-    let dashFilter   = { start: '', end: '' };  // Inicialmente vazio
+    let dashFilter   = { start: '', end: '' };
     let escalaData   = { headers: [], rows: [], isNativeMatrix: false,
                          agentCol: -1, metaCols: [], dayCols: [] };
 
@@ -1132,6 +1158,20 @@
     const toastEl         = document.getElementById('pdfToast');
     const toast           = new bootstrap.Toast(toastEl, { autohide: true, delay: 4000 });
     const betSection      = document.getElementById('betSection');
+    const toggleMetrics   = document.getElementById('toggleMetricsTable');
+    const metricsWrap     = document.getElementById('metricsTableWrap');
+
+    // Evento para expandir/recolher a tabela de métricas
+    toggleMetrics.addEventListener('click', () => {
+        const isCollapsed = toggleMetrics.classList.contains('collapsed');
+        if (isCollapsed) {
+            toggleMetrics.classList.remove('collapsed');
+            metricsWrap.classList.remove('collapsed');
+        } else {
+            toggleMetrics.classList.add('collapsed');
+            metricsWrap.classList.add('collapsed');
+        }
+    });
 
     /* ─────────────────────────────────────────────────────────────────
        UTILITÁRIOS
@@ -1291,7 +1331,7 @@
                     }
                 }
 
-                /* 4. NOVO: Aba "BET's" - extrai apenas os SIMs (colunas pares) */
+                /* 4. Aba "BET's" - extrai apenas os SIMs (colunas pares) */
                 const sheetNameBet = wb.SheetNames.find(n => n.toLowerCase().includes('bet') || n.includes("BET"));
                 betData = [];
                 if (sheetNameBet) {
@@ -1875,28 +1915,30 @@
         const contentRect = content.getBoundingClientRect();
         const breakPts = new Set([0]);
 
-        // Adiciona pontos de quebra nos elementos principais, com uma margem de segurança
-        const elements = [
-            ...content.querySelectorAll('.kpi-grid'),
-            ...content.querySelectorAll('.location-grid'),
-            ...content.querySelectorAll('.category-grid'),
-            ...content.querySelectorAll('.supplier-grid'),
-            ...content.querySelectorAll('.bet-section'),
-            ...content.querySelectorAll('.dash-section-title'),
-            ...content.querySelectorAll('#metricsTable thead'),
-        ];
-        elements.forEach(el => {
+        // Função auxiliar para adicionar pontos de quebra com margem de segurança
+        function addBreakPoint(el, offset = -10) {
             const relTop = (el.getBoundingClientRect().top - contentRect.top) * SCALE;
-            // Adiciona um ponto um pouco antes do elemento para evitar corte
-            const safeTop = Math.max(0, relTop - 10);
+            const safeTop = Math.max(0, relTop + offset);
             if (safeTop > 1) breakPts.add(Math.round(safeTop));
+        }
+
+        // Adiciona pontos de quebra para blocos principais
+        const blockSelectors = [
+            '.kpi-grid', '.location-grid', '.category-grid', '.supplier-grid',
+            '.bet-section', '#toggleMetricsTable', '.metrics-table-wrap'
+        ];
+        blockSelectors.forEach(sel => {
+            content.querySelectorAll(sel).forEach(el => addBreakPoint(el, -15));
         });
 
-        // Adiciona pontos nas linhas da tabela de métricas para evitar cortes no meio de uma linha
+        // Adiciona pontos nas linhas da tabela de métricas (para evitar cortes no meio de uma linha)
         const tbodyRows = Array.from(content.querySelectorAll('#metricsTableBody tr'));
-        tbodyRows.slice(1).forEach(row => {
-            const relTop = (row.getBoundingClientRect().top - contentRect.top) * SCALE;
-            if (relTop > 1) breakPts.add(Math.round(relTop));
+        tbodyRows.slice(1).forEach(row => addBreakPoint(row, 0));
+
+        // Adiciona pontos para garantir que blocos inteiros não sejam cortados
+        // Por exemplo, supplier-grid pode ter vários cards; queremos que, se um card não couber inteiro, vá para a próxima página
+        content.querySelectorAll('.supplier-card, .cat-card, .bet-card').forEach(el => {
+            addBreakPoint(el, -20); // margem um pouco maior
         });
 
         breakPts.add(fullCanvas.height);
@@ -1996,7 +2038,7 @@
     });
 
     /* ═══════════════════════════════════════════════════════════════════
-       ANÁLISE DE PERFORMANCE DOS AGENTES SOCIOEDUCADORES (corrigido)
+       ANÁLISE DE PERFORMANCE DOS AGENTES SOCIOEDUCADORES (com alterações)
     ═══════════════════════════════════════════════════════════════════ */
     function computeAgentMetrics() {
         const filtered = getFiltered();
@@ -2102,9 +2144,10 @@
         const allDates = new Set();
         getFiltered().forEach(r => allDates.add(r.date));
         const totalSessoesAll = allDates.size;
-        // Total de visitas com localidade: soma de localidades distintas por agente? Ou total de registros?
-        // Vamos manter a lógica original: soma de localidades distintas por agente (pode ser ajustado se necessário)
-        const totalVisitasLocalidade = agents.reduce((s, a) => s + a.totalLocs, 0);
+        // Total de localidades distintas no período (corrigido)
+        const allLocations = new Set();
+        getFiltered().forEach(r => { if (r.local) allLocations.add(r.local); });
+        const totalLocalidadesDistintas = allLocations.size;
 
         let html = `
         <div class="perf-summary-bar">
@@ -2121,8 +2164,8 @@
                 <span class="psl">Fichas Coletadas</span>
             </div>
             <div class="perf-summary-item">
-                <span class="psv">${totalVisitasLocalidade}</span>
-                <span class="psl">Visitas c/ localidade</span>
+                <span class="psv">${totalLocalidadesDistintas}</span>
+                <span class="psl">Localidades Distintas</span>
             </div>
             <div class="perf-summary-item">
                 <span class="psv" style="font-size:1.2rem">${(dashFilter.start && dashFilter.end) ? isoToBR(dashFilter.start) + ' – ' + isoToBR(dashFilter.end) : '—'}</span>
@@ -2132,7 +2175,6 @@
 
         agents.forEach((ag, idx) => {
             const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : 'rank-other';
-            const initials  = ag.name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
             const maxLocV   = ag.locsArr.length ? ag.locsArr[0].visits : 1;
 
             const catLegendHtml = `
@@ -2177,7 +2219,7 @@
             html += `
             <div class="agent-card">
                 <div class="agent-card-header">
-                    <div class="agent-avatar">${initials || '?'}</div>
+                    <div class="agent-avatar"><i class="fas fa-user"></i></div> <!-- ícone genérico -->
                     <div class="agent-info">
                         <div class="agent-name">
                             <span class="rank-badge ${rankClass} me-2">${idx + 1}º</span>
@@ -2185,7 +2227,7 @@
                         </div>
                         <div class="agent-subtitle">
                             <span class="me-3"><i class="fas fa-calendar-day me-1 opacity-60"></i>${ag.sessoes} sessão(ões)</span>
-                            <span class="me-3"><i class="fas fa-map-marker-alt me-1 opacity-60"></i>${ag.totalLocs} localidade(s)</span>
+                            <span class="me-3"><i class="fas fa-map-marker-alt me-1 opacity-60"></i>${ag.totalLocs} localidade(s) visitadas</span>
                             <span><i class="fas fa-percentage me-1 opacity-60"></i>% SIM global: <strong style="color:#5b21b6">${fmtPct(ag.globalPctSim)}</strong></span>
                         </div>
                     </div>
@@ -2387,7 +2429,7 @@
     });
 
     /* ═══════════════════════════════════════════════════════════════════
-       ESCALA DE SERVIÇO (com as melhorias solicitadas)
+       ESCALA DE SERVIÇO (com período e coluna de serviço)
     ═══════════════════════════════════════════════════════════════════ */
 
     function turnoCls(t) {
@@ -2460,6 +2502,23 @@
             : 'Todos os períodos';
         renderEscalaModal();
     });
+
+    function getPeriodInputsHTML() {
+        // Define valores padrão a partir do filtro global, se existirem
+        const startVal = dashFilter.start || '';
+        const endVal = dashFilter.end || '';
+        return `
+        <div class="escala-period-inputs" style="display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-end; background: white; padding: 1rem; border-radius: 16px; border: 1px solid #bae6fd;">
+            <div style="flex:1">
+                <label style="font-size:0.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:4px;">Data Inicial da Escala</label>
+                <input type="date" id="escalaStartDate" value="${startVal}" style="width:100%;border:2px solid #e2e8f0;border-radius:10px;padding:8px 12px;">
+            </div>
+            <div style="flex:1">
+                <label style="font-size:0.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:4px;">Data Final da Escala</label>
+                <input type="date" id="escalaEndDate" value="${endVal}" style="width:100%;border:2px solid #e2e8f0;border-radius:10px;padding:8px 12px;">
+            </div>
+        </div>`;
+    }
 
     function buildEscalaMatrix(entries, getAgent, getDate, getTurno) {
         const DIAS_SEMANA = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
@@ -2543,10 +2602,13 @@
         const idxEdu   = hdrs.findIndex(h => /agente|social|educador|nome|servidor|funcion/i.test(h));
         const idxTurno = hdrs.findIndex(h => /turno|per[ií]odo|hor[aá]rio|shift/i.test(h));
 
+        // Adiciona os campos de período
+        let html = getPeriodInputsHTML();
+
         if (idxDate < 0 && idxEdu < 0) {
             const rows = escalaData.rows.map(r =>
                 `<tr>${r.map(c => `<td>${c||''}</td>`).join('')}</tr>`).join('');
-            escalaModalBody.innerHTML = `
+            html += `
                 <div class="escala-matrix-wrap">
                     <table class="escala-matrix">
                         <thead><tr class="row-dias">${hdrs.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
@@ -2554,6 +2616,7 @@
                     </table>
                 </div>
                 ${ESCALA_OBS_HTML}`;
+            escalaModalBody.innerHTML = html;
             return;
         }
 
@@ -2565,7 +2628,7 @@
             row => idxDate  >= 0 ? (row[idxDate]  || '').trim() : '',
             row => idxTurno >= 0 ? (row[idxTurno] || '').trim() : ''
         );
-        escalaModalBody.innerHTML = `
+        html += `
         <div class="escala-summary-bar">
             <div class="escala-summary-item"><span class="esv">${totalDias}</span><span class="esl">Dia(s)</span></div>
             <div class="escala-summary-item"><span class="esv">${totalAgentes}</span><span class="esl">Agente(s)</span></div>
@@ -2574,6 +2637,7 @@
         ${ESCALA_LEGEND_HTML}
         ${matrixHtml}
         ${ESCALA_OBS_HTML}`;
+        escalaModalBody.innerHTML = html;
     }
 
     function renderEscalaNativeMatrix() {
@@ -2581,6 +2645,10 @@
 
         const totalAgentes = rows.length;
         const totalDias    = dayCols.length;
+
+        // Identifica a coluna de serviço (Interno/Externo) a partir das metaCols
+        const servicoCol = metaCols.find(mc => /serv[ií]ço|servico/i.test(mc.label));
+        const servicoIdx = servicoCol ? servicoCol.idx : -1;
 
         const headCols = dayCols.map(dc =>
             `<th><div class="day-th-inner">
@@ -2590,8 +2658,8 @@
 
         const bodyRows = rows.map(row => {
             const nome     = row[agentCol] || '(sem nome)';
-            const metaText = metaCols
-                .map(mc => row[mc.idx]).filter(Boolean).join(' · ');
+            // Exibe a informação de serviço (Interno/Externo) se disponível
+            const servico = servicoIdx >= 0 ? (row[servicoIdx] || '') : '';
 
             const cells = dayCols.map(dc => {
                 const t = row[dc.idx];
@@ -2606,13 +2674,16 @@
                 </td>`;
             }).join('');
 
+            // Adiciona a coluna de serviço antes dos dias
+            const servicoCell = `<td class="turno-cell" style="font-weight:600; color:#0c4a6e;">${servico}</td>`;
+
             return `<tr>
                 <td class="agent-name-cell">
                     <span>
                         <div style="font-weight:700;color:#0c4a6e">${nome}</div>
-                        ${metaText ? `<div style="font-size:0.7rem;color:#64748b;margin-top:1px">${metaText}</div>` : ''}
                     </span>
                 </td>
+                ${servicoCell}
                 ${cells}
             </tr>`;
         }).join('');
@@ -2623,6 +2694,7 @@
                 <thead>
                     <tr class="row-dias">
                         <th style="min-width:240px">Agente Socioeducador</th>
+                        <th style="min-width:100px; background:#0c4a6e; color:white;">Serviço</th>
                         ${headCols}
                     </tr>
                 </thead>
@@ -2630,7 +2702,7 @@
             </table>
         </div>`;
 
-        escalaModalBody.innerHTML = `
+        const html = getPeriodInputsHTML() + `
         <div class="escala-summary-bar">
             <div class="escala-summary-item"><span class="esv">${totalAgentes}</span><span class="esl">Agente(s)</span></div>
             <div class="escala-summary-item"><span class="esv">${totalDias}</span><span class="esl">Dia(s) da Semana</span></div>
@@ -2642,12 +2714,14 @@
         ${ESCALA_LEGEND_HTML}
         ${matrixHtml}
         ${ESCALA_OBS_HTML}`;
+
+        escalaModalBody.innerHTML = html;
     }
 
     function renderEscalaFromLancamento() {
         const filtered = getFiltered();
         if (!filtered.length) {
-            escalaModalBody.innerHTML = `
+            escalaModalBody.innerHTML = getPeriodInputsHTML() + `
                 <div class="escala-empty">
                     <div class="hint-icon"><i class="fas fa-calendar-times"></i></div>
                     <p class="fw-semibold">Sem dados para o período selecionado.</p>
@@ -2666,7 +2740,7 @@
             r => ''
         );
 
-        escalaModalBody.innerHTML = `
+        escalaModalBody.innerHTML = getPeriodInputsHTML() + `
         <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:12px;padding:0.9rem 1.2rem;margin-bottom:1.2rem;font-size:0.85rem;color:#664d03">
             <i class="fas fa-info-circle me-2"></i>
             A aba <strong>"Escala de Serviço"</strong> não foi encontrada. Grade derivada dos <strong>Lançamentos Diários</strong>.
@@ -2682,7 +2756,7 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════════
-       PDF EXCLUSIVO DA ESCALA DE SERVIÇO (com quebra de página inteligente)
+       PDF EXCLUSIVO DA ESCALA DE SERVIÇO (com quebra de página otimizada)
     ═══════════════════════════════════════════════════════════════════ */
 
     async function buildEscalaPDFDoc() {
@@ -2695,11 +2769,21 @@
         const SCALE = 2;
 
         const now    = new Date().toLocaleDateString('pt-BR');
-        const periodo = (dashFilter.start && dashFilter.end)
-            ? `Período: ${isoToBR(dashFilter.start)} a ${isoToBR(dashFilter.end)}`
-            : 'Todos os períodos';
+        // Obtém os valores dos campos de data do modal (existentes no DOM real)
+        const startInput = document.getElementById('escalaStartDate');
+        const endInput   = document.getElementById('escalaEndDate');
+        // Converte para formato BR para exibição no cabeçalho
+        const periodoEscala = (startInput && startInput.value && endInput && endInput.value)
+            ? `Período da Escala: ${isoToBR(startInput.value)} a ${isoToBR(endInput.value)}`
+            : 'Período da Escala: não informado';
         const TEAL  = [3, 105, 161];
         const WHITE = [255, 255, 255];
+
+        // Antes de clonar, atualiza os atributos value dos inputs no modal para garantir que o innerHTML os contenha
+        const startReal = document.getElementById('escalaStartDate');
+        const endReal   = document.getElementById('escalaEndDate');
+        if (startReal) startReal.setAttribute('value', startReal.value);
+        if (endReal) endReal.setAttribute('value', endReal.value);
 
         const proxy = document.getElementById('escalaPdfProxy');
         proxy.innerHTML = escalaModalBody.innerHTML;
@@ -2712,7 +2796,13 @@
         const proxyRect = proxy.getBoundingClientRect();
         const breakPts  = new Set([0]);
 
-        proxy.querySelectorAll('.escala-matrix-wrap, .escala-summary-bar, .escala-legend').forEach(el => {
+        // Adiciona pontos de quebra para cada linha da matriz (tbody tr)
+        proxy.querySelectorAll('.escala-matrix tbody tr').forEach(el => {
+            const relTop = (el.getBoundingClientRect().top - proxyRect.top) * SCALE;
+            if (relTop > 1) breakPts.add(Math.round(relTop));
+        });
+        // Também adiciona para o sumário, legenda e inputs de período
+        proxy.querySelectorAll('.escala-summary-bar, .escala-legend, .escala-period-inputs').forEach(el => {
             const relTop = (el.getBoundingClientRect().top - proxyRect.top) * SCALE;
             if (relTop > 1) breakPts.add(Math.round(relTop));
         });
@@ -2745,14 +2835,14 @@
             pdf.setFontSize(11); pdf.setFont('helvetica', 'bold');
             pdf.text('PROCON-RJ · Escala de Serviço — Agentes Socioeducadores', margin, 9.5);
             pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8);
-            pdf.text(`${periodo}   |   Gerado em ${now}   |   Pág. ${pageNum}`,
+            pdf.text(`${periodoEscala}   |   Gerado em ${now}   |   Pág. ${pageNum}`,
                 PW - margin, 9.5, { align: 'right' });
         }
 
         function drawFooterSimple() {
             pdf.setFontSize(7); pdf.setFont('helvetica','normal');
             pdf.setTextColor(148,163,184);
-            pdf.text(`PROCON-RJ · Relatório gerado em ${now} · ${periodo}`,
+            pdf.text(`PROCON-RJ · Relatório gerado em ${now} · ${periodoEscala}`,
                 PW/2, PH-2, { align:'center' });
         }
 
@@ -2869,7 +2959,7 @@
     });
 
     /* ─────────────────────────────────────────────────────────────────
-       NOVO: PDF EXCLUSIVO DA SEÇÃO DE APOSTAS
+       PDF EXCLUSIVO DA SEÇÃO DE APOSTAS
     ───────────────────────────────────────────────────────────────── */
     async function generateBetPDF() {
         const { jsPDF } = window.jspdf;
@@ -2981,7 +3071,7 @@
         return pdf;
     }
 
-    // Evento do botão de PDF das apostas (agora dentro da seção)
+    // Evento do botão de PDF das apostas
     document.getElementById('exportBetPDFBtn').addEventListener('click', async () => {
         if (!betData.length) return alert('Nenhum dado de apostas importado.');
         const btn = document.getElementById('exportBetPDFBtn');
