@@ -913,13 +913,6 @@
         <button class="carousel-control-next" type="button" data-bs-target="#carouselProcon" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
     </div>
 
-    <!-- DEPOIMENTOS -->
-    <div class="row g-4 mb-5">
-        <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">"Graças ao PROCON consegui cancelar um contrato abusivo e ainda fui reembolsado em dobro. Atendimento humano e eficiente."</div><div class="author">— Marília C., Centro</div></div></div>
-        <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">"A sala do consumidor resolveu meu problema com a operadora em apenas 5 dias. Nunca imaginei que seria tão rápido."</div><div class="author">— João P., Madureira</div></div></div>
-        <div class="col-md-4"><div class="testimonial-card"><i class="fas fa-quote-right"></i><div class="quote">"O socioeducador me orientou sobre planejamento financeiro. Hoje sei usar o crédito sem medo. Transformador!"</div><div class="author">— Renata S., Bangu</div></div></div>
-    </div>
-
     <!-- DASHBOARD PRINCIPAL -->
     <div class="dash-section" id="dashSection">
         <div class="dash-section-header">
@@ -1189,10 +1182,10 @@
         { id: 'B1', pergunta: 'Conhece atividades de jogos on-line?', simIdx: 4 },
         { id: 'B2', pergunta: 'Já realizou apostas on-line?', simIdx: 6 },
         { id: 'B3', pergunta: 'Alguém da família já realizou apostas on-line?', simIdx: 8 },
-        { id: 'B4', pergunta: 'Aposta 1 vez na semana', simIdx: 10 },
-        { id: 'B5', pergunta: 'Aposta várias vezes na semana', simIdx: 12 },
-        { id: 'B6', pergunta: 'Aposta 1 vez ao dia', simIdx: 14 },
-        { id: 'B7', pergunta: 'Aposta várias vezes ao dia', simIdx: 16 },
+        { id: 'B4', pergunta: 'Aposta 1 vez ao dia', simIdx: 10 },
+        { id: 'B5', pergunta: 'Aposta várias vezes ao dia', simIdx: 12 },
+        { id: 'B6', pergunta: 'Aposta 1 vez na semana', simIdx: 14 },
+        { id: 'B7', pergunta: 'Aposta várias vezes na semana', simIdx: 16 },
         { id: 'B8', pergunta: 'Aposta até R$ 100 por mês', simIdx: 18 },
         { id: 'B9', pergunta: 'Aposta entre R$ 100 e R$ 500 por mês', simIdx: 20 },
         { id: 'B10', pergunta: 'Aposta entre R$ 500 e R$ 1.000 por mês', simIdx: 22 },
@@ -1212,7 +1205,10 @@
     let locations    = [];
     let betData      = [];
     let chartInst    = {};
-    let locationChart = null;
+    let locationChart    = null;
+    let betBarChart      = null;
+    let perfCompChart    = null;
+    let perfCompChartPct = null;
     let dashFilter   = { start: '', end: '' };
     let escalaData   = { headers: [], rows: [], isNativeMatrix: false,
                          agentCol: -1, metaCols: [], dayCols: [] };
@@ -1573,7 +1569,10 @@
         const b2 = perguntas.find(q => q.id === 'B2');
         const parcelaSuscetivel = b2 ? b2.pctSim : 0;
 
-        return { filtered, totalFichas, pesquisadores, perguntas, parcelaSuscetivel };
+        const totalSimAll = perguntas.reduce((s, q) => s + q.simTotal, 0);
+        const totalNaoAll = perguntas.reduce((s, q) => s + q.naoTotal, 0);
+
+        return { filtered, totalFichas, pesquisadores, perguntas, parcelaSuscetivel, totalSimAll, totalNaoAll };
     }
 
     /* ─────────────────────────────────────────────────────────────────
@@ -1595,6 +1594,9 @@
             <div class="bet-kpi-item">
                 <span class="bet-kpi-value">${fmt(metrics.totalFichas)}</span>
                 <span class="bet-kpi-label">Fichas Coletadas</span>
+                <span style="font-size:0.68rem;color:#6a1b9a;margin-top:3px;font-weight:600;">
+                    <span style="color:#2e7d32">SIM: ${fmt(metrics.totalSimAll)}</span>&nbsp;|&nbsp;<span style="color:#c62828">NÃO: ${fmt(metrics.totalNaoAll)}</span>
+                </span>
             </div>
             <div class="bet-kpi-item">
                 <span class="bet-kpi-value">${metrics.pesquisadores}</span>
@@ -1603,32 +1605,91 @@
             <div class="bet-kpi-item">
                 <span class="bet-kpi-value">${fmtPct(metrics.parcelaSuscetivel)}</span>
                 <span class="bet-kpi-label">Parcela mais suscetível</span>
+                <span style="font-size:0.68rem;color:#6a1b9a;margin-top:3px;font-weight:600;">já apostou online (B2)</span>
             </div>
         </div>
-        <div class="bet-grid">
-        `;
+
+        <div style="background:white;border-radius:20px;padding:1.4rem 1.6rem;margin-bottom:1.5rem;border:1px solid #e8d5f5;box-shadow:0 4px 14px -4px rgba(156,39,176,0.12);">
+            <div style="font-size:0.82rem;font-weight:800;color:#4a148c;margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.5px;">
+                <i class="fas fa-chart-bar me-2" style="color:#9c27b0"></i>Distribuição % SIM — Todas as Perguntas
+            </div>
+            <div style="position:relative;height:560px;">
+                <canvas id="betBarChart"></canvas>
+            </div>
+        </div>
+
+        <div class="bet-grid">`;
 
         metrics.perguntas.forEach(q => {
             const pctSim = (q.pctSim * 100).toFixed(1).replace('.', ',');
             html += `
             <div class="bet-card">
-                <div class="bet-card-header">
-                    <i class="fas fa-question-circle"></i> ${q.pergunta}
-                </div>
+                <div class="bet-card-header"><i class="fas fa-question-circle"></i> ${q.pergunta}</div>
                 <div class="bet-card-body">
                     <div class="bet-stat-row">
                         <span class="bet-stat-sim"><i class="fas fa-check-circle"></i> SIM: ${fmt(q.simTotal)}</span>
                         <span class="bet-stat-nao"><i class="fas fa-times-circle"></i> NÃO: ${fmt(q.naoTotal)}</span>
                     </div>
-                    <div class="bet-progress-bg">
-                        <div class="bet-progress-fill" style="width:${pctSim}%;"></div>
-                    </div>
+                    <div class="bet-progress-bg"><div class="bet-progress-fill" style="width:${pctSim}%;"></div></div>
                     <div class="bet-pct">${pctSim}% SIM</div>
                 </div>
             </div>`;
         });
         html += '</div>';
         betSection.innerHTML = html;
+
+        // Cria o gráfico após duplo rAF para garantir que o canvas tem dimensões reais
+        if (betBarChart) { try { betBarChart.destroy(); } catch(e){} betBarChart = null; }
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            const betCanvas = document.getElementById('betBarChart');
+            if (!betCanvas) return;
+            const fullLabels = metrics.perguntas.map(q => q.pergunta);
+            const dataSim    = metrics.perguntas.map(q => parseFloat((q.pctSim * 100).toFixed(1)));
+            const dataNao    = metrics.perguntas.map(q => parseFloat((q.pctNao * 100).toFixed(1)));
+            betBarChart = new Chart(betCanvas, {
+                type: 'bar',
+                data: {
+                    labels: fullLabels,
+                    datasets: [
+                        { label: '% SIM', data: dataSim, backgroundColor: 'rgba(156,39,176,0.75)', borderColor: '#9c27b0', borderWidth: 1, borderRadius: 5 },
+                        { label: '% NÃO', data: dataNao, backgroundColor: 'rgba(198,40,40,0.22)',  borderColor: '#c62828', borderWidth: 1, borderRadius: 5 }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top', labels: { font: { size: 11 }, boxWidth: 14, padding: 10 } },
+                        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.raw.toFixed(1).replace('.', ',')}%` } }
+                    },
+                    scales: {
+                        x: { max: 100, ticks: { callback: v => v + '%', font: { size: 10 } }, grid: { color: '#f1f5f9' } },
+                        y: {
+                            ticks: {
+                                autoSkip: false,
+                                font: { size: 10 },
+                                callback: function(val) {
+                                    const lbl = this.getLabelForValue(val);
+                                    // quebra em múltiplas linhas a cada 38 caracteres
+                                    if (!lbl || lbl.length <= 38) return lbl;
+                                    const words = lbl.split(' ');
+                                    const lines = []; let line = '';
+                                    words.forEach(w => {
+                                        const test = line ? line + ' ' + w : w;
+                                        if (test.length > 38) { if (line) lines.push(line); line = w; }
+                                        else line = test;
+                                    });
+                                    if (line) lines.push(line);
+                                    return lines;
+                                }
+                            },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }));
     }
 
     /* ─────────────────────────────────────────────────────────────────
@@ -1970,12 +2031,19 @@
             : '';
 
         const content = document.getElementById('dashContent');
+
+        // Oculta o botão "Visualizar PDF" da seção BET para não aparecer no PDF
+        const betPdfBtn = document.getElementById('exportBetPDFBtn');
+        if (betPdfBtn) betPdfBtn.style.visibility = 'hidden';
+
         const fullCanvas = await html2canvas(content, {
             scale: SCALE,
             backgroundColor: '#ffffff',
             logging: false,
             useCORS: true,
         });
+
+        if (betPdfBtn) betPdfBtn.style.visibility = '';
 
         const mmPerPx       = USABLE_W / fullCanvas.width;
         const pageContentPx = PAGE_CONTENT_H / mmPerPx;
@@ -2235,28 +2303,35 @@
     const perfModalPer  = document.getElementById('perfModalPeriodo');
 
     perfModal.addEventListener('show.bs.modal', () => {
+        const periodo = (dashFilter.start && dashFilter.end)
+            ? `Período: ${isoToBR(dashFilter.start)} a ${isoToBR(dashFilter.end)}`
+            : 'Todos os períodos';
+        perfModalPer.textContent = periodo;
         if (!rawData.length) {
             perfModalBody.innerHTML = `
                 <div class="text-center py-5 text-muted">
                     <i class="fas fa-table fa-2x mb-3 opacity-50"></i>
                     <p class="mb-0 fw-semibold">Nenhum dado importado. Importe a planilha antes de acessar a análise.</p>
                 </div>`;
-            return;
+        } else {
+            perfModalBody.innerHTML = `
+                <div class="text-center py-5 text-muted">
+                    <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                    <p class="mb-0 fw-semibold">Calculando métricas…</p>
+                </div>`;
         }
-        const periodo = (dashFilter.start && dashFilter.end)
-            ? `Período: ${isoToBR(dashFilter.start)} a ${isoToBR(dashFilter.end)}`
-            : 'Todos os períodos';
-        perfModalPer.textContent = periodo;
+    });
+
+    // shown.bs.modal: modal 100% visível, canvas com dimensões reais
+    perfModal.addEventListener('shown.bs.modal', () => {
+        if (!rawData.length) return;
         renderPerfModal();
     });
 
-    // Listeners para os botões de fonte
+    // Troca de fonte (radio) enquanto modal está aberto
     document.querySelectorAll('input[name="perfSource"]').forEach(radio => {
-        radio.addEventListener('change', function(e) {
-            if (this.checked) {
-                currentPerfSource = this.value;
-                renderPerfModal();
-            }
+        radio.addEventListener('change', function() {
+            if (this.checked) { currentPerfSource = this.value; renderPerfModal(); }
         });
     });
 
@@ -2267,116 +2342,68 @@
             return;
         }
 
-        // Totais gerais
+        // ── totais globais ──
         const totalFichasAll = agents.reduce((s, a) => s + a.fichasTotal, 0);
-        const allDates = new Set();
-        const allLocations = new Set();
+        const allDates = new Set(); const allLocations = new Set();
         const sourceData = (currentPerfSource === 'lancamento') ? getFiltered() : getFilteredBet();
-        sourceData.forEach(r => {
-            if (r.date) allDates.add(r.date);
-            if (r.local) allLocations.add(r.local);
-        });
-        const totalSessoesAll = allDates.size;
-        const totalLocalidadesDistintas = allLocations.size;
+        sourceData.forEach(r => { if (r.date) allDates.add(r.date); if (r.local) allLocations.add(r.local); });
 
+        // ── dados dos gráficos comparativos ──
+        const agentsLanc = computeAgentMetricsLanc();
+        const agentsBet  = computeAgentMetricsBet();
+        // ordena por total de fichas desc → ranking de produtividade
+        const allAgentNames = [...new Set([...agentsLanc.map(a => a.name), ...agentsBet.map(a => a.name)])]
+            .sort((a, b) => {
+                const fa = (agentsLanc.find(x => x.name === a)?.fichasTotal || 0) + (agentsBet.find(x => x.name === a)?.fichasTotal || 0);
+                const fb = (agentsLanc.find(x => x.name === b)?.fichasTotal || 0) + (agentsBet.find(x => x.name === b)?.fichasTotal || 0);
+                return fb - fa;
+            });
+        // Chart.js horizontal-bar exibe de baixo p/ cima → inverte para 1º no topo
+        const chartNames = [...allAgentNames].reverse();
+        const chartLancData = chartNames.map(n => { const a = agentsLanc.find(x => x.name === n); return a ? a.fichasTotal : 0; });
+        const chartBetData  = chartNames.map(n => { const a = agentsBet.find(x => x.name === n);  return a ? a.fichasTotal : 0; });
+        const chartLancPct  = chartNames.map(n => { const a = agentsLanc.find(x => x.name === n); return a ? parseFloat((a.globalPctSim * 100).toFixed(1)) : 0; });
+        const chartBetPct   = chartNames.map(n => { const a = agentsBet.find(x => x.name === n);  return a ? parseFloat((a.globalPctSim * 100).toFixed(1)) : 0; });
+        const chartH = Math.max(160, chartNames.length * 44);
+
+        // ── HTML ──
         let html = `
-        <div class="perf-summary-bar">
-            <div class="perf-summary-item">
-                <span class="psv">${agents.length}</span>
-                <span class="psl">Agente(s)</span>
+        <div class="perf-summary-bar" style="flex-direction:column;align-items:stretch;">
+            <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin-bottom:1.2rem;">
+                <div class="perf-summary-item"><span class="psv">${agents.length}</span><span class="psl">Agente(s)</span></div>
+                <div class="perf-summary-item"><span class="psv">${allDates.size}</span><span class="psl">Sessões Totais</span></div>
+                <div class="perf-summary-item"><span class="psv">${fmt(totalFichasAll)}</span><span class="psl">Fichas Coletadas</span></div>
+                <div class="perf-summary-item"><span class="psv">${allLocations.size}</span><span class="psl">Localidades Distintas</span></div>
+                <div class="perf-summary-item">
+                    <span class="psv" style="font-size:1.2rem">${(dashFilter.start && dashFilter.end) ? isoToBR(dashFilter.start) + ' – ' + isoToBR(dashFilter.end) : '—'}</span>
+                    <span class="psl">Período Filtrado</span>
+                </div>
             </div>
-            <div class="perf-summary-item">
-                <span class="psv">${totalSessoesAll}</span>
-                <span class="psl">Sessões Totais</span>
-            </div>
-            <div class="perf-summary-item">
-                <span class="psv">${fmt(totalFichasAll)}</span>
-                <span class="psl">Fichas Coletadas</span>
-            </div>
-            <div class="perf-summary-item">
-                <span class="psv">${totalLocalidadesDistintas}</span>
-                <span class="psl">Localidades Distintas</span>
-            </div>
-            <div class="perf-summary-item">
-                <span class="psv" style="font-size:1.2rem">${(dashFilter.start && dashFilter.end) ? isoToBR(dashFilter.start) + ' – ' + isoToBR(dashFilter.end) : '—'}</span>
-                <span class="psl">Período Filtrado</span>
+            <div style="border-top:1px solid #e2e8f0;padding-top:1rem;">
+                <div style="font-size:0.75rem;font-weight:800;color:#5b21b6;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.8rem;">
+                    <i class="fas fa-trophy me-2"></i>Ranking de Produtividade — Fichas Coletadas (Atendimentos vs Apostas)
+                </div>
+                <div style="position:relative;width:100%;height:${chartH}px;">
+                    <canvas id="perfCompChart" style="display:block;width:100%;height:100%;"></canvas>
+                </div>
             </div>
         </div>`;
 
         agents.forEach((ag, idx) => {
             const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : 'rank-other';
             const maxLocV   = ag.locsArr.length ? ag.locsArr[0].visits : 1;
-
             const locRowsHtml = ag.locsArr.length
-                ? ag.locsArr.map(l => `
-                    <tr>
-                        <td>${l.loc}</td>
-                        <td>
-                            <div class="loc-visits-bar">
-                                <div class="loc-vbar-bg"><div class="loc-vbar-fill" style="width:${Math.round(l.visits / maxLocV * 100)}%"></div></div>
-                                <span style="font-weight:700;min-width:24px;text-align:right">${l.visits}</span>
-                            </div>
-                        </td>
-                    </tr>`).join('')
+                ? ag.locsArr.map(l => `<tr><td>${l.loc}</td><td><div class="loc-visits-bar"><div class="loc-vbar-bg"><div class="loc-vbar-fill" style="width:${Math.round(l.visits/maxLocV*100)}%"></div></div><span style="font-weight:700;min-width:24px;text-align:right">${l.visits}</span></div></td></tr>`).join('')
                 : `<tr><td colspan="2" style="color:#94a3b8;font-style:italic">Sem localidade registrada</td></tr>`;
 
-            // Conteúdo da segunda coluna (métricas) dependente da fonte
             let rightColumnHtml = '';
             if (currentPerfSource === 'lancamento') {
-                const catLegendHtml = `
-                <div class="agent-cat-legend">
-                    ${CATEGORIES.map(cat => {
-                        const cfg = CAT_CFG[cat];
-                        return `<span class="agent-cat-legend-item">
-                            <span class="agent-cat-legend-dot" style="background:${cfg.color}"></span>${cat}
-                        </span>`;
-                    }).join('')}
-                </div>`;
-                const catBarsHtml = CATEGORIES.map(cat => {
-                    const cfg = CAT_CFG[cat];
-                    const cm  = ag.catMetrics[cat];
-                    const pct = (cm.avgPctSim * 100).toFixed(1);
-                    return `
-                    <div class="agent-cat-row">
-                        <span class="agent-cat-name" style="color:${cfg.color}" title="${cat}">
-                            <i class="${cfg.icon} me-1" style="font-size:0.7rem"></i>${cat}
-                        </span>
-                        <div class="agent-cat-bar-bg">
-                            <div class="agent-cat-bar-fill" style="width:${pct}%;background:${cfg.color}"></div>
-                        </div>
-                        <span class="agent-cat-pct" style="color:${cfg.color}">${pct.replace('.', ',')}%</span>
-                    </div>`;
-                }).join('');
-                rightColumnHtml = `
-                    <div class="agent-section-title">
-                        <i class="fas fa-chart-bar" style="color:#5b21b6"></i>
-                        % SIM Médio por Categoria
-                    </div>
-                    ${catLegendHtml}
-                    ${catBarsHtml}
-                `;
+                const catLegend = CATEGORIES.map(cat => { const c = CAT_CFG[cat]; return `<span class="agent-cat-legend-item"><span class="agent-cat-legend-dot" style="background:${c.color}"></span>${cat}</span>`; }).join('');
+                const catBars   = CATEGORIES.map(cat => { const c = CAT_CFG[cat], cm = ag.catMetrics[cat], pct = (cm.avgPctSim*100).toFixed(1); return `<div class="agent-cat-row"><span class="agent-cat-name" style="color:${c.color}" title="${cat}"><i class="${c.icon} me-1" style="font-size:0.7rem"></i>${cat}</span><div class="agent-cat-bar-bg"><div class="agent-cat-bar-fill" style="width:${pct}%;background:${c.color}"></div></div><span class="agent-cat-pct" style="color:${c.color}">${pct.replace('.',',')}%</span></div>`; }).join('');
+                rightColumnHtml = `<div class="agent-section-title"><i class="fas fa-chart-bar" style="color:#5b21b6"></i> % SIM Médio por Categoria</div><div class="agent-cat-legend">${catLegend}</div>${catBars}`;
             } else {
-                // Para apostas, lista de perguntas (sem limite de altura para garantir exibição completa)
-                const betBarsHtml = ag.betMetrics.map(q => {
-                    const pct = (q.pctSim * 100).toFixed(1);
-                    return `
-                    <div class="agent-bet-row">
-                        <span class="agent-bet-name" title="${q.pergunta}">${q.pergunta}</span>
-                        <div class="agent-bet-bar-bg">
-                            <div class="agent-bet-bar-fill" style="width:${pct}%;"></div>
-                        </div>
-                        <span class="agent-bet-pct">${pct.replace('.', ',')}%</span>
-                    </div>`;
-                }).join('');
-                rightColumnHtml = `
-                    <div class="agent-section-title">
-                        <i class="fas fa-dice" style="color:#9c27b0"></i>
-                        Respostas sobre Apostas (% SIM)
-                    </div>
-                    <div style="padding-right: 5px;">
-                        ${betBarsHtml}
-                    </div>
-                `;
+                const betBars = ag.betMetrics.map(q => { const pct=(q.pctSim*100).toFixed(1); return `<div class="agent-bet-row"><span class="agent-bet-name" title="${q.pergunta}">${q.pergunta}</span><div class="agent-bet-bar-bg"><div class="agent-bet-bar-fill" style="width:${pct}%;"></div></div><span class="agent-bet-pct">${pct.replace('.',',')}%</span></div>`; }).join('');
+                rightColumnHtml = `<div class="agent-section-title"><i class="fas fa-dice" style="color:#9c27b0"></i> Respostas sobre Apostas (% SIM)</div><div style="padding-right:5px;">${betBars}</div>`;
             }
 
             html += `
@@ -2384,58 +2411,69 @@
                 <div class="agent-card-header">
                     <div class="agent-avatar"><i class="fas fa-user"></i></div>
                     <div class="agent-info">
-                        <div class="agent-name">
-                            <span class="rank-badge ${rankClass} me-2">${idx + 1}º</span>
-                            ${ag.name}
-                        </div>
+                        <div class="agent-name"><span class="rank-badge ${rankClass} me-2">${idx+1}º</span>${ag.name}</div>
                         <div class="agent-subtitle">
                             <span class="me-3"><i class="fas fa-calendar-day me-1 opacity-60"></i>${ag.sessoes} sessão(ões)</span>
-                            <span class="me-3"><i class="fas fa-map-marker-alt me-1 opacity-60"></i>${ag.totalLocs} localidade(s) visitadas</span>
+                            <span class="me-3"><i class="fas fa-map-marker-alt me-1 opacity-60"></i>${ag.totalLocs} localidade(s)</span>
                             <span><i class="fas fa-percentage me-1 opacity-60"></i>% SIM global: <strong style="color:#5b21b6">${fmtPct(ag.globalPctSim)}</strong></span>
                         </div>
                     </div>
                     <div class="agent-kpi-row ms-auto">
-                        <div class="agent-kpi">
-                            <div class="ak-val">${fmt(ag.fichasTotal)}</div>
-                            <div class="ak-lbl">Fichas</div>
-                        </div>
-                        <div class="agent-kpi">
-                            <div class="ak-val">${ag.avgFichas.toFixed(1).replace('.', ',')}</div>
-                            <div class="ak-lbl">Média/dia</div>
-                        </div>
-                        <div class="agent-kpi">
-                            <div class="ak-val" style="color:#10b981">${fmt(ag.totalSim)}</div>
-                            <div class="ak-lbl">Total SIM</div>
-                        </div>
-                        <div class="agent-kpi">
-                            <div class="ak-val" style="color:#ef4444">${fmt(ag.totalNao)}</div>
-                            <div class="ak-lbl">Total NÃO</div>
-                        </div>
+                        <div class="agent-kpi"><div class="ak-val">${fmt(ag.fichasTotal)}</div><div class="ak-lbl">Fichas</div></div>
+                        <div class="agent-kpi"><div class="ak-val">${ag.avgFichas.toFixed(1).replace('.',',')}</div><div class="ak-lbl">Média/dia</div></div>
+                        <div class="agent-kpi"><div class="ak-val" style="color:#10b981">${fmt(ag.totalSim)}</div><div class="ak-lbl">Total SIM</div></div>
+                        <div class="agent-kpi"><div class="ak-val" style="color:#ef4444">${fmt(ag.totalNao)}</div><div class="ak-lbl">Total NÃO</div></div>
                     </div>
                 </div>
                 <div class="agent-card-body">
                     <div class="agent-body-grid">
                         <div>
-                            <div class="agent-section-title">
-                                <i class="fas fa-map-marker-alt" style="color:#f97316"></i>
-                                Localidades Visitadas
-                            </div>
+                            <div class="agent-section-title"><i class="fas fa-map-marker-alt" style="color:#f97316"></i> Localidades Visitadas</div>
                             <div style="max-height:200px;overflow-y:auto;border-radius:10px;border:1px solid #e2e8f0;">
-                                <table class="agent-loc-table">
-                                    <thead><tr><th>Localidade</th><th>Nº Visitas</th></tr></thead>
-                                    <tbody>${locRowsHtml}</tbody>
-                                </table>
+                                <table class="agent-loc-table"><thead><tr><th>Localidade</th><th>Nº Visitas</th></tr></thead><tbody>${locRowsHtml}</tbody></table>
                             </div>
                         </div>
-                        <div>
-                            ${rightColumnHtml}
-                        </div>
+                        <div>${rightColumnHtml}</div>
                     </div>
                 </div>
             </div>`;
         });
 
         perfModalBody.innerHTML = html;
+
+        // Destrói instâncias anteriores
+        if (perfCompChart)    { try { perfCompChart.destroy();    } catch(e){} perfCompChart    = null; }
+        if (perfCompChartPct) { try { perfCompChartPct.destroy(); } catch(e){} perfCompChartPct = null; }
+
+        // Cria gráfico após duplo rAF → canvas tem dimensões reais
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            function wrapY(label) {
+                if (!label || label.length <= 28) return label;
+                const words = label.split(' '); const lines = []; let line = '';
+                words.forEach(w => { const t = line ? line+' '+w : w; if (t.length > 28) { if (line) lines.push(line); line = w; } else line = t; });
+                if (line) lines.push(line);
+                return lines;
+            }
+
+            const ccEl = document.getElementById('perfCompChart');
+            if (ccEl && chartNames.length) {
+                perfCompChart = new Chart(ccEl, {
+                    type: 'bar',
+                    data: { labels: chartNames, datasets: [
+                        { label: 'Fichas – Atendimentos',    data: chartLancData, backgroundColor: 'rgba(0,123,255,0.75)', borderColor: '#007bff', borderWidth:1, borderRadius:5 },
+                        { label: 'Fichas – Apostas (BET\'s)', data: chartBetData,  backgroundColor: 'rgba(156,39,176,0.75)', borderColor: '#9c27b0', borderWidth:1, borderRadius:5 }
+                    ]},
+                    options: {
+                        indexAxis:'y', responsive:true, maintainAspectRatio:false,
+                        plugins: { legend:{ display:true, position:'top', labels:{font:{size:11},boxWidth:14,padding:10} }, tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.raw.toLocaleString('pt-BR')} fichas`}} },
+                        scales: {
+                            x:{ beginAtZero:true, ticks:{font:{size:10}}, grid:{color:'#f1f5f9'} },
+                            y:{ ticks:{autoSkip:false, font:{size:10}, callback:function(v){ return wrapY(this.getLabelForValue(v)); }}, grid:{display:false} }
+                        }
+                    }
+                });
+            }
+        }));
     }
 
     document.getElementById('perfPDFBtn').addEventListener('click', async () => {
@@ -2467,114 +2505,121 @@
 
         const PW = 297, PH = 210, margin = 10;
         const HEADER_H = 14, FOOTER_H = 7;
-        const PAGE_CONTENT_H = PH - HEADER_H - FOOTER_H - margin;
-        const USABLE_W = PW - margin * 2;
-        const CAPTURE_SCALE = 2;
+        const CONTENT_Y = HEADER_H + 2;           // topo do conteúdo (mm)
+        const BOTTOM_LIM = PH - FOOTER_H - 2;     // limite inferior do conteúdo (mm)
+        const PAGE_AVAIL = BOTTOM_LIM - CONTENT_Y; // altura útil por página (mm)
+        const USABLE_W   = PW - margin * 2;
+        const SCALE = 2;
+        const GAP   = 3; // espaço entre seções (mm)
 
         const PURPLE = [91, 33, 182];
         const WHITE  = [255, 255, 255];
-        const DARK   = [30, 45, 61];
-        const LIGHT  = [248, 250, 252];
-
         const now    = new Date().toLocaleDateString('pt-BR');
         const periodo = (dashFilter.start && dashFilter.end)
             ? `Período: ${isoToBR(dashFilter.start)} a ${isoToBR(dashFilter.end)}`
             : 'Todos os períodos';
         const fonte = (currentPerfSource === 'lancamento') ? 'Atendimentos' : 'Apostas (BET\'s)';
 
-        const proxy = document.getElementById('pdfCaptureProxy');
-        const modalBody = document.getElementById('perfModalBody');
+        // ── 1. Snapshot dos gráficos comparativos ──
+        const snapshots = {};
+        ['perfCompChart'].forEach(id => {
+            const cv = document.getElementById(id);
+            if (cv && cv.width > 0)
+                snapshots[id] = { src: cv.toDataURL('image/png'), w: cv.offsetWidth, h: cv.offsetHeight };
+        });
 
-        proxy.innerHTML = modalBody.innerHTML;
+        // ── 2. Monta proxy substituindo <canvas> por <img> ──
+        const proxy = document.getElementById('pdfCaptureProxy');
+        proxy.innerHTML = document.getElementById('perfModalBody').innerHTML;
+        Object.entries(snapshots).forEach(([id, snap]) => {
+            const el = proxy.querySelector('#' + id);
+            if (el) {
+                const img = document.createElement('img');
+                img.src = snap.src;
+                img.style.cssText = `display:block;width:${snap.w||600}px;height:${snap.h||200}px;`;
+                el.parentNode.replaceChild(img, el);
+            }
+        });
         proxy.style.display = 'block';
         await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-        const proxyRect = proxy.getBoundingClientRect();
-        const breakPts = new Set([0]);
-        proxy.querySelectorAll('.agent-card, .perf-summary-bar').forEach(el => {
-            const relTop = (el.getBoundingClientRect().top - proxyRect.top) * CAPTURE_SCALE;
-            if (relTop > 0) breakPts.add(Math.round(relTop));
-        });
+        // ── 3. Captura cada seção individualmente ──
+        const sectionEls = [
+            proxy.querySelector('.perf-summary-bar'),
+            ...Array.from(proxy.querySelectorAll('.agent-card'))
+        ].filter(Boolean);
 
-        const fullCanvas = await html2canvas(proxy, {
-            scale: CAPTURE_SCALE,
-            backgroundColor: '#f8fafc',
-            useCORS: true,
-            allowTaint: true,
-            logging: false,
-        });
-
-        breakPts.add(fullCanvas.height);
-        const sortedBreaks = [...breakPts].sort((a, b) => a - b);
+        const sectionCanvases = [];
+        for (const el of sectionEls) {
+            const cv = await html2canvas(el, {
+                scale: SCALE, backgroundColor: '#ffffff',
+                useCORS: true, allowTaint: true, logging: false,
+            });
+            sectionCanvases.push(cv);
+        }
 
         proxy.style.display = 'none';
         proxy.innerHTML = '';
 
+        // ── 4. Monta o PDF posicionando seções uma a uma ──
         const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-        const mmPerPx = USABLE_W / fullCanvas.width;
-        const pageContentPx = PAGE_CONTENT_H / mmPerPx;
-        let pageNum = 0;
+        let pageNum  = 0;
+        let curY     = CONTENT_Y;
 
-        function drawHeader(pg) {
-            pdf.setFillColor(...PURPLE);
-            pdf.rect(0, 0, PW, HEADER_H, 'F');
-            pdf.setTextColor(...WHITE);
-            pdf.setFontSize(11);
-            pdf.setFont('helvetica', 'bold');
+        function startPage() {
+            if (pageNum > 0) pdf.addPage();
+            pageNum++;
+            // cabeçalho
+            pdf.setFillColor(...PURPLE); pdf.rect(0, 0, PW, HEADER_H, 'F');
+            pdf.setTextColor(...WHITE); pdf.setFontSize(11); pdf.setFont('helvetica', 'bold');
             pdf.text(`PROCON-RJ · Análise de Performance dos Agentes Socioeducadores (${fonte})`, margin, 9.5);
-            pdf.setFont('helvetica', 'normal');
-            pdf.setFontSize(8);
-            pdf.text(`${periodo}   |   Gerado em ${now}   |   Pág. ${pg}`, PW - margin, 9.5, { align: 'right' });
+            pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8);
+            pdf.text(`${periodo}   |   Gerado em ${now}   |   Pág. ${pageNum}`, PW - margin, 9.5, { align: 'right' });
+            // rodapé
+            pdf.setFontSize(7); pdf.setFont('helvetica', 'normal'); pdf.setTextColor(148, 163, 184);
+            pdf.text(`PROCON-RJ · Relatório gerado em ${now} · ${periodo}`, PW / 2, PH - 2, { align: 'center' });
+            curY = CONTENT_Y;
         }
 
-        function drawFooter() {
-            pdf.setFontSize(7);
-            pdf.setFont('helvetica', 'normal');
-            pdf.setTextColor(148, 163, 184);
-            pdf.text(
-                `PROCON-RJ · Relatório gerado em ${now} · ${periodo}`,
-                PW / 2, PH - 2, { align: 'center' }
-            );
-        }
+        startPage(); // abre a 1ª página com conteúdo
 
-        drawHeader(++pageNum);
-        drawFooter();
+        for (const cv of sectionCanvases) {
+            const mmPerPx = USABLE_W / cv.width;
+            const imgH    = cv.height * mmPerPx;
 
-        let yCanvas = 0;
-        while (yCanvas < fullCanvas.height) {
-            const maxYEnd = yCanvas + pageContentPx;
-            let breakY = maxYEnd;
-            for (let i = sortedBreaks.length - 1; i >= 0; i--) {
-                const bp = sortedBreaks[i];
-                if (bp <= maxYEnd && bp > yCanvas) { breakY = bp; break; }
-            }
-            if (breakY <= yCanvas) breakY = Math.min(yCanvas + pageContentPx, fullCanvas.height);
+            if (imgH <= PAGE_AVAIL) {
+                // seção cabe numa página inteira — troca de página se não couber no espaço restante
+                if (curY + imgH > BOTTOM_LIM) startPage();
+                pdf.addImage(cv.toDataURL('image/jpeg', 0.93), 'JPEG', margin, curY, USABLE_W, imgH);
+                curY += imgH + GAP;
+            } else {
+                // seção mais alta que uma página — fatia respeitando o espaço restante em cada página
+                let sliceY = 0;
+                while (sliceY < cv.height) {
+                    const availMM = BOTTOM_LIM - curY;
+                    if (availMM < 8) { startPage(); continue; } // menos de 8 mm: vira página
+                    const sliceHPx  = Math.min(Math.floor(availMM / mmPerPx), cv.height - sliceY);
+                    if (sliceHPx <= 0) { startPage(); continue; }
 
-            const sliceHPx = Math.min(breakY, fullCanvas.height) - yCanvas;
-            if (sliceHPx <= 0) break;
+                    const slice     = document.createElement('canvas');
+                    slice.width     = cv.width;
+                    slice.height    = sliceHPx;
+                    const sCtx      = slice.getContext('2d');
+                    sCtx.fillStyle  = '#ffffff';
+                    sCtx.fillRect(0, 0, slice.width, slice.height);
+                    sCtx.drawImage(cv, 0, -sliceY);
 
-            const slice = document.createElement('canvas');
-            slice.width  = fullCanvas.width;
-            slice.height = sliceHPx;
-            const sCtx = slice.getContext('2d');
-            sCtx.fillStyle = '#f8fafc';
-            sCtx.fillRect(0, 0, slice.width, sliceHPx);
-            sCtx.drawImage(fullCanvas, 0, -yCanvas);
+                    const sliceHMM = sliceHPx * mmPerPx;
+                    pdf.addImage(slice.toDataURL('image/jpeg', 0.93), 'JPEG', margin, curY, USABLE_W, sliceHMM);
+                    curY   += sliceHMM + GAP;
+                    sliceY += sliceHPx;
 
-            const imgData  = slice.toDataURL('image/jpeg', 0.93);
-            const sliceHMM = sliceHPx * mmPerPx;
-            pdf.addImage(imgData, 'JPEG', margin, HEADER_H + 1, USABLE_W, sliceHMM);
-
-            yCanvas = breakY;
-
-            if (yCanvas < fullCanvas.height) {
-                pdf.addPage();
-                drawHeader(++pageNum);
-                drawFooter();
+                    if (sliceY < cv.height) startPage();
+                }
             }
         }
 
-        pdf.save(`Relatorio_Performance_${fonte.replace(/\s/g,'_')}_PROCON.pdf`);
+        pdf.save(`Relatorio_Performance_${fonte.replace(/\s/g, '_')}_PROCON.pdf`);
     }
 
     document.getElementById('openPerfModalBtn').addEventListener('click', (e) => {
@@ -3125,7 +3170,25 @@
             : 'Todos os períodos';
 
         const proxy = document.getElementById('pdfCaptureProxy');
+
+        // Captura o gráfico de barras como imagem antes de clonar o innerHTML
+        const betChartEl = document.getElementById('betBarChart');
+        const betChartSnap = (betChartEl && betChartEl.width > 0)
+            ? { src: betChartEl.toDataURL('image/png'), w: betChartEl.offsetWidth, h: betChartEl.offsetHeight }
+            : null;
+
         proxy.innerHTML = betSection.innerHTML;
+
+        if (betChartSnap) {
+            const cv = proxy.querySelector('#betBarChart');
+            if (cv) {
+                const img = document.createElement('img');
+                img.src = betChartSnap.src;
+                img.style.cssText = `display:block;width:${betChartSnap.w||900}px;height:${betChartSnap.h||520}px;`;
+                cv.parentNode.replaceChild(img, cv);
+            }
+        }
+
         proxy.style.display = 'block';
         await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
