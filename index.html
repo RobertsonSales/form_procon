@@ -184,6 +184,41 @@
         .escala-legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 600; color: #334155; }
         .escala-legend-dot { width: 12px; height: 12px; border-radius: 4px; flex-shrink: 0; }
 
+        /* ── Filtro de dia da semana ── */
+        .escala-filter-bar {
+            display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;
+            background: white; border-radius: 16px; padding: 1rem 1.5rem;
+            border: 1px solid #bae6fd; align-items: flex-end;
+        }
+        .escala-filter-group { flex: 1; min-width: 200px; }
+        .escala-filter-group label {
+            font-size: 0.78rem; font-weight: 700; color: #64748b;
+            text-transform: uppercase; letter-spacing: 0.3px;
+            margin-bottom: 6px; display: block;
+        }
+        .escala-filter-select {
+            width: 100%; border: 2px solid #e2e8f0; border-radius: 10px;
+            padding: 10px 12px; font-family: inherit; font-size: 0.9rem;
+            color: #1e2d3d; background: white; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .escala-filter-select:focus {
+            outline: none; border-color: #0369a1;
+            box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.1);
+        }
+        .escala-filter-select option {
+            padding: 8px;
+        }
+        .btn-escala-clear-filter {
+            background: #f1f5f9; color: #64748b; border: 2px solid #e2e8f0;
+            border-radius: 10px; padding: 10px 18px; font-weight: 700;
+            font-size: 0.85rem; cursor: pointer; display: inline-flex;
+            align-items: center; gap: 6px; transition: all 0.2s;
+        }
+        .btn-escala-clear-filter:hover {
+            background: #e2e8f0; border-color: #cbd5e1;
+        }
+
         /* ── Grade matricial com bordas completas ── */
         .escala-matrix-wrap {
             border-radius: 16px; overflow-x: auto; border: 1px solid #bae6fd;
@@ -215,7 +250,7 @@
             border-right: 2px solid rgba(255,255,255,0.25);
             position: sticky; left: 0; z-index: 2;
         }
-        .escala-matrix thead tr.row-dias th:not(:first-child) { min-width: 100px; }
+        .escala-matrix thead tr.row-dias th:not(:first-child) { min-width: 122px; }
 
         .day-th-inner {
             display: flex; flex-direction: column; align-items: center;
@@ -239,7 +274,7 @@
         .escala-matrix tbody tr:nth-child(even) td.agent-name-cell { background: #f7fbff; }
         .escala-matrix tbody tr:hover td.agent-name-cell { background: #e0f2fe44; }
 
-        .escala-matrix td.turno-cell { text-align: center; }
+        .escala-matrix td.turno-cell { text-align: center; vertical-align: middle; padding: 6px 8px; }
         .turno-pill {
             display: inline-flex; align-items: center; gap: 4px;
             font-size: 0.68rem; font-weight: 700; padding: 4px 10px;
@@ -250,6 +285,18 @@
         .turno-integral { background: #ede9fe; color: #5b21b6; }
         .turno-outro    { background: #f1f5f9; color: #475569; }
         .turno-livre    { color: #cbd5e1; font-size: 0.75rem; }
+        .turno-atuacao {
+            font-size: 0.62rem;
+            color: #0369a1;
+            font-weight: 600;
+            margin-top: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 112px;
+            text-align: center;
+            letter-spacing: 0.1px;
+        }
 
         .escala-empty { text-align:center; padding: 3rem 2rem; color: #64748b; }
         .escala-empty .hint-icon { font-size: 3.5rem; opacity: 0.3; margin-bottom: 1rem; }
@@ -855,6 +902,8 @@
             .agent-card-header { flex-direction: column; align-items: flex-start; }
             .bet-kpi-mini { flex-direction: column; align-items: stretch; }
             .bet-kpi-item { min-width: auto; }
+            .escala-filter-bar { flex-direction: column; }
+            .escala-filter-group { min-width: 100%; }
         }
         @media (max-width: 480px) {
             .kpi-grid { grid-template-columns: 1fr; }
@@ -879,7 +928,7 @@
             --card-radius: clamp(14px, 2.2vw, 20px);
             --touch-size: 44px;
             --sticky-name-col: 220px;
-            --escala-day-col: 96px;
+            --escala-day-col: 122px;
         }
 
         html {
@@ -1305,7 +1354,7 @@
         @media (max-width: 767.98px) {
             :root {
                 --sticky-name-col: 172px;
-                --escala-day-col: 86px;
+                --escala-day-col: 100px;
             }
 
             .hero-card {
@@ -1422,13 +1471,21 @@
             #escalaPdfIframe {
                 height: 52vh !important;
             }
+
+            .escala-filter-bar {
+                flex-direction: column;
+            }
+
+            .escala-filter-group {
+                min-width: 100%;
+            }
         }
 
         @media (max-width: 575.98px) {
             :root {
                 --page-padding: 12px;
                 --sticky-name-col: 150px;
-                --escala-day-col: 78px;
+                --escala-day-col: 88px;
             }
 
             .hero-card,
@@ -1559,6 +1616,14 @@
 
             #escalaPdfIframe {
                 height: 46vh !important;
+            }
+
+            .escala-filter-bar {
+                flex-direction: column;
+            }
+
+            .escala-filter-group {
+                min-width: 100%;
             }
         }
     </style>
@@ -1764,7 +1829,7 @@
 <div id="escalaPdfProxy" aria-hidden="true"></div>
 
 <!-- ══════════════════════════════════════════════════════════════════
-     MODAL: ESCALA DE SERVIÇO (com período e coluna de serviço)
+     MODAL: ESCALA DE SERVIÇO (com período, filtro por dia da semana e coluna de serviço)
 ══════════════════════════════════════════════════════════════════ -->
 <div class="modal fade" id="escalaModal" tabindex="-1" aria-labelledby="escalaModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
@@ -1779,7 +1844,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="escalaModalBody">
-                <!-- O conteúdo será preenchido dinamicamente pelo JS, incluindo os campos de período -->
+                <!-- O conteúdo será preenchido dinamicamente pelo JS, incluindo os campos de período e filtro de dia -->
                 <div class="text-center py-5 text-muted">
                     <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
                     <p>Carregando escala…</p>
@@ -1905,6 +1970,7 @@
     let escalaData   = { headers: [], rows: [], isNativeMatrix: false,
                          agentCol: -1, metaCols: [], dayCols: [] };
     let currentPerfSource = 'lancamento'; // 'lancamento' ou 'bet'
+    let escalaDiaFilter   = 'todos';      // filtro por dia da semana
 
     /* ─────────────────────────────────────────────────────────────────
        ELEMENTOS DOM
@@ -3323,7 +3389,7 @@
     });
 
     /* ═══════════════════════════════════════════════════════════════════
-       ESCALA DE SERVIÇO (com período e coluna de serviço)
+       ESCALA DE SERVIÇO (com período, filtro por dia da semana e coluna de serviço)
     ═══════════════════════════════════════════════════════════════════ */
 
     function turnoCls(t) {
@@ -3370,6 +3436,18 @@
         <span class="escala-legend-item"><span class="escala-legend-dot" style="background:#cbd5e1"></span>—&nbsp;Não escalado</span>
     </div>`;
 
+    // Opções de dias da semana para o filtro
+    const DIAS_SEMANA_OPTIONS = [
+        { value: 'todos', label: 'Todos os dias' },
+        { value: 'DOMINGO', label: 'Domingo' },
+        { value: 'SEGUNDA', label: 'Segunda-feira' },
+        { value: 'TERCA', label: 'Terça-feira' },
+        { value: 'QUARTA', label: 'Quarta-feira' },
+        { value: 'QUINTA', label: 'Quinta-feira' },
+        { value: 'SEXTA', label: 'Sexta-feira' },
+        { value: 'SABADO', label: 'Sábado' }
+    ];
+
     document.getElementById('openEscalaModalBtn').addEventListener('click', (e) => {
         if (!rawData.length) {
             e.preventDefault();
@@ -3394,6 +3472,8 @@
         escalaModalPer.textContent = (dashFilter.start && dashFilter.end)
             ? `Período: ${isoToBR(dashFilter.start)} a ${isoToBR(dashFilter.end)}`
             : 'Todos os períodos';
+        // Resetar filtro de dia ao abrir o modal
+        escalaDiaFilter = 'todos';
         renderEscalaModal();
     });
 
@@ -3410,6 +3490,25 @@
                 <label style="font-size:0.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:4px;">Data Final da Escala</label>
                 <input type="date" id="escalaEndDate" value="${endVal}" style="width:100%;border:2px solid #e2e8f0;border-radius:10px;padding:8px 12px;">
             </div>
+        </div>`;
+    }
+
+    function getDiaSemanaFilterHTML() {
+        const options = DIAS_SEMANA_OPTIONS.map(opt => 
+            `<option value="${opt.value}" ${opt.value === escalaDiaFilter ? 'selected' : ''}>${opt.label}</option>`
+        ).join('');
+        
+        return `
+        <div class="escala-filter-bar">
+            <div class="escala-filter-group">
+                <label><i class="fas fa-calendar-day me-2"></i>Filtrar por Dia da Semana</label>
+                <select id="escalaDiaFilter" class="escala-filter-select">
+                    ${options}
+                </select>
+            </div>
+            <button class="btn-escala-clear-filter" id="escalaClearDiaFilter" ${escalaDiaFilter === 'todos' ? 'disabled' : ''}>
+                <i class="fas fa-times"></i> Limpar Filtro
+            </button>
         </div>`;
     }
 
@@ -3495,7 +3594,7 @@
         const idxEdu   = hdrs.findIndex(h => /agente|social|educador|nome|servidor|funcion/i.test(h));
         const idxTurno = hdrs.findIndex(h => /turno|per[ií]odo|hor[aá]rio|shift/i.test(h));
 
-        let html = getPeriodInputsHTML();
+        let html = getPeriodInputsHTML() + getDiaSemanaFilterHTML();
 
         if (idxDate < 0 && idxEdu < 0) {
             const rows = escalaData.rows.map(r =>
@@ -3509,6 +3608,7 @@
                 </div>
                 ${ESCALA_OBS_HTML}`;
             escalaModalBody.innerHTML = html;
+            attachEscalaFilterEvents();
             return;
         }
 
@@ -3530,30 +3630,56 @@
         ${matrixHtml}
         ${ESCALA_OBS_HTML}`;
         escalaModalBody.innerHTML = html;
+        attachEscalaFilterEvents();
     }
 
     function renderEscalaNativeMatrix() {
         const { agentCol, metaCols, dayCols, rows, headers } = escalaData;
 
-        const totalAgentes = rows.length;
-        const totalDias    = dayCols.length;
+        // ── Filtra apenas os agentes que possuem pelo menos 1 dia escalado ──
+        let scheduledRows = rows.filter(row =>
+            dayCols.some(dc => row[dc.idx] && String(row[dc.idx]).trim() !== '')
+        );
+
+        // ── Aplica filtro por dia da semana se não for 'todos' ──
+        let filteredDayCols = [...dayCols];
+        if (escalaDiaFilter !== 'todos') {
+            filteredDayCols = dayCols.filter(dc => {
+                const normLabel = dc.label.toUpperCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+                return normLabel === escalaDiaFilter;
+            });
+            
+            // Filtra agentes que têm escala no dia selecionado
+            scheduledRows = scheduledRows.filter(row =>
+                filteredDayCols.some(dc => row[dc.idx] && String(row[dc.idx]).trim() !== '')
+            );
+        }
+
+        const totalAgentesTotal    = rows.length;
+        const totalAgentesEscalados = scheduledRows.length;
+        const totalDias            = filteredDayCols.length;
 
         const servicoCol = metaCols.find(mc => /serv[ií]ço|servico/i.test(mc.label));
         const servicoIdx = servicoCol ? servicoCol.idx : -1;
 
-        const headCols = dayCols.map(dc =>
+        const headCols = filteredDayCols.map(dc =>
             `<th><div class="day-th-inner">
                 <span class="day-th-date">${dc.label}</span>
             </div></th>`
         ).join('');
 
-        const bodyRows = rows.map(row => {
-            const nome     = row[agentCol] || '(sem nome)';
+        const bodyRows = scheduledRows.map(row => {
+            const nome    = row[agentCol] || '(sem nome)';
             const servico = servicoIdx >= 0 ? (row[servicoIdx] || '') : '';
 
-            const cells = dayCols.map(dc => {
-                const t = row[dc.idx];
-                if (!t) return `<td class="turno-cell"><span class="turno-livre">—</span></td>`;
+            const cells = filteredDayCols.map(dc => {
+                const t       = row[dc.idx];                             // turno: INTEGRAL / MANHÃ / TARDE
+                const atuacao = String(row[dc.idx + 1] || '').trim();    // local de atuação (coluna ATUAÇÃO)
+
+                if (!t || String(t).trim() === '') {
+                    return `<td class="turno-cell"><span class="turno-livre">—</span></td>`;
+                }
                 const cls  = turnoCls(t);
                 const icon = turnoIcon(t);
                 const lbl  = turnoLabel(t) || t;
@@ -3561,16 +3687,15 @@
                     <span class="turno-pill ${cls}">
                         <i class="${icon}" style="font-size:0.55rem"></i>${lbl}
                     </span>
+                    ${atuacao ? `<div class="turno-atuacao" title="${atuacao}">${atuacao}</div>` : ''}
                 </td>`;
             }).join('');
 
-            const servicoCell = `<td class="turno-cell" style="font-weight:600; color:#0c4a6e;">${servico}</td>`;
+            const servicoCell = `<td class="turno-cell" style="font-weight:600;color:#0c4a6e;">${servico}</td>`;
 
             return `<tr>
                 <td class="agent-name-cell">
-                    <span>
-                        <div style="font-weight:700;color:#0c4a6e">${nome}</div>
-                    </span>
+                    <div style="font-weight:700;color:#0c4a6e">${nome}</div>
                 </td>
                 ${servicoCell}
                 ${cells}
@@ -3582,8 +3707,8 @@
             <table class="escala-matrix">
                 <thead>
                     <tr class="row-dias">
-                        <th style="min-width:240px">Agente Socioeducador</th>
-                        <th style="min-width:100px; background:#0c4a6e; color:white;">Serviço</th>
+                        <th style="min-width:220px">Agente Socioeducador</th>
+                        <th style="min-width:100px;background:#0c4a6e;color:white;">Serviço</th>
                         ${headCols}
                     </tr>
                 </thead>
@@ -3591,31 +3716,30 @@
             </table>
         </div>`;
 
-        const html = getPeriodInputsHTML() + `
+        const html = getPeriodInputsHTML() + getDiaSemanaFilterHTML() + `
         <div class="escala-summary-bar">
-            <div class="escala-summary-item"><span class="esv">${totalAgentes}</span><span class="esl">Agente(s)</span></div>
+            <div class="escala-summary-item"><span class="esv">${totalAgentesEscalados}</span><span class="esl">Escalado(s)</span></div>
+            <div class="escala-summary-item"><span class="esv">${totalAgentesTotal}</span><span class="esl">Total de Agentes</span></div>
             <div class="escala-summary-item"><span class="esv">${totalDias}</span><span class="esl">Dia(s) da Semana</span></div>
-            <div class="escala-summary-item">
-                <span class="esv">${rows.filter(r => dayCols.some(dc => r[dc.idx])).length}</span>
-                <span class="esl">Com Escala</span>
-            </div>
         </div>
         ${ESCALA_LEGEND_HTML}
         ${matrixHtml}
         ${ESCALA_OBS_HTML}`;
 
         escalaModalBody.innerHTML = html;
+        attachEscalaFilterEvents();
     }
 
     function renderEscalaFromLancamento() {
         const filtered = getFiltered();
         if (!filtered.length) {
-            escalaModalBody.innerHTML = getPeriodInputsHTML() + `
+            escalaModalBody.innerHTML = getPeriodInputsHTML() + getDiaSemanaFilterHTML() + `
                 <div class="escala-empty">
                     <div class="hint-icon"><i class="fas fa-calendar-times"></i></div>
                     <p class="fw-semibold">Sem dados para o período selecionado.</p>
                 </div>
                 ${ESCALA_OBS_HTML}`;
+            attachEscalaFilterEvents();
             return;
         }
 
@@ -3629,7 +3753,7 @@
             r => ''
         );
 
-        escalaModalBody.innerHTML = getPeriodInputsHTML() + `
+        escalaModalBody.innerHTML = getPeriodInputsHTML() + getDiaSemanaFilterHTML() + `
         <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:12px;padding:0.9rem 1.2rem;margin-bottom:1.2rem;font-size:0.85rem;color:#664d03">
             <i class="fas fa-info-circle me-2"></i>
             A aba <strong>"Escala de Serviço"</strong> não foi encontrada. Grade derivada dos <strong>Lançamentos Diários</strong>.
@@ -3642,6 +3766,26 @@
         ${ESCALA_LEGEND_HTML}
         ${matrixHtml}
         ${ESCALA_OBS_HTML}`;
+        attachEscalaFilterEvents();
+    }
+
+    function attachEscalaFilterEvents() {
+        const diaFilter = document.getElementById('escalaDiaFilter');
+        const clearBtn = document.getElementById('escalaClearDiaFilter');
+        
+        if (diaFilter) {
+            diaFilter.addEventListener('change', function() {
+                escalaDiaFilter = this.value;
+                renderEscalaModal();
+            });
+        }
+        
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function() {
+                escalaDiaFilter = 'todos';
+                renderEscalaModal();
+            });
+        }
     }
 
     /* ═══════════════════════════════════════════════════════════════════
@@ -3686,7 +3830,7 @@
             const relTop = (el.getBoundingClientRect().top - proxyRect.top) * SCALE;
             if (relTop > 1) breakPts.add(Math.round(relTop));
         });
-        proxy.querySelectorAll('.escala-summary-bar, .escala-legend, .escala-period-inputs').forEach(el => {
+        proxy.querySelectorAll('.escala-summary-bar, .escala-legend, .escala-period-inputs, .escala-filter-bar').forEach(el => {
             const relTop = (el.getBoundingClientRect().top - proxyRect.top) * SCALE;
             if (relTop > 1) breakPts.add(Math.round(relTop));
         });
@@ -3788,7 +3932,7 @@
             slice.height = sliceHPx;
             const sCtx   = slice.getContext('2d');
             sCtx.fillStyle = '#f0f9ff';
-            sCtx.fillRect(0, 0, fullCanvas.width, sliceHPx);
+            sCtx.fillRect(0, 0, slice.width, sliceHPx);
             sCtx.drawImage(fullCanvas, 0, -yCanvas);
             pdf.addImage(slice.toDataURL('image/jpeg', 0.93), 'JPEG',
                 margin, HEADER_H + 1, USABLE_W, sliceHPx * mmPerPx);
