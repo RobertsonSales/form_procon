@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>PROCON-RJ · Dashboard de Atendimentos + Apostas</title>
+    <title>PROCON-RJ · Dashboard de Atendimentos + Apostas + Sala-Interno (v8.1)</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -1322,6 +1322,10 @@
                 grid-template-columns: repeat(3, minmax(0, 1fr));
             }
 
+            .dash-sala-select { min-height: var(--touch-size, 44px); }
+            .escala-combined-filter { flex-direction: column; }
+            .escala-combined-filter .ecf-group { min-width: 100%; }
+
             .location-grid {
                 grid-template-columns: 1fr;
             }
@@ -1626,6 +1630,78 @@
                 min-width: 100%;
             }
         }
+
+        /* ── SALA FILTER ── */
+        .dash-sala-select {
+            border: 2px solid #e2e8f0; border-radius: 10px; padding: 8px 12px;
+            font-family: inherit; font-size: 0.88rem; color: #1e2d3d;
+            background: white; cursor: pointer; width: 100%;
+            min-height: var(--touch-size, 44px);
+        }
+        .dash-sala-select:focus { outline: none; border-color: #007bff; box-shadow: 0 0 0 3px rgba(0,123,255,0.1); }
+
+        /* ── SALA-INTERNO SECTION ── */
+        .sala-interno-section { margin: 2rem 0; }
+        .si-kpi-bar {
+            display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;
+            background: white; border-radius: 16px; padding: 1rem 1.5rem;
+            border: 1px solid #bae6fd; align-items: center;
+        }
+        .si-kpi-item { display: flex; flex-direction: column; align-items: center; min-width: 100px; }
+        .si-kpi-item .siv { font-size: 1.6rem; font-weight: 800; color: #0369a1; }
+        .si-kpi-item .sil { font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.3px; }
+
+        .si-action-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.9rem; margin-bottom: 1.5rem;
+        }
+        .si-action-card {
+            background: white; border-radius: 14px; padding: 1rem 1.2rem;
+            border: 1px solid #e2e8f0; transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .si-action-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px -6px rgba(3,105,161,0.18); }
+        .si-action-card .sac-val { font-size: 1.6rem; font-weight: 800; line-height: 1.2; }
+        .si-action-card .sac-lbl { font-size: 0.72rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 3px; }
+        .si-action-card .sac-sub { font-size: 0.68rem; color: #94a3b8; margin-top: 5px; }
+
+        .si-agent-table-wrap {
+            border-radius: 14px; overflow-x: auto; border: 1px solid #e2e8f0;
+            -webkit-overflow-scrolling: touch; margin-bottom: 1.5rem;
+        }
+        .si-agent-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 600px; }
+        .si-agent-table thead tr { background: #0369a1; color: white; }
+        .si-agent-table thead th { padding: 9px 12px; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; white-space: nowrap; }
+        .si-agent-table tbody tr:nth-child(even) { background: #f0f9ff; }
+        .si-agent-table tbody td { padding: 7px 12px; border-bottom: 1px solid #e0f2fe; vertical-align: middle; }
+
+        /* ── ESCALA combined filter bar ── */
+        .escala-combined-filter {
+            display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1.5rem;
+            background: white; border-radius: 16px; padding: 1rem 1.5rem;
+            border: 1px solid #bae6fd; align-items: flex-end;
+        }
+        .escala-combined-filter .ecf-group { flex: 1; min-width: 160px; }
+        .escala-combined-filter label {
+            font-size: 0.78rem; font-weight: 700; color: #64748b;
+            text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6px; display: block;
+        }
+        .btn-escala-limpar-all {
+            background: #f1f5f9; color: #64748b; border: 2px solid #e2e8f0;
+            border-radius: 10px; padding: 10px 18px; font-weight: 700;
+            font-size: 0.85rem; cursor: pointer; display: inline-flex;
+            align-items: center; gap: 6px; transition: all 0.2s; align-self: flex-end;
+            white-space: nowrap;
+        }
+        .btn-escala-limpar-all:hover { background: #e2e8f0; border-color: #cbd5e1; }
+
+        /* ── PDF print hide ── */
+        @media print {
+            .dash-filter-bar, .escala-combined-filter, .escala-period-inputs,
+            .escala-filter-bar, .no-print, button, input, select { display: none !important; }
+        }
+        /* PDF proxy hide — elements removed before capture in JS */
+        .pdf-capture-hide { display: none !important; }
+
     </style>
 
 </head>
@@ -1675,7 +1751,7 @@
         <div class="dash-section-header">
             <div class="dash-title">
                 <h3><i class="fas fa-chart-column me-2"></i>Painel de Indicadores de Atendimento</h3>
-                <p>Importe a planilha completa (abas: Lançamento Diário, Localidades, BET's, Escala de Serviço) — inclui ranking de fornecedores e apostas</p>
+                <p>Importe a planilha completa (abas: Lançamento Diário, Localidades, BET's, Escala de Serviço, Sala-Interno) — inclui ranking de fornecedores, apostas e ações internas</p>
             </div>
             <label for="xlsxImport" class="btn-dash-import no-print">
                 <i class="fas fa-file-excel"></i> Importar Planilha (.xlsx)
@@ -1686,12 +1762,18 @@
         <!-- Status da importação -->
         <div id="dashImportStatus" style="display:none"></div>
 
-        <!-- Filtros de data e botões PDF -->
+        <!-- Filtros de data, Sala do Consumidor e botões PDF -->
         <div class="dash-filter-bar no-print" id="dashFilterBar" style="display:none">
             <div><label>Data inicial</label><input type="date" id="dashStart"></div>
             <div><label>Data final</label><input type="date" id="dashEnd"></div>
+            <div>
+                <label><i class="fas fa-building me-1"></i>Sala do Consumidor</label>
+                <select id="dashSalaFilter" class="dash-sala-select">
+                    <option value="">Todas as salas</option>
+                </select>
+            </div>
             <button class="btn-dash-filter" id="dashApplyFilter"><i class="fas fa-filter"></i> Filtrar</button>
-            <button class="btn-dash-clear" id="dashClearFilter"><i class="fas fa-times"></i> Limpar</button>
+            <button class="btn-dash-clear" id="dashClearFilter"><i class="fas fa-times"></i> Limpar Filtros</button>
             <button class="btn-dash-preview" id="previewPDFBtn"><i class="fas fa-eye"></i> Visualizar PDF</button>
             <button class="btn-dash-pdf" id="exportPDFBtn"><i class="fas fa-file-pdf"></i> Exportar PDF A4</button>
             <button class="btn-dash-perf" id="openPerfModalBtn" data-bs-toggle="modal" data-bs-target="#perfModal">
@@ -1706,7 +1788,7 @@
         <div class="dash-import-hint" id="dashImportHint">
             <div class="hint-icon"><i class="fas fa-table"></i></div>
             <h5>Nenhum dado carregado</h5>
-            <p>Clique em <strong>"Importar Planilha"</strong> e selecione o arquivo <code>.xlsx</code> contendo as abas <code>Lançamento Diário</code>, <code>Localidades</code>, <code>BET's</code> e <code>Escala de Serviço</code>.</p>
+            <p>Clique em <strong>"Importar Planilha"</strong> e selecione o arquivo <code>.xlsx</code> contendo as abas <code>Lançamento Diário</code>, <code>Localidades</code>, <code>BET's</code>, <code>Escala de Serviço</code> e <code>Sala-Interno</code>.</p>
         </div>
 
         <!-- Conteúdo do dashboard -->
@@ -1730,6 +1812,12 @@
 
             <div class="dash-section-title"><i class="fas fa-building-circle-exclamation" style="color:#dc2626"></i> Fornecedores Mais Reclamados</div>
             <div class="supplier-grid" id="supplierGrid"></div>
+
+            <!-- SEÇÃO: Ações Internas — Sala do Consumidor (Sala-Interno) -->
+            <div class="dash-section-title" style="color:#0369a1;">
+                <i class="fas fa-building-user" style="color:#0ea5e9"></i> Ações Internas — Sala do Consumidor
+            </div>
+            <div id="salaInternoSection" class="sala-interno-section"></div>
 
             <!-- NOVA SEÇÃO: Indicadores de Apostas (BET's) com botão PDF próprio -->
             <div class="dash-section-title bet-title">
@@ -1798,6 +1886,8 @@
                         <label class="btn btn-outline-light" for="perfSourceLanc"><i class="fas fa-clipboard-list me-1"></i>Atendimentos</label>
                         <input type="radio" class="btn-check" name="perfSource" id="perfSourceBet" value="bet">
                         <label class="btn btn-outline-light" for="perfSourceBet"><i class="fas fa-dice me-1"></i>Apostas (BET's)</label>
+                        <input type="radio" class="btn-check" name="perfSource" id="perfSourceSI" value="sala_interno">
+                        <label class="btn btn-outline-light" for="perfSourceSI"><i class="fas fa-building me-1"></i>Sala-Interno</label>
                     </div>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -1894,31 +1984,33 @@
     /* ─────────────────────────────────────────────────────────────────
        CONFIGURAÇÃO DAS PERGUNTAS (mesmo do original)
     ───────────────────────────────────────────────────────────────── */
+    // QUESTIONS: sim indices reflect new Lançamento Diário structure
+    // (SALA DO CONSUMIDOR added at col 1 → all SIM values shift +1)
     const QUESTIONS = [
-        { id: 'G1',  sim: 8,  label: 'Dir. consumidor',   full: 'Conhece seus direitos em defesa do consumidor?',           cat: 'Geral' },
-        { id: 'G2',  sim: 10, label: 'CDC',               full: 'Conhece o Código de Defesa do Consumidor (CDC)?',          cat: 'Geral' },
-        { id: 'G3',  sim: 12, label: 'Secret. Consumidor',full: 'Conhece a Secretaria Municipal de Defesa do Consumidor?',  cat: 'Geral' },
-        { id: 'G4',  sim: 14, label: 'Procon Carioca',    full: 'Conhece o Procon Municipal (Carioca)?',                    cat: 'Geral' },
-        { id: 'G5',  sim: 16, label: 'Ajuda Procon',      full: 'Sabe como pedir ajuda ao Procon Carioca?',                 cat: 'Geral' },
-        { id: 'I1',  sim: 18, label: 'Utiliza internet',  full: 'Utiliza internet?',                                        cat: 'Internet e Compras Online' },
-        { id: 'I2',  sim: 20, label: 'Compras online',    full: 'Faz compras pela internet?',                               cat: 'Internet e Compras Online' },
-        { id: 'I3',  sim: 22, label: 'Prob. compras online', full: 'Já teve problema com compras online?',                  cat: 'Internet e Compras Online' },
-        { id: 'F1',  sim: 24, label: 'Conta bancária',    full: 'Possui conta bancária?',                                   cat: 'Educação Financeira' },
-        { id: 'F2',  sim: 26, label: 'Prob. banco',       full: 'Já teve problema com o banco?',                            cat: 'Educação Financeira' },
-        { id: 'F3',  sim: 28, label: 'Consignado',        full: 'Possui empréstimo consignado?',                            cat: 'Educação Financeira' },
-        { id: 'F4',  sim: 30, label: 'Salário cobre desp.',full: 'Seu salário cobre suas despesas?',                        cat: 'Educação Financeira' },
-        { id: 'F5',  sim: 32, label: 'Dívida mensal',     full: 'Fica dívida para o mês seguinte?',                         cat: 'Educação Financeira' },
-        { id: 'F6',  sim: 34, label: 'Outras dívidas',    full: 'Possui outras dívidas?',                                   cat: 'Educação Financeira' },
-        { id: 'F7',  sim: 36, label: 'SCPC/Serasa',       full: 'Possui nome no SCPC, Serasa ou semelhantes?',              cat: 'Educação Financeira' },
-        { id: 'F8',  sim: 38, label: 'Renegociar dívidas',full: 'Possui interesse em renegociar dívidas?',                  cat: 'Educação Financeira' },
-        { id: 'T1',  sim: 40, label: 'Prob. telefonia',   full: 'Já teve problema com telefonia?',                          cat: 'Telefonia e Internet' },
-        { id: 'T2',  sim: 42, label: 'Prob. internet',    full: 'Já teve problema com internet?',                           cat: 'Telefonia e Internet' },
-        { id: 'S1',  sim: 44, label: 'Água e luz',        full: 'Possui fornecimento de água e luz?',                       cat: 'Serviços Essenciais' },
-        { id: 'S2',  sim: 46, label: 'Prob. água',        full: 'Já teve problema com a fornecedora de água?',              cat: 'Serviços Essenciais' },
-        { id: 'S3',  sim: 48, label: 'Prob. luz',         full: 'Já teve problema com a prestadora de luz?',                cat: 'Serviços Essenciais' },
-        { id: 'GA1', sim: 50, label: 'Gás encanado',      full: 'Possui gás encanado?',                                     cat: 'Gás' },
-        { id: 'GA2', sim: 52, label: 'Gás botijão',       full: 'Possui gás botijão?',                                      cat: 'Gás' },
-        { id: 'GA3', sim: 54, label: 'Prob. gás',         full: 'Teve algum problema com gás?',                             cat: 'Gás' },
+        { id: 'G1',  sim: 9,  label: 'Dir. consumidor',   full: 'Conhece seus direitos em defesa do consumidor?',           cat: 'Geral' },
+        { id: 'G2',  sim: 11, label: 'CDC',               full: 'Conhece o Código de Defesa do Consumidor (CDC)?',          cat: 'Geral' },
+        { id: 'G3',  sim: 13, label: 'Secret. Consumidor',full: 'Conhece a Secretaria Municipal de Defesa do Consumidor?',  cat: 'Geral' },
+        { id: 'G4',  sim: 15, label: 'Procon Carioca',    full: 'Conhece o Procon Municipal (Carioca)?',                    cat: 'Geral' },
+        { id: 'G5',  sim: 17, label: 'Ajuda Procon',      full: 'Sabe como pedir ajuda ao Procon Carioca?',                 cat: 'Geral' },
+        { id: 'I1',  sim: 19, label: 'Utiliza internet',  full: 'Utiliza internet?',                                        cat: 'Internet e Compras Online' },
+        { id: 'I2',  sim: 21, label: 'Compras online',    full: 'Faz compras pela internet?',                               cat: 'Internet e Compras Online' },
+        { id: 'I3',  sim: 23, label: 'Prob. compras online', full: 'Já teve problema com compras online?',                  cat: 'Internet e Compras Online' },
+        { id: 'F1',  sim: 25, label: 'Conta bancária',    full: 'Possui conta bancária?',                                   cat: 'Educação Financeira' },
+        { id: 'F2',  sim: 27, label: 'Prob. banco',       full: 'Já teve problema com o banco?',                            cat: 'Educação Financeira' },
+        { id: 'F3',  sim: 29, label: 'Consignado',        full: 'Possui empréstimo consignado?',                            cat: 'Educação Financeira' },
+        { id: 'F4',  sim: 31, label: 'Salário cobre desp.',full: 'Seu salário cobre suas despesas?',                        cat: 'Educação Financeira' },
+        { id: 'F5',  sim: 33, label: 'Dívida mensal',     full: 'Fica dívida para o mês seguinte?',                         cat: 'Educação Financeira' },
+        { id: 'F6',  sim: 35, label: 'Outras dívidas',    full: 'Possui outras dívidas?',                                   cat: 'Educação Financeira' },
+        { id: 'F7',  sim: 37, label: 'SCPC/Serasa',       full: 'Possui nome no SCPC, Serasa ou semelhantes?',              cat: 'Educação Financeira' },
+        { id: 'F8',  sim: 39, label: 'Renegociar dívidas',full: 'Possui interesse em renegociar dívidas?',                  cat: 'Educação Financeira' },
+        { id: 'T1',  sim: 41, label: 'Prob. telefonia',   full: 'Já teve problema com telefonia?',                          cat: 'Telefonia e Internet' },
+        { id: 'T2',  sim: 43, label: 'Prob. internet',    full: 'Já teve problema com internet?',                           cat: 'Telefonia e Internet' },
+        { id: 'S1',  sim: 45, label: 'Água e luz',        full: 'Possui fornecimento de água e luz?',                       cat: 'Serviços Essenciais' },
+        { id: 'S2',  sim: 47, label: 'Prob. água',        full: 'Já teve problema com a fornecedora de água?',              cat: 'Serviços Essenciais' },
+        { id: 'S3',  sim: 49, label: 'Prob. luz',         full: 'Já teve problema com a prestadora de luz?',                cat: 'Serviços Essenciais' },
+        { id: 'GA1', sim: 51, label: 'Gás encanado',      full: 'Possui gás encanado?',                                     cat: 'Gás' },
+        { id: 'GA2', sim: 53, label: 'Gás botijão',       full: 'Possui gás botijão?',                                      cat: 'Gás' },
+        { id: 'GA3', sim: 55, label: 'Prob. gás',         full: 'Teve algum problema com gás?',                             cat: 'Gás' },
     ];
 
     const CATEGORIES = ['Geral', 'Internet e Compras Online', 'Educação Financeira', 'Telefonia e Internet', 'Serviços Essenciais', 'Gás'];
@@ -1935,41 +2027,57 @@
     /* ─────────────────────────────────────────────────────────────────
        CONFIGURAÇÃO DAS PERGUNTAS DA ABA BET's (apenas SIM)
     ───────────────────────────────────────────────────────────────── */
+    // BET_QUESTIONS: simIdx +1 (SALA DO CONSUMIDOR column added at pos 1 in BET's sheet)
     const BET_QUESTIONS = [
-        { id: 'B1', pergunta: 'Conhece atividades de jogos on-line?', simIdx: 4 },
-        { id: 'B2', pergunta: 'Já realizou apostas on-line?', simIdx: 6 },
-        { id: 'B3', pergunta: 'Alguém da família já realizou apostas on-line?', simIdx: 8 },
-        { id: 'B4', pergunta: 'Aposta 1 vez ao dia', simIdx: 10 },
-        { id: 'B5', pergunta: 'Aposta várias vezes ao dia', simIdx: 12 },
-        { id: 'B6', pergunta: 'Aposta 1 vez na semana', simIdx: 14 },
-        { id: 'B7', pergunta: 'Aposta várias vezes na semana', simIdx: 16 },
-        { id: 'B8', pergunta: 'Aposta até R$ 100 por mês', simIdx: 18 },
-        { id: 'B9', pergunta: 'Aposta entre R$ 100 e R$ 500 por mês', simIdx: 20 },
-        { id: 'B10', pergunta: 'Aposta entre R$ 500 e R$ 1.000 por mês', simIdx: 22 },
-        { id: 'B11', pergunta: 'Aposta acima de R$ 1.000 por mês', simIdx: 24 },
-        { id: 'B12', pergunta: 'O jogo afetou sua saúde mental?', simIdx: 26 },
-        { id: 'B13', pergunta: 'O jogo afetou sua relação no trabalho?', simIdx: 28 },
-        { id: 'B14', pergunta: 'O jogo afetou sua família?', simIdx: 30 },
-        { id: 'B15', pergunta: 'O jogo afetou sua saúde física?', simIdx: 32 },
-        { id: 'B16', pergunta: 'Apostou pra recuperar o que perdeu anteriormente?', simIdx: 34 },
-        { id: 'B17', pergunta: 'Deixou de cumprir obrigações financeiras por causa das apostas?', simIdx: 36 }
+        { id: 'B1',  pergunta: 'Conhece atividades de jogos on-line?', simIdx: 5 },
+        { id: 'B2',  pergunta: 'Já realizou apostas on-line?', simIdx: 7 },
+        { id: 'B3',  pergunta: 'Alguém da família já realizou apostas on-line?', simIdx: 9 },
+        { id: 'B4',  pergunta: 'Aposta 1 vez ao dia', simIdx: 11 },
+        { id: 'B5',  pergunta: 'Aposta várias vezes ao dia', simIdx: 13 },
+        { id: 'B6',  pergunta: 'Aposta 1 vez na semana', simIdx: 15 },
+        { id: 'B7',  pergunta: 'Aposta várias vezes na semana', simIdx: 17 },
+        { id: 'B8',  pergunta: 'Aposta até R$ 100 por mês', simIdx: 19 },
+        { id: 'B9',  pergunta: 'Aposta entre R$ 100 e R$ 500 por mês', simIdx: 21 },
+        { id: 'B10', pergunta: 'Aposta entre R$ 500 e R$ 1.000 por mês', simIdx: 23 },
+        { id: 'B11', pergunta: 'Aposta acima de R$ 1.000 por mês', simIdx: 25 },
+        { id: 'B12', pergunta: 'O jogo afetou sua saúde mental?', simIdx: 27 },
+        { id: 'B13', pergunta: 'O jogo afetou sua relação no trabalho?', simIdx: 29 },
+        { id: 'B14', pergunta: 'O jogo afetou sua família?', simIdx: 31 },
+        { id: 'B15', pergunta: 'O jogo afetou sua saúde física?', simIdx: 33 },
+        { id: 'B16', pergunta: 'Apostou pra recuperar o que perdeu anteriormente?', simIdx: 35 },
+        { id: 'B17', pergunta: 'Deixou de cumprir obrigações financeiras por causa das apostas?', simIdx: 37 }
+    ];
+
+    // Sala-Interno action definitions (col indices in Sala-Interno sheet)
+    const SALA_INTERNO_ACTIONS = [
+        { id: 'SI1', col: 5,  label: 'Triagem',     full: 'Triagem e identificação',             color: '#0ea5e9' },
+        { id: 'SI2', col: 6,  label: 'Oitiva',      full: 'Oitiva e esclarecimentos',            color: '#10b981' },
+        { id: 'SI3', col: 7,  label: 'Elaboração',  full: 'Elaboração de reclamação',            color: '#f59e0b' },
+        { id: 'SI4', col: 8,  label: 'Homologação', full: 'Homolocação de resultados',           color: '#8b5cf6' },
+        { id: 'SI5', col: 9,  label: 'Feedback',    full: 'Feedback ao consumidor',              color: '#ef4444' },
+        { id: 'SI6', col: 10, label: 'Pedidos',     full: 'Pedidos à coordenação',               color: '#06b6d4' },
+        { id: 'SI7', col: 11, label: 'Resumos',     full: 'Resumos encaminados à coordenação',   color: '#f97316' },
     ];
 
     /* ─────────────────────────────────────────────────────────────────
        ESTADO GLOBAL
     ───────────────────────────────────────────────────────────────── */
-    let rawData      = [];
-    let locations    = [];
-    let betData      = [];
-    let chartInst    = {};
-    let locationChart    = null;
-    let betBarChart      = null;
-    let perfCompChart    = null;
-    let perfCompChartPct = null;
-    let dashFilter   = { start: '', end: '' };
-    let escalaData   = { headers: [], rows: [], isNativeMatrix: false,
-                         agentCol: -1, metaCols: [], dayCols: [] };
-    let currentPerfSource = 'lancamento'; // 'lancamento' ou 'bet'
+    let rawData           = [];
+    let locations         = [];
+    let betData           = [];
+    let salaInternoData   = [];            // NEW: Sala-Interno daily actions
+    let salaOptions       = [];            // NEW: Sala do Consumidor options from Auxiliar!A
+    let salaFilterValue   = '';            // NEW: Global "Sala do Consumidor" filter
+    let salaInternoChart  = null;          // NEW: chart for Sala-Interno actions
+    let chartInst         = {};
+    let locationChart     = null;
+    let betBarChart       = null;
+    let perfCompChart     = null;
+    let perfCompChartPct  = null;
+    let dashFilter        = { start: '', end: '' };
+    let escalaData        = { headers: [], rows: [], isNativeMatrix: false,
+                               agentCol: -1, metaCols: [], dayCols: [], salaCol: -1 };
+    let currentPerfSource = 'lancamento'; // 'lancamento' | 'bet' | 'sala_interno'
     let escalaDiaFilter   = 'todos';      // filtro por dia da semana
 
     /* ─────────────────────────────────────────────────────────────────
@@ -1984,7 +2092,8 @@
     const locationCanvas  = document.getElementById('locationChart');
     const toastEl         = document.getElementById('pdfToast');
     const toast           = new bootstrap.Toast(toastEl, { autohide: true, delay: 4000 });
-    const betSection      = document.getElementById('betSection');
+    const betSection          = document.getElementById('betSection');
+    const salaInternoSection  = document.getElementById('salaInternoSection');
     const toggleMetrics   = document.getElementById('toggleMetricsTable');
     const metricsWrap     = document.getElementById('metricsTableWrap');
 
@@ -2004,27 +2113,111 @@
        UTILITÁRIOS
     ───────────────────────────────────────────────────────────────── */
     function toNumber(val) {
-        if (val === undefined || val === null) return 0;
-        if (typeof val === 'number') return val;
+        if (val === undefined || val === null || val === '') return 0;
+        if (typeof val === 'number') return Number.isFinite(val) ? val : 0;
+        if (val instanceof Date) return 0;
         if (typeof val === 'string') {
-            const num = parseFloat(val.replace(',', '.'));
-            return isNaN(num) ? 0 : num;
+            let cleaned = val.trim();
+            if (!cleaned) return 0;
+            cleaned = cleaned
+                .replace(/ /g, ' ')
+                .replace(/R\$/gi, '')
+                .replace(/%/g, '')
+                .replace(/\s+/g, '');
+            if (cleaned.includes(',') && cleaned.includes('.')) {
+                cleaned = cleaned.lastIndexOf(',') > cleaned.lastIndexOf('.')
+                    ? cleaned.replace(/\./g, '').replace(',', '.')
+                    : cleaned.replace(/,/g, '');
+            } else if (cleaned.includes(',')) {
+                cleaned = cleaned.replace(/\./g, '').replace(',', '.');
+            }
+            const num = Number(cleaned);
+            return Number.isFinite(num) ? num : 0;
         }
         return 0;
     }
 
+    function looksNumeric(val) {
+        if (typeof val === 'number') return Number.isFinite(val);
+        if (typeof val !== 'string') return false;
+        const cleaned = val.trim()
+            .replace(/ /g, ' ')
+            .replace(/R\$/gi, '')
+            .replace(/%/g, '')
+            .replace(/\s+/g, '');
+        return /^-?\d{1,3}(?:[.,]\d{3})*(?:[.,]\d+)?$/.test(cleaned) || /^-?\d+(?:[.,]\d+)?$/.test(cleaned);
+    }
+
+    function normalizeText(value) {
+        return String(value || '')
+            .normalize('NFD')
+            .replace(/[̀-ͯ]/g, '')
+            .replace(/[’'`´]/g, '')
+            .replace(/[^\w\s-]/g, ' ')
+            .replace(/_/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .toLowerCase();
+    }
+
+    function rowHasData(row) {
+        return Array.isArray(row) && row.some(cell => cell !== '' && cell !== null && cell !== undefined);
+    }
+
+    function toISODateParts(year, month, day) {
+        const y = Number(year);
+        const m = Number(month);
+        const d = Number(day);
+        if (!Number.isInteger(y) || !Number.isInteger(m) || !Number.isInteger(d)) return null;
+        if (m < 1 || m > 12 || d < 1 || d > 31) return null;
+        const dt = new Date(Date.UTC(y, m - 1, d));
+        if (dt.getUTCFullYear() !== y || dt.getUTCMonth() !== m - 1 || dt.getUTCDate() !== d) return null;
+        return `${String(y).padStart(4, '0')}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    }
+
     function rowDateToISO(val) {
-        if (!val) return null;
-        if (val instanceof Date) {
+        if (val === undefined || val === null || val === '') return null;
+        if (val instanceof Date && !isNaN(val)) {
             const d = new Date(val.getTime() - val.getTimezoneOffset() * 60000);
             return d.toISOString().split('T')[0];
         }
-        if (typeof val === 'number') {
-            const d = new Date((val - 25569) * 86400 * 1000);
-            const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
-            return local.toISOString().split('T')[0];
+        if (typeof val === 'number' && Number.isFinite(val)) {
+            if (typeof XLSX !== 'undefined' && XLSX.SSF && typeof XLSX.SSF.parse_date_code === 'function') {
+                const parsed = XLSX.SSF.parse_date_code(val);
+                if (parsed && parsed.y && parsed.m && parsed.d) {
+                    return toISODateParts(parsed.y, parsed.m, parsed.d);
+                }
+            }
+            const excelEpoch = new Date(Math.round((val - 25569) * 86400 * 1000));
+            if (!isNaN(excelEpoch)) {
+                const local = new Date(excelEpoch.getTime() - excelEpoch.getTimezoneOffset() * 60000);
+                return local.toISOString().split('T')[0];
+            }
+            return null;
         }
-        if (typeof val === 'string') return val.substring(0, 10);
+        if (typeof val === 'string') {
+            const s = val.trim();
+            if (!s) return null;
+
+            let match = s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})(?:\s+.*)?$/);
+            if (match) {
+                let [, d, m, y] = match;
+                if (y.length === 2) y = `20${y}`;
+                return toISODateParts(y, m, d);
+            }
+
+            match = s.match(/^(\d{4})[\/.\-](\d{1,2})[\/.\-](\d{1,2})(?:[T\s].*)?$/);
+            if (match) {
+                const [, y, m, d] = match;
+                return toISODateParts(y, m, d);
+            }
+
+            const parsed = new Date(s);
+            if (!isNaN(parsed)) {
+                const local = new Date(parsed.getTime() - parsed.getTimezoneOffset() * 60000);
+                return local.toISOString().split('T')[0];
+            }
+        }
         return null;
     }
 
@@ -2043,198 +2236,457 @@
         return `${d}/${m}/${y}`;
     }
 
-    /* ─────────────────────────────────────────────────────────────────
-       IMPORTAÇÃO DA PLANILHA (MODIFICADA para BET's)
-    ───────────────────────────────────────────────────────────────── */
-    xlsxInput.addEventListener('change', function (e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        showStatus('<i class="fas fa-spinner fa-spin"></i>&nbsp; Processando planilha…', 'loading');
+    function findSheetName(workbook, aliases, fallbackPredicate = null) {
+        if (!workbook || !Array.isArray(workbook.SheetNames)) return null;
+        const normalizedAliases = aliases.map(normalizeText);
+        const sheetNames = workbook.SheetNames.map(name => ({ original: name, normalized: normalizeText(name) }));
 
-        const reader = new FileReader();
-        reader.onload = function (ev) {
-            try {
-                const wb = XLSX.read(ev.target.result, { type: 'binary', cellDates: true });
+        for (const alias of normalizedAliases) {
+            const exact = sheetNames.find(item => item.normalized === alias);
+            if (exact) return exact.original;
+        }
+        for (const alias of normalizedAliases) {
+            const partial = sheetNames.find(item => item.normalized.includes(alias));
+            if (partial) return partial.original;
+        }
+        if (typeof fallbackPredicate === 'function') {
+            const found = workbook.SheetNames.find(fallbackPredicate);
+            if (found) return found;
+        }
+        return null;
+    }
 
-                /* 1. Aba "Lançamento Diário" */
-                const sheetNameLanc =
-                    wb.SheetNames.find(n => n.toLowerCase().includes('lan') && n.toLowerCase().includes('rio')) ||
-                    wb.SheetNames[0];
-                const wsLanc  = wb.Sheets[sheetNameLanc];
-                const rowsLanc = XLSX.utils.sheet_to_json(wsLanc, { header: 1, defval: '' });
-
-                const newData = [];
-                for (let i = 4; i < rowsLanc.length; i++) {
-                    const row = rowsLanc[i];
-                    if (!row || !row[0]) continue;
-                    const date = rowDateToISO(row[0]);
-                    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
-                    const local    = row[1] ? row[1].toString().trim() : '';
-                    const educator = row[2] ? row[2].toString().trim() : '';
-                    const fichas   = toNumber(row[3]);
-                    const energia   = row[4] ? row[4].toString().trim() : '';
-                    const agua      = row[5] ? row[5].toString().trim() : '';
-                    const telefonia = row[6] ? row[6].toString().trim() : '';
-                    const comercial = row[7] ? row[7].toString().trim() : '';
-                    const vals     = [];
-                    for (let col = 0; col <= 55; col++) vals[col] = toNumber(row[col]);
-                    newData.push({ date, local, educator, fichas, energia, agua, telefonia, comercial, vals });
-                }
-
-                if (newData.length === 0) {
-                    showStatus('<i class="fas fa-exclamation-circle"></i>&nbsp; Nenhum dado encontrado na aba Lançamento Diário.', 'error');
-                    return;
-                }
-
-                rawData = newData;
-
-                /* 2. Aba "Localidades" */
-                const sheetNameLoc = wb.SheetNames.find(n => n.toLowerCase().includes('localidade'));
-                let locs = [];
-                if (sheetNameLoc) {
-                    const wsLoc   = wb.Sheets[sheetNameLoc];
-                    const rowsLoc = XLSX.utils.sheet_to_json(wsLoc, { header: 1, defval: '' });
-                    for (let i = 0; i < rowsLoc.length; i++) {
-                        const row = rowsLoc[i];
-                        if (!row) continue;
-                        const nome = [row[0], row[1]]
-                            .map(v => (v !== null && v !== undefined ? String(v).trim() : ''))
-                            .find(v => v !== '');
-                        if (nome && nome.length > 1 && !/localidade/i.test(nome)) locs.push(nome);
-                    }
-                    locs = [...new Set(locs)];
-                }
-                if (locs.length === 0) {
-                    const uniqueLocs = [...new Set(newData.map(d => d.local).filter(l => l !== ''))];
-                    locs = uniqueLocs.sort();
-                }
-                locations = locs;
-
-                /* 3. Aba "Escala de Serviço" */
-                const sheetNameEsc = wb.SheetNames.find(n =>
-                    n.toLowerCase().includes('escala') || n.toLowerCase().includes('servi'));
-                escalaData = { headers: [], rows: [], isNativeMatrix: false,
-                               agentCol: -1, metaCols: [], dayCols: [] };
-                if (sheetNameEsc) {
-                    const wsEsc   = wb.Sheets[sheetNameEsc];
-                    const rowsEsc = XLSX.utils.sheet_to_json(wsEsc, { header: 1, defval: '', cellDates: true });
-                    if (rowsEsc.length > 0) {
-                        const hdrIdx = rowsEsc.findIndex(r => r.some(c => c !== ''));
-                        if (hdrIdx >= 0) {
-                            escalaData.headers = rowsEsc[hdrIdx].map(c =>
-                                c !== null && c !== undefined ? String(c).trim() : '');
-                            for (let i = hdrIdx + 1; i < rowsEsc.length; i++) {
-                                const r = rowsEsc[i];
-                                if (!r || r.every(c => c === '' || c === null)) continue;
-                                escalaData.rows.push(r.map(c => {
-                                    if (c instanceof Date) return rowDateToISO(c);
-                                    if (c !== null && c !== undefined) return String(c).trim();
-                                    return '';
-                                }));
-                            }
-
-                            const normStr = s => s.toUpperCase()
-                                .normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
-                            const DAY_KEYS = ['DOMINGO','SEGUNDA','TERCA','QUARTA',
-                                              'QUINTA','SEXTA','SABADO'];
-                            const dayCols = escalaData.headers
-                                .map((h, i) => ({ idx: i, label: h, norm: normStr(h) }))
-                                .filter(x => DAY_KEYS.includes(x.norm));
-
-                            if (dayCols.length >= 2) {
-                                escalaData.isNativeMatrix = true;
-                                escalaData.dayCols = dayCols;
-                                const agCol = escalaData.headers.findIndex(h =>
-                                    /nome|agente|servidor/i.test(h));
-                                escalaData.agentCol = agCol >= 0 ? agCol : 0;
-                                const firstDayIdx = dayCols[0].idx;
-                                escalaData.metaCols = escalaData.headers
-                                    .map((h, i) => ({ idx: i, label: h }))
-                                    .filter(x => x.idx > escalaData.agentCol
-                                              && x.idx < firstDayIdx
-                                              && x.label && !/^#/.test(x.label));
-                            }
-                        }
-                    }
-                }
-
-                /* 4. Aba "BET's" - extrai apenas os SIMs (colunas pares) */
-                const sheetNameBet = wb.SheetNames.find(n => n.toLowerCase().includes('bet') || n.includes("BET"));
-                betData = [];
-                if (sheetNameBet) {
-                    const wsBet = wb.Sheets[sheetNameBet];
-                    const rowsBet = XLSX.utils.sheet_to_json(wsBet, { header: 1, defval: '', cellDates: true });
-                    let headerRow = -1;
-                    for (let i = 0; i < rowsBet.length; i++) {
-                        const row = rowsBet[i];
-                        if (row && row[0] && row[0].toString().toUpperCase().includes('DATA')) {
-                            headerRow = i;
-                            break;
-                        }
-                    }
-                    if (headerRow !== -1) {
-                        const dataStart = headerRow + 2;
-                        for (let i = dataStart; i < rowsBet.length; i++) {
-                            const row = rowsBet[i];
-                            if (!row || !row[0]) continue;
-                            const date = rowDateToISO(row[0]);
-                            if (!date) continue;
-                            const local = row[1] ? row[1].toString().trim() : '';
-                            const educator = row[2] ? row[2].toString().trim() : '';
-                            const fichas = toNumber(row[3]);
-                            // Extrai apenas os SIMs (colunas pares de 4 a 36)
-                            const vals = [];
-                            for (let col = 4; col <= 36; col += 2) {
-                                vals[col] = toNumber(row[col]);
-                            }
-                            betData.push({ date, local, educator, fichas, vals });
-                        }
-                    }
-                }
-
-                /* NÃO definimos filtro inicial; deixamos inputs vazios */
-                document.getElementById('dashStart').value = '';
-                document.getElementById('dashEnd').value = '';
-                dashFilter = { start: '', end: '' };
-
-                importHint.style.display    = 'none';
-                filterBar.style.display     = 'flex';
-                dashContent.style.display   = 'block';
-                showStatus(
-                    `<i class="fas fa-check-circle"></i>&nbsp; <strong>${newData.length}</strong> dia(s) de atendimento, <strong>${locs.length}</strong> localidades e <strong>${betData.length}</strong> registro(s) de apostas.`,
-                    'success'
-                );
-                renderDashboard();
-                renderBetSection();
-            } catch (err) {
-                showStatus('<i class="fas fa-times-circle"></i>&nbsp; Erro: ' + err.message, 'error');
-                console.error(err);
+    function findHeaderRowIndex(rows, keywordGroups, scanLimit = 30) {
+        let bestIdx = -1;
+        let bestScore = -1;
+        const limit = Math.min(rows.length, scanLimit);
+        for (let i = 0; i < limit; i++) {
+            const row = rows[i];
+            if (!rowHasData(row)) continue;
+            const normalizedCells = row.map(cell => normalizeText(cell));
+            const rowText = normalizedCells.join(' | ');
+            let score = 0;
+            keywordGroups.forEach(group => {
+                const groupItems = Array.isArray(group) ? group : [group];
+                const matched = groupItems.some(term => rowText.includes(normalizeText(term)));
+                if (matched) score += 1;
+            });
+            if (score > bestScore) {
+                bestScore = score;
+                bestIdx = i;
             }
-        };
-        reader.readAsBinaryString(file);
-        this.value = '';
+        }
+        return bestScore > 0 ? bestIdx : -1;
+    }
+
+    function buildHeaderEntries(headerRow) {
+        return (headerRow || []).map((value, index) => ({
+            idx: index,
+            raw: String(value ?? '').trim(),
+            normalized: normalizeText(value)
+        }));
+    }
+
+    function findColumnIndex(entries, aliases, fallback = -1) {
+        if (!entries || !entries.length) return fallback;
+        const normalizedAliases = aliases.map(normalizeText);
+        for (const alias of normalizedAliases) {
+            const exact = entries.find(entry => entry.normalized === alias);
+            if (exact) return exact.idx;
+        }
+        for (const alias of normalizedAliases) {
+            const partial = entries.find(entry => entry.normalized.includes(alias));
+            if (partial) return partial.idx;
+        }
+        return fallback;
+    }
+
+    function findFirstDataRowIndex(rows, headerIdx, maxLookAhead = 12) {
+        const start = Math.max(0, headerIdx + 1);
+        const end = Math.min(rows.length, start + maxLookAhead);
+        for (let i = start; i < end; i++) {
+            const row = rows[i];
+            if (!rowHasData(row)) continue;
+            const dateCandidate = row.find(cell => rowDateToISO(cell));
+            if (dateCandidate !== undefined) return i;
+        }
+        return start;
+    }
+
+    function inferLayoutHasSala(sampleRow, fichasIdxWithSala, fichasIdxWithoutSala) {
+        const withSalaScore = looksNumeric(sampleRow?.[fichasIdxWithSala]) ? 2 : 0;
+        const withoutSalaScore = looksNumeric(sampleRow?.[fichasIdxWithoutSala]) ? 2 : 0;
+        const cell1 = normalizeText(sampleRow?.[1]);
+        const bonus = cell1.includes('sala') ? 1 : 0;
+        return (withSalaScore + bonus) >= withoutSalaScore;
+    }
+
+    function resetImportedState() {
+        rawData = [];
+        locations = [];
+        betData = [];
+        salaInternoData = [];
+        salaOptions = [];
+        salaFilterValue = '';
+        document.getElementById('dashSalaFilter').value = '';
+        document.getElementById('dashStart').value = '';
+        document.getElementById('dashEnd').value = '';
+        dashFilter = { start: '', end: '' };
+    }
+
+    function importLancamentoSheet(workbook) {
+        const sheetName = findSheetName(
+            workbook,
+            ['Lançamento Diário', 'Lancamento Diario', 'Lançamento', 'Lancamento'],
+            name => {
+                const normalized = normalizeText(name);
+                return normalized.includes('lanc') && (normalized.includes('diario') || normalized.includes('rio'));
+            }
+        ) || workbook.SheetNames[0];
+
+        const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, defval: '', raw: true, cellDates: true });
+        const headerIdx = (() => {
+            const detected = findHeaderRowIndex(rows, [['data'], ['socioeducador', 'educador'], ['unidade', 'local']]);
+            return detected >= 0 ? detected : 3;
+        })();
+        const headerEntries = buildHeaderEntries(rows[headerIdx] || []);
+        const sampleRow = rows.slice(headerIdx + 1).find(row => rowHasData(row) && rowDateToISO(row[0]));
+
+        const hasSala = headerEntries.some(entry => entry.normalized.includes('sala do consumidor'))
+            ? true
+            : inferLayoutHasSala(sampleRow || [], 4, 3);
+
+        const dateIdx = findColumnIndex(headerEntries, ['data'], 0);
+        const salaIdx = hasSala ? findColumnIndex(headerEntries, ['sala do consumidor', 'sala'], 1) : -1;
+        const localIdx = findColumnIndex(headerEntries, ['unidade/local', 'unidade local', 'unidade', 'localidade', 'local'], hasSala ? 2 : 1);
+        const educatorIdx = findColumnIndex(headerEntries, ['socioeducador', 'socio educador', 'educador'], hasSala ? 3 : 2);
+        const fichasIdx = findColumnIndex(headerEntries, ['nº fichas', 'no fichas', 'numero fichas', 'fichas', 'qt fichas'], hasSala ? 4 : 3);
+        const energiaIdx = findColumnIndex(headerEntries, ['energia eletrica', 'energia'], hasSala ? 5 : 4);
+        const aguaIdx = findColumnIndex(headerEntries, ['abastecimento de agua', 'agua'], hasSala ? 6 : 5);
+        const telefoniaIdx = findColumnIndex(headerEntries, ['telefonia e internet', 'telefonia', 'internet'], hasSala ? 7 : 6);
+        const comercialIdx = findColumnIndex(headerEntries, ['empresas comerciais', 'empresas', 'comercial'], hasSala ? 8 : 7);
+        const actualSimStart = hasSala ? 9 : 8;
+        const dataStart = findFirstDataRowIndex(rows, headerIdx, 20);
+        const importedRows = [];
+
+        for (let i = dataStart; i < rows.length; i++) {
+            const row = rows[i];
+            if (!rowHasData(row)) continue;
+            const date = rowDateToISO(row[dateIdx]);
+            if (!date) continue;
+
+            const vals = [];
+            QUESTIONS.forEach((question, questionIndex) => {
+                const actualCol = actualSimStart + (questionIndex * 2);
+                vals[question.sim] = toNumber(row[actualCol]);
+            });
+
+            importedRows.push({
+                date,
+                sala: salaIdx >= 0 ? String(row[salaIdx] || '').trim() : '',
+                local: String(row[localIdx] || '').trim(),
+                educator: String(row[educatorIdx] || '').trim(),
+                fichas: toNumber(row[fichasIdx]),
+                energia: String(row[energiaIdx] || '').trim(),
+                agua: String(row[aguaIdx] || '').trim(),
+                telefonia: String(row[telefoniaIdx] || '').trim(),
+                comercial: String(row[comercialIdx] || '').trim(),
+                vals
+            });
+        }
+
+        return { sheetName, rows: importedRows, hasSala };
+    }
+
+    function importAuxiliarSheet(workbook, fallbackRows) {
+        const sheetName = findSheetName(workbook, ['Auxiliar']);
+        let options = [];
+        if (sheetName) {
+            const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, defval: '', raw: true });
+            options = rows
+                .map(row => String(row?.[0] || '').trim())
+                .filter(value => value && !/^sala do consumidor$/i.test(value) && value.length > 1);
+        }
+        if (!options.length) {
+            options = [...new Set((fallbackRows || []).map(item => item.sala).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+        }
+        return { sheetName, options };
+    }
+
+    function importLocalidadesSheet(workbook, fallbackRows) {
+        const sheetName = findSheetName(workbook, ['Localidades', 'Localidade']);
+        let locs = [];
+        if (sheetName) {
+            const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, defval: '', raw: true });
+            locs = rows
+                .map(row => [row?.[0], row?.[1]]
+                    .map(value => String(value ?? '').trim())
+                    .find(value => value !== '') || '')
+                .filter(value => value && !/localidade/i.test(value));
+            locs = [...new Set(locs)].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+        }
+        if (!locs.length) {
+            locs = [...new Set((fallbackRows || []).map(item => item.local).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+        }
+        return { sheetName, locs };
+    }
+
+    function importEscalaSheet(workbook) {
+        const sheetName = findSheetName(
+            workbook,
+            ['Escala de Serviço', 'Escala de Servico', 'Escala'],
+            name => {
+                const normalized = normalizeText(name);
+                return normalized.includes('escala') || normalized.includes('servico');
+            }
+        );
+        const result = { headers: [], rows: [], isNativeMatrix: false, agentCol: -1, metaCols: [], dayCols: [], salaCol: -1 };
+        if (!sheetName) return { sheetName: null, data: result };
+
+        const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, defval: '', raw: true, cellDates: true });
+        const headerIdx = rows.findIndex(row => rowHasData(row));
+        if (headerIdx < 0) return { sheetName, data: result };
+
+        result.headers = (rows[headerIdx] || []).map(cell => String(cell ?? '').trim());
+        for (let i = headerIdx + 1; i < rows.length; i++) {
+            const row = rows[i];
+            if (!rowHasData(row)) continue;
+            result.rows.push(row.map(cell => {
+                if (cell instanceof Date) return rowDateToISO(cell);
+                return String(cell ?? '').trim();
+            }));
+        }
+
+        const dayKeys = ['DOMINGO', 'SEGUNDA', 'TERCA', 'QUARTA', 'QUINTA', 'SEXTA', 'SABADO'];
+        const dayCols = result.headers
+            .map((label, idx) => ({ idx, label, norm: normalizeText(label).toUpperCase() }))
+            .filter(item => dayKeys.includes(item.norm));
+
+        if (dayCols.length >= 2) {
+            result.isNativeMatrix = true;
+            result.dayCols = dayCols;
+            const headerEntries = buildHeaderEntries(result.headers);
+            const agentCol = findColumnIndex(headerEntries, ['nome', 'agente', 'servidor'], 0);
+            result.agentCol = agentCol >= 0 ? agentCol : 0;
+            result.salaCol = findColumnIndex(headerEntries, ['sala'], -1);
+            const firstDayIdx = dayCols[0].idx;
+            result.metaCols = result.headers
+                .map((label, idx) => ({ idx, label }))
+                .filter(item => item.idx > result.agentCol && item.idx < firstDayIdx && item.label && !/^#/.test(item.label));
+        }
+
+        return { sheetName, data: result };
+    }
+
+    function importBetSheet(workbook) {
+        const sheetName = findSheetName(
+            workbook,
+            ["BET's", 'BETS', 'BET'],
+            name => normalizeText(name).includes('bet')
+        );
+        const rowsImported = [];
+        if (!sheetName) return { sheetName: null, rows: rowsImported };
+
+        const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, defval: '', raw: true, cellDates: true });
+        const headerIdx = (() => {
+            const detected = findHeaderRowIndex(rows, [['data'], ['socioeducador', 'educador'], ['fichas']]);
+            return detected >= 0 ? detected : rows.findIndex(row => normalizeText(row?.[0]).includes('data'));
+        })();
+        if (headerIdx < 0) return { sheetName, rows: rowsImported };
+
+        const headerEntries = buildHeaderEntries(rows[headerIdx] || []);
+        const sampleRow = rows.slice(headerIdx + 1).find(row => rowHasData(row) && rowDateToISO(row[0]));
+        const hasSala = headerEntries.some(entry => entry.normalized.includes('sala do consumidor'))
+            ? true
+            : inferLayoutHasSala(sampleRow || [], 4, 3);
+        const dateIdx = findColumnIndex(headerEntries, ['data'], 0);
+        const salaIdx = hasSala ? findColumnIndex(headerEntries, ['sala do consumidor', 'sala'], 1) : -1;
+        const localIdx = findColumnIndex(headerEntries, ['unidade/local', 'unidade local', 'unidade', 'localidade', 'local'], hasSala ? 2 : 1);
+        const educatorIdx = findColumnIndex(headerEntries, ['socioeducador', 'socio educador', 'educador'], hasSala ? 3 : 2);
+        const fichasIdx = findColumnIndex(headerEntries, ['nº fichas', 'no fichas', 'numero fichas', 'fichas', 'qt fichas'], hasSala ? 4 : 3);
+        const actualSimStart = hasSala ? 5 : 4;
+        const dataStart = findFirstDataRowIndex(rows, headerIdx, 20);
+
+        for (let i = dataStart; i < rows.length; i++) {
+            const row = rows[i];
+            if (!rowHasData(row)) continue;
+            const date = rowDateToISO(row[dateIdx]);
+            if (!date) continue;
+            const vals = [];
+            BET_QUESTIONS.forEach((question, questionIndex) => {
+                const actualCol = actualSimStart + (questionIndex * 2);
+                vals[question.simIdx] = toNumber(row[actualCol]);
+            });
+            rowsImported.push({
+                date,
+                sala: salaIdx >= 0 ? String(row[salaIdx] || '').trim() : '',
+                local: String(row[localIdx] || '').trim(),
+                educator: String(row[educatorIdx] || '').trim(),
+                fichas: toNumber(row[fichasIdx]),
+                vals
+            });
+        }
+
+        return { sheetName, rows: rowsImported };
+    }
+
+    function importSalaInternoSheet(workbook) {
+        const sheetName = findSheetName(
+            workbook,
+            ['Sala-Interno', 'Sala Interno'],
+            name => {
+                const normalized = normalizeText(name);
+                return normalized.includes('sala') && normalized.includes('intern');
+            }
+        );
+        const importedRows = [];
+        if (!sheetName) return { sheetName: null, rows: importedRows };
+
+        const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, defval: '', raw: true, cellDates: true });
+        const headerIdx = (() => {
+            const detected = findHeaderRowIndex(rows, [['data'], ['socioeducador', 'educador'], ['acao', 'triagem', 'oitiva']]);
+            return detected >= 0 ? detected : rows.findIndex(row => normalizeText(row?.[0]) === 'data');
+        })();
+        if (headerIdx < 0) return { sheetName, rows: importedRows };
+
+        const headerEntries = buildHeaderEntries(rows[headerIdx] || []);
+        const sampleRow = rows.slice(headerIdx + 1).find(row => rowHasData(row) && rowDateToISO(row[0]));
+        const hasSala = headerEntries.some(entry => entry.normalized.includes('sala do consumidor'))
+            || headerEntries.some(entry => entry.normalized === 'sala')
+            ? true
+            : inferLayoutHasSala(sampleRow || [], 4, 3);
+        const dateIdx = findColumnIndex(headerEntries, ['data'], 0);
+        const salaIdx = hasSala ? findColumnIndex(headerEntries, ['sala do consumidor', 'sala'], 1) : -1;
+        const localIdx = findColumnIndex(headerEntries, ['unidade/local', 'unidade local', 'unidade', 'localidade', 'local'], hasSala ? 2 : 1);
+        const educatorIdx = findColumnIndex(headerEntries, ['socioeducador', 'socio educador', 'educador'], hasSala ? 3 : 2);
+        const acaoTotalIdx = findColumnIndex(headerEntries, ['acao total', 'acoes total', 'total', 'qt total'], hasSala ? 4 : 3);
+        const firstActionCol = acaoTotalIdx + 1;
+        const dataStart = findFirstDataRowIndex(rows, headerIdx, 20);
+
+        for (let i = dataStart; i < rows.length; i++) {
+            const row = rows[i];
+            if (!rowHasData(row)) continue;
+            const date = rowDateToISO(row[dateIdx]);
+            if (!date) continue;
+            const acoes = SALA_INTERNO_ACTIONS.map((action, actionIndex) => ({
+                id: action.id,
+                label: action.label,
+                full: action.full,
+                color: action.color,
+                qty: toNumber(row[firstActionCol + actionIndex])
+            }));
+            importedRows.push({
+                date,
+                sala: salaIdx >= 0 ? String(row[salaIdx] || '').trim() : '',
+                local: String(row[localIdx] || '').trim(),
+                educator: String(row[educatorIdx] || '').trim(),
+                acaoTotal: toNumber(row[acaoTotalIdx]),
+                acoes
+            });
+        }
+
+        return { sheetName, rows: importedRows };
+    }
+
+    /* ─────────────────────────────────────────────────────────────────
+       IMPORTAÇÃO DA PLANILHA (REESCRITA E ROBUSTA)
+    ───────────────────────────────────────────────────────────────── */
+    xlsxInput.addEventListener('change', async function (e) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        showStatus('<i class="fas fa-spinner fa-spin"></i>&nbsp; Processando planilha…', 'loading');
+        resetImportedState();
+
+        try {
+            const buffer = await file.arrayBuffer();
+            const workbook = XLSX.read(buffer, {
+                type: 'array',
+                cellDates: true,
+                raw: true,
+                dense: false,
+                cellText: false
+            });
+
+            const lancamento = importLancamentoSheet(workbook);
+            if (!lancamento.rows.length) {
+                throw new Error('Nenhum lançamento válido foi encontrado na aba principal. Verifique se a planilha possui uma coluna de DATA preenchida e linhas de dados abaixo do cabeçalho.');
+            }
+            rawData = lancamento.rows;
+
+            const auxiliar = importAuxiliarSheet(workbook, rawData);
+            salaOptions = auxiliar.options;
+            populateSalaFilterSelect();
+
+            const localidades = importLocalidadesSheet(workbook, rawData);
+            locations = localidades.locs;
+
+            const escala = importEscalaSheet(workbook);
+            escalaData = escala.data;
+
+            const bet = importBetSheet(workbook);
+            betData = bet.rows;
+
+            const salaInterno = importSalaInternoSheet(workbook);
+            salaInternoData = salaInterno.rows;
+
+            importHint.style.display = 'none';
+            filterBar.style.display = 'flex';
+            dashContent.style.display = 'block';
+
+            const missingSheets = [];
+            if (!localidades.sheetName) missingSheets.push('Localidades');
+            if (!auxiliar.sheetName) missingSheets.push('Auxiliar');
+            if (!escala.sheetName) missingSheets.push('Escala de Serviço');
+            if (!bet.sheetName) missingSheets.push("BET's");
+            if (!salaInterno.sheetName) missingSheets.push('Sala-Interno');
+
+            const baseMsg = `<i class="fas fa-check-circle"></i>&nbsp; <strong>${rawData.length}</strong> registro(s) do lançamento diário · <strong>${locations.length}</strong> localidades · <strong>${betData.length}</strong> registro(s) de apostas · <strong>${salaInternoData.length}</strong> lançamento(s) internos.`;
+            const extraMsg = missingSheets.length
+                ? `<span style="font-size:.92em;opacity:.9"> Abas não localizadas automaticamente: ${missingSheets.join(', ')}.</span>`
+                : '';
+            showStatus(baseMsg + extraMsg, 'success');
+
+            renderDashboard();
+            renderBetSection();
+            renderSalaInternoSection();
+        } catch (err) {
+            console.error(err);
+            dashContent.style.display = 'none';
+            filterBar.style.display = 'none';
+            importHint.style.display = 'block';
+            showStatus('<i class="fas fa-times-circle"></i>&nbsp; Erro ao importar: ' + err.message, 'error');
+        } finally {
+            this.value = '';
+        }
     });
 
     /* ─────────────────────────────────────────────────────────────────
        FILTROS
     ───────────────────────────────────────────────────────────────── */
     document.getElementById('dashApplyFilter').addEventListener('click', () => {
-        dashFilter.start = document.getElementById('dashStart').value;
-        dashFilter.end   = document.getElementById('dashEnd').value;
+        dashFilter.start   = document.getElementById('dashStart').value;
+        dashFilter.end     = document.getElementById('dashEnd').value;
+        salaFilterValue    = document.getElementById('dashSalaFilter').value;
         renderDashboard();
         renderBetSection();
+        renderSalaInternoSection();
     });
 
     document.getElementById('dashClearFilter').addEventListener('click', () => {
         document.getElementById('dashStart').value = '';
         document.getElementById('dashEnd').value   = '';
+        document.getElementById('dashSalaFilter').value = '';
         dashFilter = { start: '', end: '' };
+        salaFilterValue = '';
         renderDashboard();
         renderBetSection();
+        renderSalaInternoSection();
     });
 
     function getFiltered() {
         return rawData.filter(r => {
+            if (salaFilterValue && r.sala !== salaFilterValue) return false;
             if (dashFilter.start && r.date < dashFilter.start) return false;
             if (dashFilter.end   && r.date > dashFilter.end)   return false;
             return true;
@@ -2243,11 +2695,51 @@
 
     function getFilteredBet() {
         return betData.filter(r => {
+            if (salaFilterValue && r.sala !== salaFilterValue) return false;
             if (dashFilter.start && r.date < dashFilter.start) return false;
             if (dashFilter.end   && r.date > dashFilter.end)   return false;
             return true;
         });
     }
+
+    function getFilteredSalaInterno() {
+        return salaInternoData.filter(r => {
+            if (salaFilterValue && r.sala !== salaFilterValue) return false;
+            if (dashFilter.start && r.date < dashFilter.start) return false;
+            if (dashFilter.end   && r.date > dashFilter.end)   return false;
+            return true;
+        });
+    }
+
+    /* ─────────────────────────────────────────────────────────────────
+       SALA DO CONSUMIDOR — GLOBAL FILTER HELPERS
+    ───────────────────────────────────────────────────────────────── */
+    function populateSalaFilterSelect() {
+        const sel = document.getElementById('dashSalaFilter');
+        if (!sel) return;
+        const current = sel.value;
+        sel.innerHTML = '<option value="">Todas as salas</option>';
+        salaOptions.forEach(sala => {
+            const opt = document.createElement('option');
+            opt.value = sala;
+            opt.textContent = sala;
+            if (sala === current) opt.selected = true;
+            sel.appendChild(opt);
+        });
+    }
+
+    // Auto-apply sala filter on change (UX improvement)
+    document.addEventListener('DOMContentLoaded', () => {
+        const sel = document.getElementById('dashSalaFilter');
+        if (sel) {
+            sel.addEventListener('change', function() {
+                salaFilterValue = this.value;
+                renderDashboard();
+                renderBetSection();
+                renderSalaInternoSection();
+            });
+        }
+    });
 
     /* ─────────────────────────────────────────────────────────────────
        MÉTRICAS DO DASHBOARD PRINCIPAL (inalterado)
@@ -2331,6 +2823,118 @@
         const totalNaoAll = perguntas.reduce((s, q) => s + q.naoTotal, 0);
 
         return { filtered, totalFichas, pesquisadores, perguntas, parcelaSuscetivel, totalSimAll, totalNaoAll };
+    }
+
+    /* ─────────────────────────────────────────────────────────────────
+       RENDERIZAÇÃO DA SEÇÃO SALA-INTERNO
+    ───────────────────────────────────────────────────────────────── */
+    function computeSalaInternoMetrics() {
+        const filtered = getFilteredSalaInterno();
+        const agentSet = new Set(filtered.map(r => r.educator).filter(Boolean));
+        const totalAcoes = filtered.reduce((s, r) => s + r.acaoTotal, 0);
+        const sessoes    = new Set(filtered.map(r => r.date)).size;
+
+        // Aggregate per action type
+        const actionTotals = SALA_INTERNO_ACTIONS.map(a => {
+            const qty = filtered.reduce((s, r) => {
+                const found = r.acoes.find(ac => ac.id === a.id);
+                return s + (found ? found.qty : 0);
+            }, 0);
+            return { ...a, qty };
+        });
+
+        // Per-agent aggregation
+        const agentMap = {};
+        filtered.forEach(r => {
+            const name = r.educator || '(sem nome)';
+            if (!agentMap[name]) agentMap[name] = { name, acaoTotal: 0, sessoes: new Set(), acoes: {} };
+            agentMap[name].acaoTotal += r.acaoTotal;
+            agentMap[name].sessoes.add(r.date);
+            r.acoes.forEach(ac => {
+                agentMap[name].acoes[ac.id] = (agentMap[name].acoes[ac.id] || 0) + ac.qty;
+            });
+        });
+        const agents = Object.values(agentMap).map(ag => ({
+            ...ag, sessoes: ag.sessoes.size
+        })).sort((a, b) => b.acaoTotal - a.acaoTotal);
+
+        const topAction = actionTotals.reduce((a, b) => b.qty > a.qty ? b : a, actionTotals[0] || { full: '—', qty: 0 });
+
+        return { filtered, totalAcoes, agentCount: agentSet.size, sessoes, actionTotals, agents, topAction };
+    }
+
+    function renderSalaInternoSection() {
+        if (!salaInternoSection) return;
+        if (!salaInternoData.length) {
+            salaInternoSection.innerHTML = '<div class="text-center text-muted py-3" style="font-size:0.9rem;"><i class="fas fa-info-circle me-2"></i>Nenhum dado da aba Sala-Interno encontrado na planilha importada.</div>';
+            return;
+        }
+        const m = computeSalaInternoMetrics();
+        if (!m.filtered.length) {
+            salaInternoSection.innerHTML = '<div class="text-center text-muted py-3">Nenhum registro Sala-Interno no período/sala selecionados.</div>';
+            return;
+        }
+
+        // KPI bar
+        let html = `
+        <div class="si-kpi-bar">
+            <div class="si-kpi-item"><span class="siv">${fmt(m.totalAcoes)}</span><span class="sil">Ações Totais</span></div>
+            <div class="si-kpi-item"><span class="siv">${m.agentCount}</span><span class="sil">Agentes Internos</span></div>
+            <div class="si-kpi-item"><span class="siv">${m.sessoes}</span><span class="sil">Sessões</span></div>
+            <div class="si-kpi-item" style="min-width:180px">
+                <span class="siv" style="font-size:1rem;color:#0369a1;text-align:center">${m.topAction.full || '—'}</span>
+                <span class="sil">Ação mais frequente</span>
+            </div>
+        </div>`;
+
+        // Action cards grid
+        html += '<div class="si-action-grid">';
+        m.actionTotals.forEach(a => {
+            const pct = m.totalAcoes ? ((a.qty / m.totalAcoes) * 100).toFixed(1) : '0.0';
+            html += `
+            <div class="si-action-card" style="border-top: 4px solid ${a.color}">
+                <div class="sac-val" style="color:${a.color}">${fmt(a.qty)}</div>
+                <div class="sac-lbl">${a.label}</div>
+                <div class="sac-sub">${a.full}</div>
+                <div style="margin-top:8px;">
+                    <div style="background:#e2e8f0;height:5px;border-radius:3px;overflow:hidden;">
+                        <div style="width:${pct}%;height:100%;background:${a.color};border-radius:3px;"></div>
+                    </div>
+                    <div style="font-size:0.68rem;font-weight:700;color:${a.color};text-align:right;margin-top:2px">${pct}%</div>
+                </div>
+            </div>`;
+        });
+        html += '</div>';
+
+        // Agent table
+        if (m.agents.length) {
+            html += `
+            <div class="si-agent-table-wrap">
+                <table class="si-agent-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Agente Socioeducador</th>
+                            <th style="text-align:center">Sessões</th>
+                            <th style="text-align:center">Ações Totais</th>
+                            ${SALA_INTERNO_ACTIONS.map(a => `<th style="text-align:center;color:${a.color}">${a.label}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>`;
+            m.agents.forEach((ag, i) => {
+                const rankEmoji = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}`;
+                html += `<tr>
+                    <td style="text-align:center;font-weight:700;color:#64748b">${rankEmoji}</td>
+                    <td style="font-weight:700;color:#0369a1">${ag.name}</td>
+                    <td style="text-align:center">${ag.sessoes}</td>
+                    <td style="text-align:center;font-weight:800;color:#0369a1">${fmt(ag.acaoTotal)}</td>
+                    ${SALA_INTERNO_ACTIONS.map(a => `<td style="text-align:center;font-weight:600;color:${a.color}">${fmt(ag.acoes[a.id] || 0)}</td>`).join('')}
+                </tr>`;
+            });
+            html += '</tbody></table></div>';
+        }
+
+        salaInternoSection.innerHTML = html;
     }
 
     /* ─────────────────────────────────────────────────────────────────
@@ -2466,6 +3070,7 @@
         renderMetricsTable(m);
         renderLocationCard();
         renderSupplierGrid();
+        renderSalaInternoSection(); // NEW: Sala-Interno integration
     }
 
     function renderKPIs(m) {
@@ -2790,9 +3395,10 @@
 
         const content = document.getElementById('dashContent');
 
-        // Oculta o botão "Visualizar PDF" da seção BET para não aparecer no PDF
+        // Oculta botões de ação e filtros da seção para não aparecer no PDF
         const betPdfBtn = document.getElementById('exportBetPDFBtn');
         if (betPdfBtn) betPdfBtn.style.visibility = 'hidden';
+        // Also hide the sala-interno section's interactive elements (none currently, placeholder)
 
         const fullCanvas = await html2canvas(content, {
             scale: SCALE,
@@ -3056,14 +3662,58 @@
         return agents;
     }
 
+    /* Computa métricas de performance para Sala-Interno */
+    function computeAgentMetricsSalaInterno() {
+        const filtered = getFilteredSalaInterno();
+        const agentMap = {};
+        filtered.forEach(row => {
+            const name = row.educator || '(sem nome)';
+            if (!agentMap[name]) {
+                agentMap[name] = { name, rows: [], acaoTotal: 0, sessoes: new Set(), locMap: {} };
+            }
+            const ag = agentMap[name];
+            ag.rows.push(row);
+            ag.acaoTotal += row.acaoTotal;
+            ag.sessoes.add(row.date);
+            if (row.local) ag.locMap[row.local] = (ag.locMap[row.local] || 0) + 1;
+        });
+
+        const agents = Object.values(agentMap).map(ag => {
+            const actionTotals = SALA_INTERNO_ACTIONS.map(a => {
+                const qty = ag.rows.reduce((s, r) => {
+                    const found = r.acoes.find(ac => ac.id === a.id);
+                    return s + (found ? found.qty : 0);
+                }, 0);
+                return { ...a, qty };
+            });
+            const maxAction = actionTotals.reduce((a, b) => b.qty > a.qty ? b : a, actionTotals[0] || { qty: 0, label: '—' });
+            const locsArr = Object.entries(ag.locMap)
+                .map(([loc, visits]) => ({ loc, visits }))
+                .sort((a, b) => b.visits - a.visits);
+            return {
+                name: ag.name,
+                acaoTotal: ag.acaoTotal,
+                sessoes: ag.sessoes.size,
+                avgAcoes: ag.sessoes.size ? ag.acaoTotal / ag.sessoes.size : 0,
+                locsArr,
+                totalLocs: locsArr.length,
+                actionTotals,
+                maxAction,
+            };
+        });
+        agents.sort((a, b) => b.acaoTotal - a.acaoTotal);
+        return agents;
+    }
+
     const perfModal    = document.getElementById('perfModal');
     const perfModalBody = document.getElementById('perfModalBody');
     const perfModalPer  = document.getElementById('perfModalPeriodo');
 
     perfModal.addEventListener('show.bs.modal', () => {
+        const salaLabel = salaFilterValue ? ` · Sala: ${salaFilterValue}` : '';
         const periodo = (dashFilter.start && dashFilter.end)
-            ? `Período: ${isoToBR(dashFilter.start)} a ${isoToBR(dashFilter.end)}`
-            : 'Todos os períodos';
+            ? `Período: ${isoToBR(dashFilter.start)} a ${isoToBR(dashFilter.end)}${salaLabel}`
+            : `Todos os períodos${salaLabel}`;
         perfModalPer.textContent = periodo;
         if (!rawData.length) {
             perfModalBody.innerHTML = `
@@ -3094,7 +3744,9 @@
     });
 
     function renderPerfModal() {
-        const agents = (currentPerfSource === 'lancamento') ? computeAgentMetricsLanc() : computeAgentMetricsBet();
+        const agents = currentPerfSource === 'lancamento' ? computeAgentMetricsLanc()
+                     : currentPerfSource === 'bet'        ? computeAgentMetricsBet()
+                     : computeAgentMetricsSalaInterno();
         if (!agents.length) {
             perfModalBody.innerHTML = `<p class="text-center text-muted py-4">Nenhum agente encontrado no período selecionado.</p>`;
             return;
@@ -3103,7 +3755,9 @@
         // ── totais globais ──
         const totalFichasAll = agents.reduce((s, a) => s + a.fichasTotal, 0);
         const allDates = new Set(); const allLocations = new Set();
-        const sourceData = (currentPerfSource === 'lancamento') ? getFiltered() : getFilteredBet();
+        const sourceData = currentPerfSource === 'lancamento' ? getFiltered()
+                       : currentPerfSource === 'bet'        ? getFilteredBet()
+                       : getFilteredSalaInterno();
         sourceData.forEach(r => { if (r.date) allDates.add(r.date); if (r.local) allLocations.add(r.local); });
 
         // ── dados dos gráficos comparativos ──
@@ -3159,9 +3813,21 @@
                 const catLegend = CATEGORIES.map(cat => { const c = CAT_CFG[cat]; return `<span class="agent-cat-legend-item"><span class="agent-cat-legend-dot" style="background:${c.color}"></span>${cat}</span>`; }).join('');
                 const catBars   = CATEGORIES.map(cat => { const c = CAT_CFG[cat], cm = ag.catMetrics[cat], pct = (cm.avgPctSim*100).toFixed(1); return `<div class="agent-cat-row"><span class="agent-cat-name" style="color:${c.color}" title="${cat}"><i class="${c.icon} me-1" style="font-size:0.7rem"></i>${cat}</span><div class="agent-cat-bar-bg"><div class="agent-cat-bar-fill" style="width:${pct}%;background:${c.color}"></div></div><span class="agent-cat-pct" style="color:${c.color}">${pct.replace('.',',')}%</span></div>`; }).join('');
                 rightColumnHtml = `<div class="agent-section-title"><i class="fas fa-chart-bar" style="color:#5b21b6"></i> % SIM Médio por Categoria</div><div class="agent-cat-legend">${catLegend}</div>${catBars}`;
-            } else {
+            } else if (currentPerfSource === 'bet') {
                 const betBars = ag.betMetrics.map(q => { const pct=(q.pctSim*100).toFixed(1); return `<div class="agent-bet-row"><span class="agent-bet-name" title="${q.pergunta}">${q.pergunta}</span><div class="agent-bet-bar-bg"><div class="agent-bet-bar-fill" style="width:${pct}%;"></div></div><span class="agent-bet-pct">${pct.replace('.',',')}%</span></div>`; }).join('');
                 rightColumnHtml = `<div class="agent-section-title"><i class="fas fa-dice" style="color:#9c27b0"></i> Respostas sobre Apostas (% SIM)</div><div style="padding-right:5px;">${betBars}</div>`;
+            } else {
+                // sala_interno
+                const siMax = ag.actionTotals.reduce((a, b) => b.qty > a.qty ? b : a, { qty: 1 }).qty || 1;
+                const siBars = ag.actionTotals.map(a => {
+                    const pct = ((a.qty / siMax) * 100).toFixed(1);
+                    return `<div class="agent-cat-row">
+                        <span class="agent-cat-name" style="color:${a.color}" title="${a.full}">${a.label}</span>
+                        <div class="agent-cat-bar-bg"><div class="agent-cat-bar-fill" style="width:${pct}%;background:${a.color}"></div></div>
+                        <span class="agent-cat-pct" style="color:${a.color}">${fmt(a.qty)}</span>
+                    </div>`;
+                }).join('');
+                rightColumnHtml = `<div class="agent-section-title"><i class="fas fa-building" style="color:#0369a1"></i> Ações Internas por Tipo</div>${siBars}`;
             }
 
             html += `
@@ -3177,10 +3843,17 @@
                         </div>
                     </div>
                     <div class="agent-kpi-row ms-auto">
+                        ${currentPerfSource === 'sala_interno' ? `
+                        <div class="agent-kpi"><div class="ak-val" style="color:#0369a1">${fmt(ag.acaoTotal)}</div><div class="ak-lbl">Ações</div></div>
+                        <div class="agent-kpi"><div class="ak-val" style="color:#0ea5e9">${ag.avgAcoes.toFixed(1).replace('.',',')}</div><div class="ak-lbl">Média/dia</div></div>
+                        <div class="agent-kpi"><div class="ak-val" style="color:#10b981">${ag.sessoes}</div><div class="ak-lbl">Sessões</div></div>
+                        <div class="agent-kpi"><div class="ak-val" style="color:#f59e0b;font-size:0.85rem">${ag.maxAction.label}</div><div class="ak-lbl">Ação top</div></div>
+                        ` : `
                         <div class="agent-kpi"><div class="ak-val">${fmt(ag.fichasTotal)}</div><div class="ak-lbl">Fichas</div></div>
                         <div class="agent-kpi"><div class="ak-val">${ag.avgFichas.toFixed(1).replace('.',',')}</div><div class="ak-lbl">Média/dia</div></div>
                         <div class="agent-kpi"><div class="ak-val" style="color:#10b981">${fmt(ag.totalSim)}</div><div class="ak-lbl">Total SIM</div></div>
                         <div class="agent-kpi"><div class="ak-val" style="color:#ef4444">${fmt(ag.totalNao)}</div><div class="ak-lbl">Total NÃO</div></div>
+                        `}
                     </div>
                 </div>
                 <div class="agent-card-body">
@@ -3258,7 +3931,9 @@
 
     async function generatePerformancePDF() {
         const { jsPDF } = window.jspdf;
-        const agents = (currentPerfSource === 'lancamento') ? computeAgentMetricsLanc() : computeAgentMetricsBet();
+        const agents = currentPerfSource === 'lancamento' ? computeAgentMetricsLanc()
+                     : currentPerfSource === 'bet'        ? computeAgentMetricsBet()
+                     : computeAgentMetricsSalaInterno();
         if (!agents.length) return alert('Nenhum agente para exportar.');
 
         const PW = 297, PH = 210, margin = 10;
@@ -3276,7 +3951,9 @@
         const periodo = (dashFilter.start && dashFilter.end)
             ? `Período: ${isoToBR(dashFilter.start)} a ${isoToBR(dashFilter.end)}`
             : 'Todos os períodos';
-        const fonte = (currentPerfSource === 'lancamento') ? 'Atendimentos' : 'Apostas (BET\'s)';
+        const fonte = currentPerfSource === 'lancamento' ? 'Atendimentos'
+                     : currentPerfSource === 'bet'        ? "Apostas (BET's)"
+                     : 'Sala-Interno';
 
         // ── 1. Snapshot dos gráficos comparativos ──
         const snapshots = {};
@@ -3381,7 +4058,7 @@
     }
 
     document.getElementById('openPerfModalBtn').addEventListener('click', (e) => {
-        if (!rawData.length) {
+        if (!rawData.length && !salaInternoData.length) {
             e.preventDefault();
             e.stopPropagation();
             alert('Importe uma planilha primeiro para visualizar a análise de performances.');
@@ -3469,48 +4146,58 @@
                 </div>`;
             return;
         }
+        const salaLabel = salaFilterValue ? ` · Sala: ${salaFilterValue}` : '';
         escalaModalPer.textContent = (dashFilter.start && dashFilter.end)
-            ? `Período: ${isoToBR(dashFilter.start)} a ${isoToBR(dashFilter.end)}`
-            : 'Todos os períodos';
-        // Resetar filtro de dia ao abrir o modal
+            ? `Período: ${isoToBR(dashFilter.start)} a ${isoToBR(dashFilter.end)}${salaLabel}`
+            : `Todos os períodos${salaLabel}`;
+        // Resetar filtro de dia ao abrir o modal (mantém salaFilterValue global)
         escalaDiaFilter = 'todos';
         renderEscalaModal();
     });
 
-    function getPeriodInputsHTML() {
+    // NEW: Combined filter bar for Escala modal
+    // Positions Sala do Consumidor + Date Filter + Dia da Semana + Limpar Filtros adjacent
+    function getEscalaFilterBarHTML() {
         const startVal = dashFilter.start || '';
-        const endVal = dashFilter.end || '';
-        return `
-        <div class="escala-period-inputs" style="display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-end; background: white; padding: 1rem; border-radius: 16px; border: 1px solid #bae6fd;">
-            <div style="flex:1">
-                <label style="font-size:0.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:4px;">Data Inicial da Escala</label>
-                <input type="date" id="escalaStartDate" value="${startVal}" style="width:100%;border:2px solid #e2e8f0;border-radius:10px;padding:8px 12px;">
-            </div>
-            <div style="flex:1">
-                <label style="font-size:0.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:4px;">Data Final da Escala</label>
-                <input type="date" id="escalaEndDate" value="${endVal}" style="width:100%;border:2px solid #e2e8f0;border-radius:10px;padding:8px 12px;">
-            </div>
-        </div>`;
-    }
-
-    function getDiaSemanaFilterHTML() {
-        const options = DIAS_SEMANA_OPTIONS.map(opt => 
+        const endVal   = dashFilter.end   || '';
+        const salaOptionsHtml = salaOptions.map(s =>
+            `<option value="${s}" ${s === salaFilterValue ? 'selected' : ''}>${s}</option>`
+        ).join('');
+        const diaOptions = DIAS_SEMANA_OPTIONS.map(opt =>
             `<option value="${opt.value}" ${opt.value === escalaDiaFilter ? 'selected' : ''}>${opt.label}</option>`
         ).join('');
-        
         return `
-        <div class="escala-filter-bar">
-            <div class="escala-filter-group">
-                <label><i class="fas fa-calendar-day me-2"></i>Filtrar por Dia da Semana</label>
-                <select id="escalaDiaFilter" class="escala-filter-select">
-                    ${options}
+        <div class="escala-combined-filter no-print" id="escalaFilterBar">
+            <div class="ecf-group">
+                <label><i class="fas fa-calendar-day me-1"></i>Data Inicial</label>
+                <input type="date" id="escalaStartDate" value="${startVal}"
+                    class="escala-filter-select" style="cursor:default">
+            </div>
+            <div class="ecf-group">
+                <label><i class="fas fa-calendar-day me-1"></i>Data Final</label>
+                <input type="date" id="escalaEndDate" value="${endVal}"
+                    class="escala-filter-select" style="cursor:default">
+            </div>
+            <div class="ecf-group">
+                <label><i class="fas fa-building me-1"></i>Sala do Consumidor</label>
+                <select id="escalaSalaFilter" class="escala-filter-select">
+                    <option value="">Todas as salas</option>
+                    ${salaOptionsHtml}
                 </select>
             </div>
-            <button class="btn-escala-clear-filter" id="escalaClearDiaFilter" ${escalaDiaFilter === 'todos' ? 'disabled' : ''}>
-                <i class="fas fa-times"></i> Limpar Filtro
+            <div class="ecf-group">
+                <label><i class="fas fa-calendar-week me-1"></i>Dia da Semana</label>
+                <select id="escalaDiaFilter" class="escala-filter-select">
+                    ${diaOptions}
+                </select>
+            </div>
+            <button class="btn-escala-limpar-all" id="escalaClearAllFilters">
+                <i class="fas fa-times"></i> Limpar Filtros
             </button>
         </div>`;
     }
+
+    // Wrappers legados inválidos removidos: mantemos apenas a implementação principal acima.
 
     function buildEscalaMatrix(entries, getAgent, getDate, getTurno) {
         const DIAS_SEMANA = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
@@ -3594,7 +4281,7 @@
         const idxEdu   = hdrs.findIndex(h => /agente|social|educador|nome|servidor|funcion/i.test(h));
         const idxTurno = hdrs.findIndex(h => /turno|per[ií]odo|hor[aá]rio|shift/i.test(h));
 
-        let html = getPeriodInputsHTML() + getDiaSemanaFilterHTML();
+        let html = getEscalaFilterBarHTML();
 
         if (idxDate < 0 && idxEdu < 0) {
             const rows = escalaData.rows.map(r =>
@@ -3640,6 +4327,14 @@
         let scheduledRows = rows.filter(row =>
             dayCols.some(dc => row[dc.idx] && String(row[dc.idx]).trim() !== '')
         );
+
+        // ── Aplica filtro global por Sala do Consumidor ──
+        if (salaFilterValue && escalaData.salaCol >= 0) {
+            scheduledRows = scheduledRows.filter(row =>
+                String(row[escalaData.salaCol] || '').trim().toLowerCase() ===
+                salaFilterValue.toLowerCase()
+            );
+        }
 
         // ── Aplica filtro por dia da semana se não for 'todos' ──
         let filteredDayCols = [...dayCols];
@@ -3716,7 +4411,7 @@
             </table>
         </div>`;
 
-        const html = getPeriodInputsHTML() + getDiaSemanaFilterHTML() + `
+        const html = getEscalaFilterBarHTML() + `
         <div class="escala-summary-bar">
             <div class="escala-summary-item"><span class="esv">${totalAgentesEscalados}</span><span class="esl">Escalado(s)</span></div>
             <div class="escala-summary-item"><span class="esv">${totalAgentesTotal}</span><span class="esl">Total de Agentes</span></div>
@@ -3731,9 +4426,9 @@
     }
 
     function renderEscalaFromLancamento() {
-        const filtered = getFiltered();
+        const filtered = getFiltered(); // Already applies salaFilterValue
         if (!filtered.length) {
-            escalaModalBody.innerHTML = getPeriodInputsHTML() + getDiaSemanaFilterHTML() + `
+            escalaModalBody.innerHTML = getEscalaFilterBarHTML() + `
                 <div class="escala-empty">
                     <div class="hint-icon"><i class="fas fa-calendar-times"></i></div>
                     <p class="fw-semibold">Sem dados para o período selecionado.</p>
@@ -3753,7 +4448,7 @@
             r => ''
         );
 
-        escalaModalBody.innerHTML = getPeriodInputsHTML() + getDiaSemanaFilterHTML() + `
+        escalaModalBody.innerHTML = getEscalaFilterBarHTML() + `
         <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:12px;padding:0.9rem 1.2rem;margin-bottom:1.2rem;font-size:0.85rem;color:#664d03">
             <i class="fas fa-info-circle me-2"></i>
             A aba <strong>"Escala de Serviço"</strong> não foi encontrada. Grade derivada dos <strong>Lançamentos Diários</strong>.
@@ -3770,19 +4465,35 @@
     }
 
     function attachEscalaFilterEvents() {
-        const diaFilter = document.getElementById('escalaDiaFilter');
-        const clearBtn = document.getElementById('escalaClearDiaFilter');
-        
+        const diaFilter  = document.getElementById('escalaDiaFilter');
+        const salaFilter = document.getElementById('escalaSalaFilter');
+        const clearBtn   = document.getElementById('escalaClearAllFilters');
+
         if (diaFilter) {
             diaFilter.addEventListener('change', function() {
                 escalaDiaFilter = this.value;
                 renderEscalaModal();
             });
         }
-        
+        if (salaFilter) {
+            salaFilter.addEventListener('change', function() {
+                salaFilterValue = this.value;
+                // Sync the main dashboard sala select
+                const mainSel = document.getElementById('dashSalaFilter');
+                if (mainSel) mainSel.value = this.value;
+                renderEscalaModal();
+            });
+        }
         if (clearBtn) {
             clearBtn.addEventListener('click', function() {
                 escalaDiaFilter = 'todos';
+                // Reset sala filter in escala modal
+                const localSala = document.getElementById('escalaSalaFilter');
+                if (localSala) { localSala.value = ''; salaFilterValue = ''; }
+                const startEl = document.getElementById('escalaStartDate');
+                const endEl   = document.getElementById('escalaEndDate');
+                if (startEl) startEl.value = '';
+                if (endEl)   endEl.value   = '';
                 renderEscalaModal();
             });
         }
@@ -3822,6 +4533,12 @@
 
         const obsInProxy = proxy.querySelector('.escala-obs-box');
         if (obsInProxy) obsInProxy.remove();
+
+        // REMOVE filter/input elements from PDF (per visibility_rules requirement)
+        proxy.querySelectorAll(
+            '.escala-combined-filter, .escala-filter-bar, .escala-period-inputs,' +
+            ' input, select, button, .no-print'
+        ).forEach(el => el.remove());
 
         const proxyRect = proxy.getBoundingClientRect();
         const breakPts  = new Set([0]);
